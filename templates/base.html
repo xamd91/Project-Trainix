@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} Trainix {% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="NavBar">
+        <a class="NavButton" href="/">Home</a>        
+        <a class="NavButton" href="/training_catalogue">Training Catalogue</a>
+        <a class="NavButton" href="/training_details">Training Details</a>
+        <a class="NavButton" href="/admin_dashboard">Admin Dashboard</a>
+        <a class="NavButton" href="/manager_dashboard">Manager Dashboard</a>
+        <a class="NavButton" href="/attendance_management">Attendance</a>
+        <a class="NavButton" href="/reports">Reports</a>
+        <a class="NavButton" href="/login">Login</a>
+        <a class="NavButton" href="/signup">Register</a>
+        <a class="NavButton" href="/account">Account</a>
+    </div>
+    
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        &copy; 2026 Cox Automotive. All rights reserved.
+    </footer>
+
+</body>
+
+{% block extra_js %}{% endblock %}
+
+</html>

@@ -1,0 +1,24 @@
+{%extends "base.html" %}
+
+{% block title %} Trainix | Signup {% endblock %}
+
+{% block content %}
+<body>
+    <div class="SignUpContainer">
+        <h1>Sign Up</h1>
+        <form method="POST">
+            <label for="SignUpUsername">Username:</label><br>
+            <input type="text" id="SignUpUsername" name="SignUpUsername"><br>
+            <label for="SignUpPassword">Password:</label><br>
+            <input type="password" id="SignUpPassword" name="SignUpPassword"><br>
+            <label for="SignUpConfirmPassword">Confirm Password:</label><br>
+            <input type="password" id="SignUpConfirmPassword" name="SignUpConfirmPassword"><br>
+            <label for="SignUpPhoneNumber">Phone Number:</label><br>
+            <input type="password" id="SignUpPhoneNumber" name="SignUpPhoneNumber"><br>
+            <label for="SignUpEmail">Email</label><br>
+            <input type="password" id="SignUpEmail" name="SignUpEmail"><br><br>
+            <input type="submit" value="SignUp">
+        </form>
+    </div>
+</body>
+{% endblock %}

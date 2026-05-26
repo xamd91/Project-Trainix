@@ -1,0 +1,14 @@
+.NavBar{
+    background-color: #080a90;
+    overflow: hidden;
+    width: 100%;
+    height: 50px;
+}
+
+.NavButton {
+    float: left;
+    text-decoration: none;
+    color: white;
+    padding: 14px 20px;
+    font-size: 17px;
+}
