@@ -2,12 +2,63 @@
 
 {% block title %} Trainix | Home {% endblock %}
 
+{% block extra_css %} <link rel="stylesheet" href="../static/css/home.css"> {% endblock %}
+
 {% block content %}
-    <body>
-        <div>
-            <h1>Welcome to Trainix</h1>
-            <p>The easiest and most efficient way to create, manage, update and join your training sessions.</p>
+<!-- hero section -->
+<div class="hero">
+    <h1 class="hero-title">Welcome To Trainix</h1>
+    <p class="hero-subtitle">Book training sessions, manage attendance, and grow your skills.</p>
+    <div class="hero-buttons">
+        <a href="/training_catalogue">Browse Training</a>
+        <a href="/about">Information & Support</a>
+        <!-- potential addon for managers linking to /approvals or admins linking to /admin dash -->
+    </div>
+</div>
+
+<!-- features section-->
+<div class="features">
+    <h2 class="features-title">Features</h2>
+    <div class="features-grid">
+        
+        <div class="feature-card">
+            <div class="feature-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 14 14" style="color: #001842;">
+                    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5.5 12.5h-4a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v5m-13-3h13"></path>
+                        <circle cx="9.5" cy="9.5" r="2.5"></circle>
+                        <path d="m11.27 11.27l2.23 2.23"></path>
+                    </g>
+                </svg>
+            </div>
+            <h3 class="feature-card-heading">Browse Training</h3>
+            <p class="feature-card-text">Easily explore our comprehensive catalogue of training sessions, filter by category, and find the perfect fit for your development needs.</p>
+            <a href="/training_catalogue" class="feature-card-link">Explore our training sessions</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: #001842;">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 18A10 10 0 1 0 2.9 7.9M2 4v4h4m6-1v5l3 3"></path>
+                </svg>
+            </div>
+            <h3 class="feature-card-heading">Session History</h3>
+            <p class="feature-card-text">Keep track of your training history, view upcoming sessions, and manage your attendance with our user-friendly dashboard.</p>
+            <a href="/session_history" class="feature-card-link">Track your sessions</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 64 64" style="color: #001842;">
+                    <path fill="currentColor" d="M30.9 20.3H14c-1.2 0-2.2 1-2.2 2.2s1 2.2 2.2 2.2h16.8c1.2 0 2.2-1 2.2-2.2s-.9-2.2-2.1-2.2m-9.1 12.4H14c-1.2 0-2.2 1-2.2 2.2s1 2.2 2.2 2.2h7.7c1.2 0 2.2-1 2.2-2.2s-.9-2.2-2.1-2.2m26.8 1.8c-.1-.1-.2-.2-.4-.2c-.1-.1-.3-.1-.4-.1c-.7-.1-1.5.1-2 .6l-.3.3c-.1.1-.2.3-.2.4c-.1.1-.1.3-.1.4c0 .2-.1.3-.1.4c0 .2 0 .3.1.4c0 .2.1.3.1.4c.1.1.1.3.2.4l.3.3c.4.4 1 .7 1.6.7s1.2-.2 1.6-.7l.3-.3c.1-.1.1-.2.2-.4c.1-.1.1-.3.1-.4v-.4c0-.6-.2-1.2-.7-1.6c-.1 0-.2-.1-.3-.2m-.7-18.6c-2.5-.3-4.8.9-6 3.1c-.6 1.1-.2 2.5.9 3c1.1.6 2.5.2 3-.9c.3-.5.9-.8 1.5-.7s1.2.6 1.2 1.1c.1.7-.3 1.1-.7 1.3c-1.7.8-2.9 2.8-2.9 4.6v1.3c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2v-1.3c0-.2.2-.5.4-.6c2.2-1.1 3.5-3.4 3.2-5.9c-.2-2.6-2.4-4.7-5-5"></path><path fill="currentColor" d="M56 7.9H8c-3.4 0-6.2 2.8-6.2 6.2v37.7c0 1.6.9 3.1 2.4 3.8c.6.3 1.2.4 1.8.4c1 0 1.9-.3 2.7-1l8.5-7H56c3.4 0 6.2-2.8 6.2-6.2V14.2c0-3.5-2.8-6.3-6.2-6.3m1.8 33.9c0 1-.8 1.8-1.8 1.8H16.3c-.5 0-1 .2-1.4.5l-8.6 7.1v-37c0-1 .8-1.8 1.8-1.8h48c1 0 1.8.8 1.8 1.8v27.6z"></path>
+                </svg>
+            </div>
+            <h3 class="feature-card-heading">Help & Support</h3>
+            <p class="feature-card-text">Need assistance? Our help and support section provides resources, FAQs, and contact information to ensure you are well-supported throughout your training journey.</p>
+            <a href="/help_&_support" class="feature-card-link;">Help&Support</a>
         </div>
         
-    </body>
+    </div>
+</div>
+
 {% endblock %}

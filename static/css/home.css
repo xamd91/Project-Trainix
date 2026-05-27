@@ -1,0 +1,116 @@
+/* hero */
+.hero {
+    background: url(../images/CALI.png) center/cover fixed;
+    color: var(--colour-white);
+    text-align: center;
+    padding: 100px 20px
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    margin-bottom:16px;
+}
+
+.hero__subtitle {
+    font-size: 1.15rem;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    font-weight: 400;
+}
+
+/* hero buttons */
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.hero-buttons a {
+    padding: 12px 28px;
+    border-radius:8px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.hero-buttons a:hover {
+    opacity: 0.85;
+}
+
+.hero-buttons a:first-child {
+    background-color: var(--colour-white);
+    color: var(--colour-navy-blue);
+}
+
+.hero-buttons a:last-child {
+    background-color: transparent;
+    color: var(--colour-white);
+    border: 2px solid var(--colour-white);
+}
+
+/* features */
+.features {
+    padding: 70px 40px;
+    text-align: center;
+    background-color: var(--colour-white);
+}
+
+.features-title {
+    font-size: 1.9rem;
+    color: var(--colour-navy-blue);
+    margin-bottom: 40px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* feature cards */
+.feature-card {
+    background: var(--color-white);
+    border-radius: 8px;
+    padding: 36px 28px;
+    border: 1px solid #e2e8f0;
+    transition: box-shadow 0.2s;
+}
+
+.feature-card:hover {
+    box-shadow: 0 6px 24px rgba(0, 24, 66, 0.12);
+}
+
+.feature-card-heading {
+    font-size: 1rem;
+    color: var(--colour-navy-blue);
+    margin-bottom: 12px;
+}
+
+.feature-card-text {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.feature-card-link:hover {
+    text-decoration: underline;
+}
+
+/* responsiveness */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .features {
+        padding: 50px 20px;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}

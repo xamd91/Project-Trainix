@@ -1,18 +1,67 @@
 {%extends "base.html" %}
 
-{% block title %} Trainix | Login {% endblock %}
+{% block title %} Trainix | Log In {% endblock %}
+
+{% block extra_css %} <link rel="stylesheet" href="../static/css/login.css"> {% endblock %}
 
 {% block content %}
-<body>
-    <div class="LoginContainer">
-        <h1>Login</h1>
-        <form method="POST">
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username"><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password"><br><br>
-            <input type="submit" value="Login">
-        </form>
+
+    <div class="main-container">
+        <div class="login-card">
+            <div class="icon-container">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </div>
+
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Enter your credentials to log into your account.</p>            
+
+            <form action="/login" method="POST" id="login-form">
+
+                <div class="input-group">
+                    <input type="email" id="email" name="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+
+                <div class="fp">
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn">Log In</button>
+
+            </form>
+
+            <p class="signup-text">New here? <a href="/register">Create an account</a></p>
+
+        </div>
     </div>
-</body>
+
+
+    <div class="error-modal-container" id="error-modal-container">
+        <div class="modal-content">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h2>Login Failed!</h2>
+            <p id="error-modal-message"></p>
+            <button class="error-modal-close" id="error-modal-close">Close</button>
+        </div>
+    </div>
+
+    <div class="success-modal-container" id="success-modal-container">
+        <div class="modal-content success">
+            <div class="success-icon">
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <h2>Login Successful!</h2>
+            <p id="success-modal-message"></p>
+            <button class="success-modal-close" id="success-modal-close">Close</button>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
 {% endblock %}

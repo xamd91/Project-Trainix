@@ -1,3 +1,4 @@
+import os
 from flask import render_template, request, redirect, url_for, jsonify
 from app import db
 
@@ -31,9 +32,9 @@ def register_routes(app):
     def reports():
         return render_template('reports.html')
 
-    @app.route('/signup')
-    def signup():
-        return render_template('signup.html')
+    @app.route('/register')
+    def register():
+        return render_template('register.html')
 
     @app.route('/training_catalogue')
     def training_catalogue():
@@ -53,6 +54,8 @@ def register_routes(app):
                 "db_response": result
             })
         except Exception as e:
+            print(os.getenv("DATABASE_URL"))
+            print("DB URL:", os.getenv("DATABASE_URL"))
             return jsonify({
                 "status": "error",
                 "message": str(e)
