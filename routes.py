@@ -43,6 +43,10 @@ def register_routes(app):
     @app.route('/training_details')
     def training_details():
         return render_template('training_details.html')    
+    
+    @app.route('/information_and_support')
+    def information_and_support():
+        return render_template('information_and_support.html')  
 
     @app.route("/db-test")
     def db_test():

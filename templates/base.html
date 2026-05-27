@@ -5,32 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="https://fonts.cdnfonts.com/css/hand-of-sean" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
     <title>{% block title %} Trainix {% endblock %}</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
-    <div class="NavBar">
-        <a class="NavButton" href="/">Home</a>        
-        <a class="NavButton" href="/training_catalogue">Training Catalogue</a>
-        <a class="NavButton" href="/training_details">Training Details</a>
-        <a class="NavButton" href="/admin_dashboard">Admin Dashboard</a>
-        <a class="NavButton" href="/manager_dashboard">Manager Dashboard</a>
-        <a class="NavButton" href="/attendance_management">Attendance</a>
-        <a class="NavButton" href="/reports">Reports</a>
-        <a class="NavButton" href="/login">Login</a>
-        <a class="NavButton" href="/register">Register</a>
-        <a class="NavButton" href="/account">Account</a>
-    </div>
+    <header class="site-header">
+        <div class="container">
+            <a href="/" class="logo">Trainix</a>
+            <nav class="nav-links">        
+                <a href="/training_catalogue">Training Catalogue</a>
+                <!-- <a href="/training_details">Training Details</a> -->
+                <a href="/information_and_support">Info & Support</a>
+
+                {% if session.user_id %}
+
+                    {% if session.role == "Learner" %}
+                        <a href="/account">Account</a>
+                    {% elif session.role == "Manager" %}
+                        <a href="/manager_dashboard">Manager Dashboard</a>
+                    {% elif session.role == "Trainer" %}
+                        <a href="/attendance_management">Attendance</a>
+                    {% elif session.role == "Admin" %}
+                        <a href="/admin_dashboard">Admin Dashboard</a>
+                        <a href="/reports">Reports</a>
+                    {% endif %}
+
+                    <a href="/logout">Log Out</a>
+                
+                {% else %}
+
+                    <a href="/login" class="btn-nav">Login</a>
+                    <a href="/register" class="btn-nav highlight">Register</a>
+                    
+                {% endif %}
+            </nav>
+            <div class="menu-toggle">☰</div>
+        </div>
+    </header>
     
     <main class="main-content">
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer>
-        &copy; 2026 Cox Automotive. All rights reserved.
+    <footer class="site-footer">
+        <div class="footer-container">
+
+            <div class="footer-brand">
+                <span class="footer-logo">Trainix</span>
+                <p class="footer-tagline">Book training sessions, manage attendance, and grow your skills. Find useful links here.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-heading">Navigation</h4>
+                <div class="footer-links">
+                    <a href="/">Home</a>
+                    <a href="/training_catalogue">Training Catalogue</a>
+                    <a href="/information_and_support">Information</a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h4 class="footer-heading">Support</h4>
+                <div class="footer-links">
+                    <a href="/information_and_support">Help & Support</a>
+                    <a href="/information_and_support">FAQS</a>
+                    <a href="/information_and_support">Contact Us</a>
+                </div>
+            </div>
+        
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Cox Automotive. All rights reserved.
+        </div>
     </footer>
 
 </body>

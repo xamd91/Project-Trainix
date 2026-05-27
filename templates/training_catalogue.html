@@ -1,7 +1,32 @@
-{%extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %} Trainix | Training Catalogue {% endblock %}
 
+{% block extra_css %} <link rel="stylesheet" href="../static/css/training_catalogue.css"> {% endblock %}
+
 {% block content %}
+
+    <div class="training-catalogue">
+        <h2>Book your training sessions</h2>
+        <div class="search-container">
+            <form method="POST">
+                <input class="searchbar" type="text" name="search" placeholder="Search for training...">
+            </form>
+            <button class="filter-button">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="15" height="15" viewBox="0 0 16 14" style="color: #001842;">
+                    <polygon fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" points="1.75 1.75 14.25 1.75 14.25 3.25 9.25 8.75 9.25 12.75 6.75 14.25 6.75 8.75 1.75 3.25"></polygon>
+                </svg> Filters
+            </button>
+        </div>
+        <div class="section-divider"></div>
+        <ul>
+            {% for training in trainings %}
+                <div>
+                    {{ training.CourseName }}
+                </div>
+            {% else %}
+                <a>No results found...</a>
+            {% endfor %}
+    </div>
 
 {% endblock %}

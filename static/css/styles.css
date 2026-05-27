@@ -1,0 +1,258 @@
+:root {
+    --white: #ffffff;
+    --black: #000000;
+    --pacific-blue: #00B0C2;
+    --amber-glow: #F99D20;
+    --navy-blue: #001842;  
+    --off-white: #f8f7f4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.raleway-text {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.montserrat-text {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.caveat-btn {
+  font-family: "Caveat", cursive;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #ffffff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Hand Of Sean';
+    font-weight: 300;
+}
+/* 
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 247, 240, 0.9);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.site-header.shrink {
+  padding: 5px 0;
+  background: rgba(255,247,240,0.8);
+  box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+}
+
+.logo {
+  font-size: 2rem;
+  font-family: 'Hand Of Sean';
+  font-weight: bold;
+  color: var(--navy-blue);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-links a {
+  padding: 8px 16px;
+  text-decoration: none;
+  color: var(--black);
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: bold;
+}
+
+.nav-links a:not(.btn-nav):hover {
+  color: var(--navy-blue);
+  background: rgba(229, 179, 130, 0.1); 
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.menu-toggle:hover {
+  transform: scale(1.1);
+} */
+
+.logo {
+  font-size: 2rem;
+  font-family: 'Hand Of Sean';
+}
+
+.site-header {
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: transparent;
+  /* backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); */
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+  padding: 0 2rem;
+}
+
+.site-header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.site-header .logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #000;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.site-header .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.site-header .nav-links a {
+  color: #000;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.site-header .nav-links a:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.site-header .nav-links a.btn-nav {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 0.4rem 1rem;
+}
+
+.site-header .nav-links a.btn-nav.highlight {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.site-header .nav-links a.btn-nav.highlight:hover {
+  background: #222;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.no-select {
+    user-select: none;
+}
+
+/* footer */
+.site-footer {
+  background-color: var(--navy-blue);
+  color: var(--white);
+  border-top: 3px solid var(--pacific-blue);
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px 40px;
+}
+
+.footer-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--pacficic-blue);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.footer-tagline {
+  font-size: 0.88rem;
+  opacity: 0.7;
+  line-height: 1.6;
+}
+
+.footer-heading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pacific-blue);
+  margin-bottom: 16px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links a {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  color: var(--amber-glow);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 16px 40px;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+  }
+}
