@@ -18,6 +18,6 @@ def create_app():
     migrate.init_app(app, db)
 
     from routes import register_routes
-    register_routes(app)
+    register_routes(app, db)
 
     return app

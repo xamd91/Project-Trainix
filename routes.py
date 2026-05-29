@@ -2,7 +2,7 @@ import os
 from flask import render_template, request, redirect, url_for, jsonify
 from app import db
 
-def register_routes(app):
+def register_routes(app, db):
 
     @app.route('/account')
     def account():
@@ -32,9 +32,10 @@ def register_routes(app):
     def reports():
         return render_template('reports.html')
 
-    @app.route('/register')
+    @app.route('/register', methods=["GET", "POST"])
     def register():
-        return render_template('register.html')
+        from pages.register_page import page
+        return page()
 
     @app.route('/training_catalogue')
     def training_catalogue():
