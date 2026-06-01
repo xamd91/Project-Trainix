@@ -22,6 +22,7 @@
             <nav class="nav-links">        
                 <a href="/" class="mobile-only">Home</a>
                 <a href="/training_catalogue">Training Catalogue</a>
+                <a href="/training_details">Training Details</a>
                 <a href="/information_and_support">Info & Support</a>
 
                 {% if session.user_id %}
@@ -29,11 +30,11 @@
 
                     {% if session.role == "learner" %}
                         <a href="/account">Account</a>
-                    {% elif session.role == "Manager" %}
+                    {% elif session.role == "manager" %}
                         <a href="/manager_dashboard">Manager Dashboard</a>
-                    {% elif session.role == "Trainer" %}
+                    {% elif session.role == "trainer" %}
                         <a href="/attendance_management">Attendance</a>
-                    {% elif session.role == "Admin" %}
+                    {% elif session.role == "admin" %}
                         <a href="/admin_dashboard">Admin Dashboard</a>
                         <a href="/reports">Reports</a>
                     {% endif %}

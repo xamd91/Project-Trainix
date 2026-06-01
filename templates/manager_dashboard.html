@@ -2,6 +2,42 @@
 
 {% block title %} Trainix | Manager Dashboard {% endblock %}
 
+{% block extra_css %} <link rel="stylesheet" href="../static/css/manager_dashboard.css"> {% endblock %}
+
 {% block content %}
   
-{% endblock %}
+<div class="page-hero no-select">
+    <div class="page-hero-content">
+        <h1>Manager Dashboard</h1>
+        <p>Review and approve training requests from your team</p>
+    </div>
+</div>
+
+<div>
+    <div class="dashboard-content">
+        <div class="dashboard-section">
+            <h2>Pending Training Requests</h2>
+
+            <div class="grid-header">
+                <div>Employee</div>
+                <div>Training Session</div>
+                <div>Date & Time</di
+            </div>
+
+            <div class="requests-list">
+                {% for booking in bookings %}
+                    <div class="request-card">
+                        <h3>{{ booking.FirstName+LastName }}</h3>
+                        <p><strong>Course:</strong> {{ booking.CourseName }}</p>
+                        <p><strong>Date:</strong> {{ booking.BookingDate }}</p>
+                    </div>
+                {% else %}
+                    <p>No pending requests at the moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Additional sections for approved/rejected requests can be added here -->
+    </div>
+</div>
+{% endblock %

@@ -19,15 +19,27 @@
 
                 <div class="input-grid">
                     <div class="input-group">
-                        <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
+                        <input type="text" id="firstname" name="firstname" placeholder="First Name" pattern="[A-Za-z\s-]+" required>
                     </div>
 
                     <div class="input-group">
-                        <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
+                        <input type="text" id="lastname" name="lastname" placeholder="Last Name" pattern="[A-Za-z\s-]+" required>
                     </div>
 
-                    <div class="input-group">
-                        <input type="text" id="phone" name="phone" placeholder="Phone Number (+44)" required>
+                    <div class="input-group phone-group">
+                        <select id="country" name="country" required>
+                            <option value="USA" data-code="+1">+1 (USA)</option>
+                            <option value="UK" data-code="+44">+44 (UK)</option>
+                            <option value="Australia" data-code="+61">+61 (Australia)</option>
+                            <option value="India" data-code="+91">+91 (India)</option>
+                            <option value="Japan" data-code="+81">+81 (Japan)</option>
+                            <option value="Germany" data-code="+49">+49 (Germany)</option>
+                            <option value="France" data-code="+33">+33 (France)</option>
+                            <option value="China" data-code="+86">+86 (China)</option>
+                            <option value="Russia" data-code="+7">+7 (Russia)</option>
+
+                        </select>
+                        <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
                     </div>
 
                     <div class="input-group">
@@ -63,7 +75,7 @@
             </div>
             <h2>Account Creation Failed!</h2>
             <p id="error-modal-message"></p>
-            <button class="error-modal-close" id="error-modal-close">Close</button>
+            <button class="error-modal-close caveat-btn" id="error-modal-close">Close</button>
         </div>
     </div>
 
@@ -74,8 +86,13 @@
             </div>
             <h2>Account Created!</h2>
             <p id="success-modal-message"></p>
-            <button class="success-modal-close" id="success-modal-close">Close</button>
+            <button class="success-modal-close caveat-btn" id="success-modal-close">Close</button>
         </div>
     </div>
 
 {% endblock %}
+
+{% block extra_js %}
+ <script src="https://unpkg.com/libphonenumber-js@1.10.25/bundle/libphonenumber-max.js"></script>
+ <script src="../static/js/register.js"></script>
+ {% endblock %}

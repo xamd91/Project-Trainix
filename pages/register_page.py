@@ -65,6 +65,7 @@ def page():
                 "status": "error",
                 "message": "Phone number must not be above 11 digits."
             }), 400
+        
 
         if Users.query.filter_by(Phone=phone).first():
             return jsonify({
@@ -125,13 +126,13 @@ def page():
         if created_user:
             return jsonify({
                  "status": "success",
-                 "message": f"Account for {created_user.firstname} created successfully!"
+                 "message": f"Account for {created_user.FirstName} created successfully!"
             }), 201
         else:
 
             return jsonify({
                 "status": "error",
-                "message": "Something went wrong while creating the account. then u need aquery for the suppliers "
+                "message": "Something went wrong while creating the account."
             }), 400
 
 

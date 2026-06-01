@@ -18,7 +18,7 @@ class Users(db.Model):
 class TrainingSessions(db.Model):
     __tablename__ = "training_sessions"
     SessionId = db.Column(db.Integer, primary_key=True, nullable=False)
-    CourseId = db.Column(db.Integer, db.ForeignKey('training_courses.courseId'), nullable=False)
+    CourseId = db.Column(db.Integer, db.ForeignKey('training_courses.CourseId'), nullable=False)
     TrainerId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=False)
     Title = db.Column(db.String(200), nullable=False)
     Date = db.Column(db.Date, nullable=False)
@@ -27,6 +27,7 @@ class TrainingSessions(db.Model):
     Description = db.Column(db.Text, nullable=True)
     Capacity = db.Column(db.Integer, nullable=False)
     DeliveryType = db.Column(Enum("Face-to-Face", "Online", name="delivery_type"), nullable=False)
+    course = db.relationship('TrainingCourses', back_populates='sessions')
 
 class TrainingCourses(db.Model):
     __tablename__ = "training_courses"
@@ -34,6 +35,7 @@ class TrainingCourses(db.Model):
     CourseName = db.Column(db.String(200), nullable=False)
     Description = db.Column(db.Text, nullable=True)
     BusinessArea = db.Column(db.String(100), nullable=False)
+    sessions = db.relationship('TrainingSessions', back_populates='course')
 
 class Bookings(db.Model):
     __tablename__ = "bookings"

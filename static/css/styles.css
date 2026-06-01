@@ -5,6 +5,8 @@
     --amber-glow: #F99D20;
     --navy-blue: #001842;  
     --off-white: #f8f7f4;
+    --success: #6FBF73;
+    --error: #c0392b;
 }
 
 * {
@@ -281,4 +283,162 @@ h1, h2, h3, h4, h5, h6 {
   .footer-container {
     grid-template-columns: 1fr;
   }
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.error-modal-container {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 15, 10, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.error-modal-container.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: var(--off-white);
+    max-width: 450px;
+    width: 90%;
+    padding: 44px 40px 36px;
+    text-align: center;
+    border-top: 4px solid var(--error);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    animation: modalIn 0.3s ease both;
+}
+
+.error-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.error-icon i {
+    font-size: 2.5rem;
+    color: var(--error);
+}
+
+.modal-content h2 {
+    font-family: 'Hand Of Sean';
+    font-size: 1.9rem;
+    font-weight: 400;
+    color: var(--navy-blue);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.modal-content p {
+    font-size: 0.9rem;
+    color: var(--black);
+    line-height: 1.7;
+    margin-bottom: 28px;
+    font-weight: 300;
+}
+
+.error-modal-close {
+    font-size: 0.78rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 15px 32px;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+}
+
+.error-modal-close:hover {
+    background: var(--amber-glow);
+    transform: translateY(-1px);
+}
+
+.error-modal-close:active { transform: scale(0.97); }
+
+.success-modal-container {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 15, 10, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.success-modal-container.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content.success {
+    border-top: 4px solid var(--success);
+}
+
+.success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.success-icon i {
+    font-size: 2.5rem;
+    color: var(--success);
+}
+
+.success-modal-close {
+    font-size: 0.78rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 15px 32px;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+}
+
+.success-modal-close:hover {
+    background: var(--success);
+    transform: translateY(-1px);
+}
+
+.success-modal-close:active { transform: scale(0.97); }
+
+.error-modal-container,
+.success-modal-container {
+    transition: opacity 0.25s ease;
+}
+
+@keyframes modalIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.82) translateY(12px);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale(1.03) translateY(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }

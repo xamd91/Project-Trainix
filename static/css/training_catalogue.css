@@ -12,6 +12,7 @@ body {
   align-items: center;
   justify-content: center;
   color: #fff;
+  margin-top: 80px
 }
 
 .page-hero-content {
@@ -397,7 +398,7 @@ body {
     color: #166534;
 }
 
-.card-delivery-badge.in-person {
+.card-delivery-badge.face-to-face {
     background-color: #dbeafe;
     color: #1e40af;
 }

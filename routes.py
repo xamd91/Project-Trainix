@@ -1,5 +1,5 @@
 import os
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import session, render_template, request, redirect, url_for, jsonify
 from app import db
 
 def register_routes(app, db):
@@ -20,9 +20,15 @@ def register_routes(app, db):
     def home():
         return render_template('home.html')
 
-    @app.route('/login')
+    @app.route('/login', methods=['GET','POST'])
     def login():
-        return render_template('login.html')
+        from pages.login_page import page
+        return page()
+    
+    @app.route('/logout')
+    def logout():
+        session.clear()
+        return redirect(url_for('login'))
     
     @app.route('/manager_dashboard')
     def manager_dashboard():
@@ -39,7 +45,8 @@ def register_routes(app, db):
 
     @app.route('/training_catalogue')
     def training_catalogue():
-        return render_template('training_catalogue.html')
+        from pages.catalogue_page import page
+        return page()
 
     @app.route('/training_details')
     def training_details():

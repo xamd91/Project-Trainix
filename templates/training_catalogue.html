@@ -36,9 +36,9 @@
                 <div class="filter-section">
 
                     <p class="filter-section-title">Date range</p>
-                    <div class="filter-item"><input type="checkbox" id="date-week"><label for="date-week">This week</label></div>
-                    <div class="filter-item"><input type="checkbox" id="date-month"><label for="date-month">This month</label></div>
-                    <div class="filter-item"><input type="checkbox" id="date-custom" id="fc-cb"><label for="date-custom">Custom</label></div>
+                    <div class="filter-item"><input type="checkbox" class="date-filter" id="date-week"><label for="date-week">This week</label></div>
+                    <div class="filter-item"><input type="checkbox" class="date-filter" id="date-month"><label for="date-month">This month</label></div>
+                    <div class="filter-item"><input type="checkbox" class="date-filter" id="date-custom"><label for="date-custom">Custom</label></div>
                     <div class="date-range-custom" id="date-range-custom">
                         <label>From</label><input type="date">
                         <label>To</label><input type="date">
@@ -48,16 +48,16 @@
 
                 <div class="filter-section">
                     <p class="filter-section-title">Delivery</p>
-                    <div class="filter-item"><input type="checkbox" id="delivery-online"><label for="delivery-online">Online</label></div>
-                    <div class="filter-item"><input type="checkbox" id="delivery-person"><label for="delivey-person">In-person</label></div>
-                    <div class="filter-item"><input type="checkbox" id="delivery-hybrid"><label for="delivery-hybrid">Hybrid</label></div>
+                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-virtual"><label for="delivery-virtual">Virtual</label></div>
+                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-face"><label for="delivey-face">Face-to-Face</label></div>
+                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-hybrid"><label for="delivery-hybrid">Hybrid</label></div>
                 </div>
 
                 <div class="filter-section">
                     <p class="filter-section-title">Business area</p>
-                    <div class="filter-item"><input type="checkbox" id="area-tech"><label for="area-tech">Technology</label></div>
-                    <div class="filter-item"><input type="checkbox" id="area-sales"><label for="area-sales">Sales</label></div>
-                    <div class="filter-item"><input type="checkbox" id="area-marketing"><label for="area-marketing">Marketing</label></div>
+                    <div class="filter-item"><input type="checkbox" class="area-filter" id="area-tech"><label for="area-tech">Technology</label></div>
+                    <div class="filter-item"><input type="checkbox" class="area-filter" id="area-sales"><label for="area-sales">Sales</label></div>
+                    <div class="filter-item"><input type="checkbox" class="area-filter" id="area-marketing"><label for="area-marketing">Marketing</label></div>
                     <!-- gonna have to do jinja stuff for departments bruhhh -->
                 </div>
 
@@ -69,230 +69,92 @@
 
         <div class="catalogue-body">
 
-            <p class="results-meta" id="results-meta">Showing x sessions</p>
+            <p class="results-meta" id="results-meta">Showing {{ session_count }} sessions</p>
 
             <div class="training-grid" id="training-grid">
+                
+                {% for session in session_list %}
 
-                <div class="training-card">
-                    <div class="card-banner"></div>
-                    <div class="card-body">
-                        <span class="card-tag">Technology</span>
-                        <h3 class="card-title">Advanced React Patterns</h3>
-                        <p class="card-description">Master advanced React concepts and design patterns for scalable applications.</p>
-                        <div class="card-meta">
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                <span>2026-06-10 &bull; 14:00</span>
-                            </div>
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                <span>Virtual</span>
-                                <span class="card-delivery-badge online">online</span>
-                            </div>
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                <span>8 / 20 spaces available</span>
-                            </div>
-                        </div>
-                        <a href="#" class="card-btn caveat-btn">View Details</a>
-                    </div>
-                </div>
-
-                <div class="training-card">
-                    <div class="card-banner"></div>
-
-                    <div class="card-body">
-                        <span class="card-tag">Business & Finance</span>
-
-                        <h3 class="card-title">Introduction to Financial Planning</h3>
-
-                        <p class="card-description">
-                            Learn the fundamentals of budgeting, forecasting, and managing finances effectively.
-                        </p>
-
-                        <div class="card-meta">
-
-                            <div class="meta-row">
-                                <!-- Calendar Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                    <line x1="3" y1="10" x2="21" y2="10"/>
-                                </svg>
-                                <span>12 June 2026 • 10:00 AM</span>
-                            </div>
-
-                            <div class="meta-row">
-                                <!-- Location Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
-                                    <circle cx="12" cy="10" r="3"/>
-                                </svg>
-
-                                <span>Virtual</span>
-                                <span class="card-delivery-badge online">online</span>
-                            </div>
-
-                            <div class="meta-row">
-                                <!-- Capacity Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="9" cy="7" r="4"/>
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                </svg>
-
-                                <span>12 / 20 spaces available</span>
-                            </div>
-
-                        </div>
-
-                    <a href="/training/12345" class="card-btn caveat-btn">View Details</a>
-                    </div>
-                </div>
-
-                <div class="training-card">
-                    <div class="card-banner"></div>
-                    <div class="card-body">
-                        <span class="card-tag">Technology</span>
-                        <h3 class="card-title">Advanced React Patterns</h3>
-                        <p class="card-description">Master advanced React concepts and design patterns for scalable applications.</p>
-                        <div class="card-meta">
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                <span>2026-06-10 &bull; 14:00</span>
-                            </div>
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                <span>Virtual</span>
-                                <span class="card-delivery-badge online">online</span>
-                            </div>
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                <span>8 / 20 spaces available</span>
-                            </div>
-                        </div>
-                        <a href="#" class="card-btn caveat-btn">View Details</a>
-                    </div>
-                </div>
-
-                <div class="training-card">
-                    <div class="card-banner"></div>
-
-                    <div class="card-body">
-                        <span class="card-tag">Business & Finance</span>
-
-                        <h3 class="card-title">Introduction to Financial Planning</h3>
-
-                        <p class="card-description">
-                            Learn the fundamentals of budgeting, forecasting, and managing finances effectively.
-                        </p>
-
-                        <div class="card-meta">
-
-                            <div class="meta-row">
-                                <!-- Calendar Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                    <line x1="3" y1="10" x2="21" y2="10"/>
-                                </svg>
-                                <span>12 June 2026 • 10:00 AM</span>
-                            </div>
-
-                            <div class="meta-row">
-                                <!-- Location Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
-                                    <circle cx="12" cy="10" r="3"/>
-                                </svg>
-
-                                <span>Virtual</span>
-                                <span class="card-delivery-badge online">online</span>
-                            </div>
-
-                            <div class="meta-row">
-                                <!-- Capacity Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                    <circle cx="9" cy="7" r="4"/>
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                </svg>
-
-                                <span>12 / 20 spaces available</span>
-                            </div>
-
-                        </div>
-
-                    <a href="/training/12345" class="card-btn caveat-btn">View Details</a>
-                    </div>
-                </div>
-
-                <div class="training-card">
-                    <div class="card-banner"></div>
-                    <div class="card-body">
-                        <span class="card-tag">Technology</span>
-                        <h3 class="card-title">Advanced React Patterns</h3>
-                        <p class="card-description">Master advanced React concepts and design patterns for scalable applications.</p>
-                        <div class="card-meta">
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                <span>2026-06-10 &bull; 14:00</span>
-                            </div>
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                <span>Virtual</span>
-                                <span class="card-delivery-badge online">online</span>
-                            </div>
-                            <div class="meta-row">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                <span>8 / 20 spaces available</span>
-                            </div>
-                        </div>
-                        <a href="#" class="card-btn caveat-btn">View Details</a>
-                    </div>
-                </div>
-
-                <!-- {% for training in trainings %}
                     <div class="training-card">
-                        <div class="training-card-banner"></div>
-                        <div class="training-card-body">
-                            <span class="training-card-tag">{{ training.BusinessArea }}</span>
-                            <h3 class="training-card-title">{{ training.CourseName }}</h3>
-                            <p class="training-card-description">{{ training.Description }}</p>
-                            <div class="training-card-meta">
-                                <div class="training-card-meta-row">
+                        <div class="card-banner"></div>
+                        <div class="card-body">
+                            <span class="card-tag">{{ session.course.BusinessArea }}</span>
+                            <h3 class="card-title">{{ session.Title }}</h3>
+                            <p class="card-description">{{ session.Description }}</p>
+                            <div class="card-meta">
+                                <div class="meta-row">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                    <span>{{ training.Date }} &bull; {{ training.Time }}</span>
+                                    <span>{{ session.Date.strftime('%B %d, %Y') }} &bull; {{ session.Time.strftime('%I:%M %p') }}</span>
                                 </div>
-                                <div class="training-card-meta-row">
+                                <div class="meta-row">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                    {% if training.DeliveryType == 'online' %}
-                                        <span>Virtual</span>
-                                    {% else %}
-                                        <span>{{ training.Location }}</span>
-                                    {% endif %}
-                                    <span class="training-card-delivery-badge {{ training.DeliveryType }}">{{ training.DeliveryType }}</span>
+                                    <span>
+                                        {% if session.DeliveryType == 'Online' %}
+                                            <span>Virtual</span>
+                                        {% else %}
+                                            <span>{{ session.Location }}</span>
+                                        {% endif %}
+                                    </span>
+                                    <span class="card-delivery-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">
+                                        {{ session.DeliveryType }}
+                                    </span>
                                 </div>
-                                <div class="training-card-meta-row">
+                                <div class="meta-row">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                    <span>{{ training.SpacesBooked }} / {{ training.Capacity }} spaces available</span>
+                                    <span>{{ session.Capacity }} spaces booked</span>
                                 </div>
                             </div>
-                            <a href="/training/{{ training.SessionId }}" class="training-card-btn">View Details</a>
+
+                            <a href="/training/{{ session.SessionId }}" class="card-btn caveat-btn">
+                                View Details
+                            </a>
                         </div>
                     </div>
-                    {% else %}
-                        <p class="no-results">No results found...</p>
-                    {% endfor %} -->
+
+            
+            
+                <!-- <div class="training-card">
+                    <div class="card-banner"></div>
+                    <div class="card-body">
+                        <span class="card-tag">{{ session.BusinessArea }}</span>
+                        <h3 class="card-title">{{ session.CourseName }}</h3>
+                        <p class="card-description">{{ session.Description }}</p>
+
+                        <div class="card-meta">
+
+                            <div class="meta-row">
+                                <span>{{ session.Date }} • {{ session.Time }}</span>
+                            </div>
+
+                            <div class="meta-row">
+                                {% if session.DeliveryType == 'Online' %}
+                                    <span>Virtual</span>
+                                {% else %}
+                                    <span>{{ session.Location }}</span>
+                                {% endif %}
+                                <span class="card-delivery-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">
+                                    {{ session.DeliveryType }}
+                                </span>
+                            </div>
+
+                            <div class="meta-row">
+                                <span>{{ session.Capacity }} spaces booked</span>
+                            </div>
+
+                        </div>
+
+                        <a href="/training/{{ session.SessionId }}" class="card-btn caveat-btn">
+                            View Details
+                        </a>
+                    </div>
+                </div> -->
+
+            {% else %}
+            <p class="no-results">No results found...</p>
+            {% endfor %}
 
             </div>
-
         </div>
-
     </div>
     
 {% endblock %}

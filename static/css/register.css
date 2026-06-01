@@ -91,6 +91,42 @@ form {
     border-color: var(--navy-blue);
 }
 
+.phone-group {
+    display: flex;
+    align-items: center;
+    border: 2px solid transparent;
+    background: #f9f9f9;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.phone-group:focus-within {
+    background: #fff;
+    border-color: var(--navy-blue);
+}
+
+.phone-group select{
+    border: none;
+    width: 100px;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    font-family: inherit;
+    padding: 1rem 0.5rem 1rem 1rem;
+    cursor: pointer;
+    border-right: 1px solid #ddd;
+}
+
+.phone-group input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 1rem;
+}
+
+.phone-group input:focus {
+    outline: none;
+}
+
 .terms-checkbox {
     display: flex;
     align-items: flex-start;
