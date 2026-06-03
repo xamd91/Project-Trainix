@@ -13,6 +13,25 @@
     </div>
 </div>
 
+<div class="stats-container">
+    <div class="stat-card pending">
+        <h2>1</h2><br>
+        <p>pending requests</p>
+    </div>
+    <div class="stat-card approved">
+        <h2>0</h2><br>
+        <p>Approved This Month</p>
+    </div>
+    <div class="stat-card team">
+        <h2>8</h2><br>
+        <p>Team Members</p>
+    </div>
+    <div class="stat-card attendance">
+        <h2>92%</h2><br>
+        <p>Attendance Rate</p>
+    </div>
+</div>
+
 <div>
     <div class="dashboard-content">
         <div class="dashboard-section">
@@ -21,23 +40,37 @@
             <div class="grid-header">
                 <div>Employee</div>
                 <div>Training Session</div>
-                <div>Date & Time</di
+                <div>Date & Time</div>
+                <div>Date Requested</div>
+                <div>Actions</div>
             </div>
-
-            <div class="requests-list">
-                {% for booking in bookings %}
-                    <div class="request-card">
-                        <h3>{{ booking.FirstName+LastName }}</h3>
-                        <p><strong>Course:</strong> {{ booking.CourseName }}</p>
-                        <p><strong>Date:</strong> {{ booking.BookingDate }}</p>
-                    </div>
-                {% else %}
-                    <p>No pending requests at the moment.</p>
-                {% endfor %}
-            </div>
+            
+            <div class="grid-item">
+                <div class="column">
+                    <strong> Lotanna </strong>
+                    <span class="sub-text">HR business partner</span>
+                </div>
+                <div class="column">
+                    <strong> Computing </strong>
+                    <span class="sub-text">Online</span>
+                </div>
+                <div class="column">
+                    <strong> Friday 5th June </strong>
+                    <span class="sub-text">10:00 AM - 12:00 PM</span>
+                </div>
+                <div class="column">
+                    <strong> 1st June 2026 </strong>
+                </div>
+                <div class="actions">
+                    <form method="POST">
+                        <button type="submit" class="approve-button">Approve</button>
+                        <button type="submit" class="reject-button">Reject</button>
+                    </form>
+                </div>
+            </div>  
         </div>
-
-        <!-- Additional sections for approved/rejected requests can be added here -->
     </div>
 </div>
-{% endblock %
+{% endblock %}
+
+{% block extra_js %} <script src="../static/js/manager_dashboard.js"></script> {% endblock %}

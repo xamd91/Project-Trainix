@@ -14,7 +14,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
     app.config["SECRET_KEY"] = os.getenv('SECRET_KEY', 'lmrsecret')
 
-    db.init_app(app)
+    db.init_app(app) 
     migrate.init_app(app, db)
 
     from routes import register_routes

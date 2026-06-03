@@ -51,7 +51,7 @@ def page():
         if Users.query.filter_by(Email=email).first():
             return jsonify({
                 "status": "error",
-                "message": "Email already registered."
+                "message": "Email already exists."
             }), 400
 
         if not phone.isdigit():
@@ -73,10 +73,10 @@ def page():
                 "message": "Phone number already registered."
             }), 400
 
-        if len(password) < 6:
+        if len(password) < 8:
             return jsonify({
                 "status": "error",
-                "message": "Password must be at least 6 characters."
+                "message": "Password must be at least 8 characters."
             }), 400
 
         if not any(ch.isupper() for ch in password):
@@ -129,7 +129,6 @@ def page():
                  "message": f"Account for {created_user.FirstName} created successfully!"
             }), 201
         else:
-
             return jsonify({
                 "status": "error",
                 "message": "Something went wrong while creating the account."

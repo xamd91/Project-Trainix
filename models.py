@@ -12,7 +12,7 @@ class Users(db.Model):
     Password = db.Column(db.String(255), nullable=False)
     JobTitle = db.Column(db.String(100), nullable=True)
     BusinessArea = db.Column(db.String(100), nullable=True)
-    Role = db.Column(Enum("Learner", "Manager", "Trainer", "Admin", name="user_roles"), nullable=True)
+    Role = db.Column(Enum("Learner", "Manager", "Trainer", "Admin", name="user_role"), nullable=True)
     ManagerId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=True)
 
 class TrainingSessions(db.Model):
@@ -25,10 +25,12 @@ class TrainingSessions(db.Model):
     Time = db.Column(db.Time, nullable=False)
     Location = db.Column(db.String(200), nullable=False)
     Description = db.Column(db.Text, nullable=True)
+    Prerequisites = db.Column(db.Text, nullable=True)
     Capacity = db.Column(db.Integer, nullable=False)
     DeliveryType = db.Column(Enum("Face-to-Face", "Online", name="delivery_type"), nullable=False)
+    trainer = db.relationship("Users", foreign_keys=[TrainerId])
     course = db.relationship('TrainingCourses', back_populates='sessions')
-
+    
 class TrainingCourses(db.Model):
     __tablename__ = "training_courses"
     CourseId = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -41,7 +43,7 @@ class Bookings(db.Model):
     __tablename__ = "bookings"
     BookingId = db.Column(db.Integer, primary_key=True, nullable=False)
     UserId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=False)
-    SessionId = db.Column(db.Integer, db.ForeignKey('training_sessions.sessionId'), nullable=False)
+    SessionId = db.Column(db.Integer, db.ForeignKey('training_sessions.SessionId'), nullable=False)
     BookingDate = db.Column(db.DateTime, nullable=False)
     Status = db.Column(Enum("Pending Approval", "Approved", "Rejected", "Cancelled", name="status"), nullable=False)
     ManagerApproval = db.Column(Enum("Yes", "No", name="manager_approval"), nullable=False)
@@ -50,6 +52,6 @@ class Bookings(db.Model):
 class Attendance(db.Model):
     __tablename__ = "attendance"
     AttendanceId = db.Column(db.Integer, primary_key=True, nullable=False)
-    BookingId = db.Column(db.Integer, db.ForeignKey('bookings.bookingId'), nullable=False)
-    AttendanceStatus = db.Column(Enum("Attended", "Absent", name="attendance_status"), nullable=False)
+    BookingId = db.Column(db.Integer, db.ForeignKey('bookings.BookingId'), nullable=False)
+    AttendanceStatus = db.Column(Enum("Attended", "Absent", name="attendance_mark"), nullable=False)
     Comments = db.Column(db.Text, nullable=True)

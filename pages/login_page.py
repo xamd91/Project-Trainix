@@ -45,7 +45,7 @@ def page():
                 return jsonify({
                     "status": "success",
                     "message": f"Welcome back {user.FirstName}.",
-                    "role": 'customer'
+                    "role": 'learner'
                 }), 201
 
             elif user.Role == "Trainer":

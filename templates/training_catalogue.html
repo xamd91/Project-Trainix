@@ -34,7 +34,7 @@
             <div class="filter-container">
 
                 <div class="filter-section">
-
+    
                     <p class="filter-section-title">Date range</p>
                     <div class="filter-item"><input type="checkbox" class="date-filter" id="date-week"><label for="date-week">This week</label></div>
                     <div class="filter-item"><input type="checkbox" class="date-filter" id="date-month"><label for="date-month">This month</label></div>
@@ -72,44 +72,56 @@
             <p class="results-meta" id="results-meta">Showing {{ session_count }} sessions</p>
 
             <div class="training-grid" id="training-grid">
-                
-                {% for session in session_list %}
 
-                    <div class="training-card">
-                        <div class="card-banner"></div>
-                        <div class="card-body">
-                            <span class="card-tag">{{ session.course.BusinessArea }}</span>
-                            <h3 class="card-title">{{ session.Title }}</h3>
-                            <p class="card-description">{{ session.Description }}</p>
-                            <div class="card-meta">
-                                <div class="meta-row">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                    <span>{{ session.Date.strftime('%B %d, %Y') }} &bull; {{ session.Time.strftime('%I:%M %p') }}</span>
-                                </div>
-                                <div class="meta-row">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                    <span>
-                                        {% if session.DeliveryType == 'Online' %}
-                                            <span>Virtual</span>
-                                        {% else %}
-                                            <span>{{ session.Location }}</span>
-                                        {% endif %}
-                                    </span>
-                                    <span class="card-delivery-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">
-                                        {{ session.DeliveryType }}
-                                    </span>
-                                </div>
-                                <div class="meta-row">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                    <span>{{ session.Capacity }} spaces booked</span>
-                                </div>
-                            </div>
+                {% if session_list %}
+                    {% for session in session_list %}
+                        <div class="training-card-wrapper" data-delivery="{{ session.DeliveryType }}" data-department="{{ session.BusinessArea }}">
+                            <article class="training-card">
+                                <div class="card-banner"></div>
+                                <div class="card-body">
+                                    <span class="card-tag">{{ session.course.BusinessArea }}</span>
+                                    <h3 class="card-title">{{ session.Title }}</h3>
+                                    <p class="card-description">{{ session.Description }}</p>
+                                    <div class="card-meta">
+                                        <div class="meta-row">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                            <span>{{ session.Date.strftime('%B %d, %Y') }} &bull; {{ session.Time.strftime('%I:%M %p') }}</span>
+                                        </div>
+                                        <div class="meta-row">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            <span>
+                                                {% if session.DeliveryType == 'Online' %}
+                                                    <span>Virtual</span>
+                                                {% else %}
+                                                    <span>{{ session.Location }}</span>
+                                                {% endif %}
+                                            </span>
+                                            <span class="card-delivery-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">
+                                                {{ session.DeliveryType }}
+                                            </span>
+                                        </div>
+                                        <div class="meta-row">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                            <span>{{ session.Capacity }} spaces booked</span>
+                                        </div>
+                                    </div>
 
-                            <a href="/training/{{ session.SessionId }}" class="card-btn caveat-btn">
-                                View Details
-                            </a>
+                                    <a href="/training_details/{{ session.SessionId }}" class="card-btn caveat-btn">
+                                        View Details
+                                    </a>
+                                </div>
+                            </article>
                         </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if session_list %}
+                    <div class="pagination">
+                        <button id="prev-page" class="pagination-btn">Prev</button>
+                        <span id="page-info" class="pagination-info">Page 1</span>
+                        <button id="next-page" class="pagination-btn">Next</button>
                     </div>
+                {% endif %}
 
             
             
@@ -149,9 +161,9 @@
                     </div>
                 </div> -->
 
-            {% else %}
-            <p class="no-results">No results found...</p>
-            {% endfor %}
+                {% if not session_list %}
+                    <p class="no-results">No results found...</p>
+                {% endif %}
 
             </div>
         </div>

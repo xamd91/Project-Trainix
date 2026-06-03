@@ -2,6 +2,47 @@
 
 {% block title %} Trainix | Account {% endblock %}
 
+{% block extra_css %} <link rel="stylesheet" href="../static/css/account.css"> {% endblock %}
+
 {% block content %}
+
+
+<div class="account-header">
+    <div class="account-profile-img">
+
+    </div>
+    <div class="account-info">
+        <h2>{{ user.FirstName }}, {{user.LastName}} </h2>
+        <p>{{ user.Email }}</p>
+        <p>{{ user.BusinessArea }}</p>
+    </div>
+</div>
+
+<div class="account-menu">
+    <a href="{{ url_for('account', tab='bookings') }}" class="account-menu-switch {% if tab == 'bookings' %}active{% endif %}">My Bookings</a>
+    <a href="{{ url_for('account', tab='history') }}" class="account-menu-switch {% if tab == 'history' %}active{% endif %}">Training History</a>
+    <a href="{{ url_for('account', tab='settings') }}" class="account-menu-switch {% if tab == 'settings' %}active{% endif %}">Settings</a>
+</div>
+
+{% if tab == 'bookings' %}
+    <h2>Upcoming Bookings</h2>
+    {% for booking in bookings %}
+    <div class="booking-card">
+        <h3>{{ booking.CourseName }}</h3>
+        <p>{{ booking.Date }}</p>
+        <p>{{ booking.Location }}</p>
+    </div>
+    {% endfor %}
+
+{% elif tab == 'history' %}
+    <h2>Training History</h2>
+
+{% elif tab == 'settings' %}
+    <h2>Account Settings</h2>
+    <a>Account details</a>
+    <a>Accessibility</a>
+    <a>Notifications</a>
+    <a>Privacy</a>
+{% endif %}
 
 {% endblock %}

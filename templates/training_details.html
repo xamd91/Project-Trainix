@@ -11,10 +11,10 @@
             <p class="hero-breadcrumb">
                 <a href="/">Home</a> / 
                 <a href="/training_catalogue">Training Catalogue</a> / 
-                Advanced React Patterns
+                {{ training_session.Title }}
             </p>
-            <h1>Advanced React Patterns</h1>
-            <p class="hero-subtitle">Technology</p>
+            <h1>{{ training_session.Title }}</h1>
+            <p class="hero-subtitle">{{ training_session.course.BusinessArea }}</p>
         </div>
     </section>
 
@@ -22,9 +22,9 @@
 
         <!-- tag + title + description -->
         <div class="details-intro">
-            <span class="details-tag">Technology</span>
-            <h2 class="details-title">Advanced React Patterns</h2>
-            <p class="details-description">Master advanced React concepts including hooks, context, render props, and compound components. Build scalable, maintainable applications using industry best practices.</p>
+            <span class="details-tag">{{ training_session.course.BusinessArea }}</span>
+            <h2 class="details-title">{{ training_session.Title }}</h2>
+            <p class="details-description">{{ training_session.Description }}</p>
         </div>
 
         <!-- session details card -->
@@ -38,8 +38,8 @@
                     </div>
                     <div>
                         <p class="details-item-label">Date &amp; Time</p>
-                        <p class="details-item-value">10 June 2026</p>
-                        <p class="details-item-sub">2:00 PM &ndash; 4:00 PM</p>
+                        <p class="details-item-value">{{ training_session.Date.strftime ('%A, %B %d, %Y') }}</p>
+                        <p class="details-item-sub">{{ training_session.Time.strftime('%I:%M %p') }} &ndash; ???</p>
                     </div>
                 </div>
 
@@ -49,8 +49,13 @@
                     </div>
                     <div>
                         <p class="details-item-label">Location</p>
-                        <p class="details-item-value">Virtual (Zoom)</p>
-                        <p class="details-item-sub link-on-register">Link sent upon registration</p>
+                        {% if training_session.DeliveryType == "Online" %}
+                            <p class="details-item-value">{{ training_session.DeliveryType }}</p>
+                            <p class="details-item-sub link-on-register">Link sent upon registration</p>
+                        {% else %}
+                            <p class="details-item-value">{{ training_session.Location }}</p>
+                            <!-- <p class="details-item-sub link-on-register">This session will be delivered at the following location.</p> -->
+                        {% endif %}
                     </div>
                 </div>
 
@@ -60,8 +65,8 @@
                     </div>
                     <div>
                         <p class="details-item-label">Trainer</p>
-                        <p class="details-item-value">Sarah Johnson</p>
-                        <p class="details-item-sub">Senior React Developer</p>
+                        <p class="details-item-value">{{ training_session.trainer.FirstName }} {{ training_session.trainer.LastName }}</p>
+                        <p class="details-item-sub">{{ training_session.trainer.JobTitle }}</p>
                     </div>
                 </div>
 
@@ -71,7 +76,7 @@
                     </div>
                     <div>
                         <p class="details-item-label">Availability</p>
-                        <p class="details-item-value">8 / 20 spaces left</p>
+                        <p class="details-item-value">??? / {{ training_session.Capacity }} spaces left</p>
                         <p class="details-item-sub availability-open">Registration open</p>
                     </div>
                 </div>
@@ -80,7 +85,7 @@
         </div>
 
         <!-- what you'll learn -->
-        <div class="details-section">
+        <!-- <div class="details-section">
             <h3 class="details-section-heading">What You'll Learn</h3>
             <ul class="learn-list">
                 <li class="learn-item">
@@ -114,20 +119,29 @@
                     Compound component and render prop patterns
                 </li>
             </ul>
-        </div>
+        </div> -->
 
         <!-- prerequisites -->
         <div class="details-section">
             <h3 class="details-section-heading">Prerequisites</h3>
-            <p class="details-body-text">Basic knowledge of React, JavaScript ES6+, and functional programming concepts. Familiarity with HTML and CSS is assumed.</p>
-        </div>
+            {% if training_session.Prerequisites %}
+                <p class="details-body-text">{{ training_session.Prerequisites }}</p>
+            {% else %}
+                <p class="details-body-text">No prior knowledge or experience required.</p>
+            </div>
+            {% endif %}
 
         <!-- delivery -->
         <div class="details-section">
             <h3 class="details-section-heading">Delivery</h3>
             <div class="delivery-badge-row">
-                <span class="card-delivery-badge online">Online</span>
-                <p class="details-body-text">This session is delivered entirely online via Zoom. A joining link will be emailed to you upon successful registration. Sessions are interactive with live Q&amp;A throughout.</p>
+                {% if training_session.DeliveryType == 'Online' %}
+                    <span class="card-delivery-badge online">Online</span>
+                    <p class="details-body-text">This session is delivered entirely online via Zoom. A joining link will be emailed to you upon successful registration. Sessions are interactive with live Q&amp;A throughout.</p>
+                {% else %}
+                    <span class="card-delivery-badge f2f">Face-to-Face</span>
+                    <p class="details-body-text">This session is delivered in person at <span>{{ training_session.Location }}</span>. Full venue details and instructions will be emailed to you upon successful registration. Sessions are interactive, with opportunities for live Q&amp;A throughout.</p>
+                {% endif %}
             </div>
         </div>
 
@@ -146,7 +160,7 @@
 
             <div class="modal-header">
                 <h2 class="modal-title">Book This Session</h2>
-                <p class="modal-subtitle">Advanced React Patterns &bull; 10 June 2026 &bull; 2:00 PM</p>
+                <p class="modal-subtitle">{{ training_session.Title }} &bull; {{ training_session.Date.strftime('%B %d, %Y') }} &bull; {{ training_session.Time.strftime('%I:%M %p') }}</p>
             </div>
 
             <form class="booking-form">
@@ -157,22 +171,29 @@
                         <input class="booking-input" type="text" id="full-name" 
                         name="full_name"
                         placeholder="John Doe"
-                        >
+                        value="{{ user.FirstName }}">
                     </div>
                     <div class="booking-form-group">
                         <label class="booking-label" for="email">Email</label>
-                        <input class="booking-input" type="email" id="email" placeholder="john.doe@company.com">
+                        <input class="booking-input" type="email" id="email" 
+                        name="email"
+                        placeholder="john.doe@company.com"
+                        value="{{ user.Email if user else ''}}">
                     </div>
                 </div>
 
                 <div class="booking-form-row">
                     <div class="booking-form-group">
                         <label class="booking-label" for="department">Department</label>
-                        <input class="booking-input" type="text" id="department" placeholder="e.g. Engineering">
+                        <input class="booking-input" type="text" id="department" 
+                        name="department"
+                        placeholder="e.g. Engineering"
+                        value="{{ user.BusinessArea if user else ''}}">
                     </div>
                     <div class="booking-form-group">
                         <label class="booking-label" for="manager-email">Manager Email</label>
-                        <input class="booking-input" type="email" id="manager-email" placeholder="manager@company.com">
+                        <input class="booking-input" type="email" id="manager-email" 
+                        placeholder="manager@company.com" value="{{ manager.Email }}">
                     </div>
                 </div>
 

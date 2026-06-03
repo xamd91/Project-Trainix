@@ -48,7 +48,7 @@ if (loginForm) {
                 if (data.role === 'learner') window.location.href = '/account';
                 else if (data.role === 'trainer') window.location.href = '/attendance_management';
                 else if (data.role === 'manager') window.location.href = '/manager_dashboard';
-                else window.location.href = '/admin_dashboard';
+                else if (data.role === 'admin') window.location.href = '/admin_dashboard';
             };
         }
 

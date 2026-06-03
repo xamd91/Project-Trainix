@@ -1,12 +1,14 @@
 import os
 from flask import session, render_template, request, redirect, url_for, jsonify
+from models import Users
 from app import db
 
 def register_routes(app, db):
 
     @app.route('/account')
     def account():
-        return render_template('account.html')
+        from pages.account import page
+        return page()
 
     @app.route('/admin_dashboard')
     def admin_dashboard():
@@ -32,7 +34,8 @@ def register_routes(app, db):
     
     @app.route('/manager_dashboard')
     def manager_dashboard():
-        return render_template('manager_dashboard.html')
+        from pages.manager_dashboard import page
+        return page()
 
     @app.route('/reports')
     def reports():
@@ -48,9 +51,10 @@ def register_routes(app, db):
         from pages.catalogue_page import page
         return page()
 
-    @app.route('/training_details')
-    def training_details():
-        return render_template('training_details.html')    
+    @app.route('/training_details/<int:session_id>')
+    def training_details(session_id):
+        from pages.training_details_page import page
+        return page(session_id)   
     
     @app.route('/information_and_support')
     def information_and_support():

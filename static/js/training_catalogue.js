@@ -69,10 +69,48 @@ document.querySelector('.clear-filters-button').addEventListener('click', () => 
 
 // filter logic - idk what i'm doing but it will work eventually (maybe...)
 
-const filtertate = {
+const filterState = {
     search: '',
     date: 'all',
     delivery: 'all',
-    department: 'all'
+    department: 'all',
+    page: 1,
+    perPage: 9
 };
 
+const cards = document.querySelectorAll('.training-card');
+const wrappers = document.querySelectorAll('.training-card-wrapper');
+
+wrappers.forEach((wrapper, i) => {
+
+    const delay = 300 + Math.min(i * 80, 400);
+
+    const inner = wrapper.querySelector('.training-card');
+    inner.style.transition = 'none';
+    inner.style.opacity = '0';
+    inner.style.transform = 'translateY(10px)';
+
+    setTimeout(() => {
+        inner.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        inner.style.opacity = '1';
+        inner.style.transform = 'translateY(0)';
+    }, delay);
+});
+
+function applyPagination(fltered) {
+
+    const start = (filterState.page - 1 ) * filterState.perPage;
+    const end = start + filterState.perPage;
+
+    wrappers.forEach(wrapper => {
+        const card = wrapper.querySelector('.training-card');
+        const isInFilteredList = filtered.includes(wrapper);
+
+        if (!isInFilteredList) wrapper.classList.add('is-hidden');
+        card.style.opacity = '';
+        card.style.transform = '';
+    });
+
+    
+
+}

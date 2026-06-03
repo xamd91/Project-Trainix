@@ -201,6 +201,11 @@ color: #444;
 line-height: 1.75;
 }
 
+.details-body-text span {
+    color: var(--pacific-blue);
+    font-weight: 500;
+}
+
 /* what you'll learn  */
 .learn-list {
 list-style: none;
@@ -255,8 +260,8 @@ color: var(--pacific-blue);
 border: 1px solid rgba(0, 176, 194, 0.3);
 }
 
-.card-delivery-badge.in-person {
-background: rgba(249, 157, 32, 0.12);
+.card-delivery-badge.f2f {
+background: rgba(253, 163, 36, 0.12);
 color: var(--amber-glow);
 border: 1px solid rgba(249, 157, 32, 0.3);
 }
@@ -323,7 +328,7 @@ border: 1px solid rgba(0, 24, 66, 0.2);
     background: #fff;
     width: 100%;
     max-width: 580px;
-    max-height: 90vh;
+    max-height: 95vh;
     overflow-y: auto;
     padding: 2.4rem 2.6rem;
     position: relative;

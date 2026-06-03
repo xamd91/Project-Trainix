@@ -273,10 +273,7 @@ body {
 .catalogue-body {
     flex: 1;
     min-width: 0;
-    /* text-align: center;
-    height: 500px;
-    overflow-y: auto;
-    min-height: 0; */
+    /* text-align: center; */
 }
 
 .results-meta {

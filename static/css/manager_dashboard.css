@@ -48,3 +48,137 @@
   line-height: 1.7;
   letter-spacing: 0.5px;
 }
+
+.grid-header, .grid-item {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1.5fr;
+  gap: 15px;
+  padding: 12px;
+  align-items: center;
+}
+
+.grid-header {
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+  background-color: #f4f4f4;
+}
+
+.grid-row {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+    transition: 0.2s ease;
+}
+
+.grid-row:hover {
+    background: #f9fafb;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.stat-card {
+    padding: 25px;
+    border-radius: 14px;
+    background: #f9fafb;
+    border: 2px solid;
+    transition: 0.2s ease;
+    align-items: center;
+}
+
+.stat-card h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.stat-card.pending {
+    background: #f5efe1;
+    border-color: #f4c542;
+    color: #b45309;
+}
+
+.stat-card.approved {
+    background: #e6f4ea;
+    border-color: #34d399;
+    color: #065f46;
+}
+
+.stat-card.team {
+    background: #e8eefc;
+    border-color: #60a5fa;
+    color: #1d4ed8;
+}
+
+.stat-card.attendance {
+    background: #f3e8ff;
+    border-color: #c084fc;
+    color: #6b21a8;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.column strong {
+    font-size: 1rem;
+    color: #111827;
+}
+
+.sub-text {
+    display: block;
+    font-size: 0.85rem;
+    color: #777;
+    margin-top: 4px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.approve-button {
+    background-color: white;
+    border: 1px solid #4CAF50;
+    color: #4CAF50;
+}
+
+.approve-button:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.reject-button {
+    background-color: white;
+    border: 1px solid #e53935;
+    color: #e53935;
+}
+
+.reject-button:hover {
+    background-color: #e53935;
+    color: white;
+}
