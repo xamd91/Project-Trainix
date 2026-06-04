@@ -15,34 +15,76 @@
         <h2>{{ user.FirstName }}, {{user.LastName}} </h2>
         <p>{{ user.Email }}</p>
         <p>{{ user.BusinessArea }}</p>
+        <p>{{ user.JobTitle }}</p>
     </div>
 </div>
 
 <div class="account-menu">
     <a href="{{ url_for('account', tab='bookings') }}" class="account-menu-switch {% if tab == 'bookings' %}active{% endif %}">My Bookings</a>
     <a href="{{ url_for('account', tab='history') }}" class="account-menu-switch {% if tab == 'history' %}active{% endif %}">Training History</a>
+    <a href="{{ url_for('account', tab='notifications') }}" class="account-menu-switch {% if tab == 'notifications' %}active{% endif %}">Notifications</a>
     <a href="{{ url_for('account', tab='settings') }}" class="account-menu-switch {% if tab == 'settings' %}active{% endif %}">Settings</a>
 </div>
 
 {% if tab == 'bookings' %}
-    <h2>Upcoming Bookings</h2>
+    <div class="section-title">
+        <h2>Upcoming Bookings</h2>
+        <span class="booking-count">{{ bookings|length }} active</span>
+    </div>
     {% for booking in bookings %}
-    <div class="booking-card">
-        <h3>{{ booking.CourseName }}</h3>
-        <p>{{ booking.Date }}</p>
-        <p>{{ booking.Location }}</p>
+    <div class="booking-card {% if booking.Status == 'Pending Approval' %}pending{% endif %}">
+        <div class="booking-card-header">
+            <h3>{{ booking.session.Title }}</h3>
+            <span class="booking-status 
+                {% if booking.Status == 'Approved' %}approved 
+                {% elif booking.Status == 'Pending Approval' %}pending
+                {% elif booking.Status == 'Declined' %}declined
+                {% endif %}">
+                {{ booking.Status }}
+            </span>
+        </div>
+
+        <p>{{ booking.session.Date }} &bull; {{ booking.session.Time }}</p>
+        <p>{{ booking.session.Location }} &bull; Trainer: {{ booking.session.trainer.FirstName }} {{ booking.session.trainer.LastName }}</p>
+
+        {% if booking.Status == 'Approved' %}
+        <div class="booking-actions">
+            <a href="#" class="btn cancel">Cancel Booking</a>
+            <a href="#" class="btn ">Add to calendar</a>
+        </div>
+
+        {% elif booking.Status == 'pending' %}
+        <p class="pending-note">
+            Waiting for manager approval. Request sent to {{ manager.Email }}.</p>
+        {% endif %}
     </div>
     {% endfor %}
 
 {% elif tab == 'history' %}
-    <h2>Training History</h2>
+    <h2 class="section-title">Training History</h2>
+
+{% elif tab == 'notifications' %}
+    <h2>Notifications</h2>
 
 {% elif tab == 'settings' %}
-    <h2>Account Settings</h2>
-    <a>Account details</a>
-    <a>Accessibility</a>
-    <a>Notifications</a>
-    <a>Privacy</a>
+    <h2 class="section-title">Account Settings</h2>
+    <div class="accessibility-settings">
+        <h4>Accessibility Settings</h4>
+        <a>
+            <input type="checkbox" name="high_contrast" {% if user.HighContrast %}checked{% endif %}>
+            High Contrast Mode
+        </a>
+        <a>
+            <input type="checkbox" name="text_size" {% if user.TextSizeLarge %}checked{% endif %}>
+            Large Text Size
+        </a>
+
+    </div>
+    <div class="privacy-settings">
+        <h4>Privacy Settings</h4> 
+
+    </div>
+
 {% endif %}
 
 {% endblock %}

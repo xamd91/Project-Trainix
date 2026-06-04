@@ -26,10 +26,8 @@
 
                 {% if session.user_id %}
                     <div class="nav-divider"></div>
-
-                    {% if session.role == "learner" %}
                         <a href="/account">Account</a>
-                    {% elif session.role == "manager" %}
+                    {% if session.role == "manager" %}
                         <a href="/manager_dashboard">Manager Dashboard</a>
                     {% elif session.role == "trainer" %}
                         <a href="/attendance_management">Attendance Management</a>

@@ -48,6 +48,7 @@ class Bookings(db.Model):
     Status = db.Column(Enum("Pending Approval", "Approved", "Rejected", "Cancelled", name="status"), nullable=False)
     ManagerApproval = db.Column(Enum("Yes", "No", name="manager_approval"), nullable=False)
     Notes = db.Column(db.Text, nullable=True)
+    session = db.relationship('TrainingSessions', foreign_keys=[SessionId])
 
 class Attendance(db.Model):
     __tablename__ = "attendance"

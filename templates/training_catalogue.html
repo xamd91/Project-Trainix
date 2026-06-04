@@ -36,7 +36,7 @@
                 <div class="filter-section">
     
                     <p class="filter-section-title">Date range</p>
-                    <div class="filter-item"><input type="checkbox" class="date-filter" id="date-week"><label for="date-week">This week</label></div>
+                    <div class="filter-item"><input type="checkbox" class="date-filter" id="date-week"><label for="date-week" checked>This week</label></div>
                     <div class="filter-item"><input type="checkbox" class="date-filter" id="date-month"><label for="date-month">This month</label></div>
                     <div class="filter-item"><input type="checkbox" class="date-filter" id="date-custom"><label for="date-custom">Custom</label></div>
                     <div class="date-range-custom" id="date-range-custom">
@@ -48,16 +48,21 @@
 
                 <div class="filter-section">
                     <p class="filter-section-title">Delivery</p>
-                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-virtual"><label for="delivery-virtual">Virtual</label></div>
-                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-face"><label for="delivey-face">Face-to-Face</label></div>
-                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-hybrid"><label for="delivery-hybrid">Hybrid</label></div>
+                    <!-- <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-virtual"><label for="delivery-virtual">Virtual</label></div>
+                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-face"><label for="delivery-face">Face-to-Face</label></div>
+                    <div class="filter-item"><input type="checkbox" class="delivery-filter" id="delivery-hybrid"><label for="delivery-hybrid">Hybrid</label></div> -->
+                    <div class="filter-item"><input type="radio" name="delivery" class="delivery-filter" data-delivery="all" id="delivery-all" checked><label for="delivery-all">All</label></div>
+                    <div class="filter-item"><input type="radio" name="delivery" class="delivery-filter" data-delivery="Online" id="delivery-online"><label for="delivery-online">Online</label></div>
+                    <div class="filter-item"><input type="radio" name="delivery" class="delivery-filter" data-delivery="Face-to-Face" id="delivery-face"><label for="delivery-face">Face-to-Face</label></div>
+                    <div class="filter-item"><input type="radio" name="delivery" class="delivery-filter" data-delivery="Hybrid" id="delivery-hybrid"><label for="delivery-hybrid">Hybrid</label></div>
                 </div>
 
                 <div class="filter-section">
-                    <p class="filter-section-title">Business area</p>
-                    <div class="filter-item"><input type="checkbox" class="area-filter" id="area-tech"><label for="area-tech">Technology</label></div>
-                    <div class="filter-item"><input type="checkbox" class="area-filter" id="area-sales"><label for="area-sales">Sales</label></div>
-                    <div class="filter-item"><input type="checkbox" class="area-filter" id="area-marketing"><label for="area-marketing">Marketing</label></div>
+                    <p class="filter-section-title">Department</p>
+                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="all" id="department-all" checked><label for="department-all">All</label></div>
+                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Technology" id="department-tech"><label for="department-tech">Technology</label></div>
+                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Sales" id="department-sales"><label for="department-sales">Sales</label></div>
+                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Marketing" id="department-marketing"><label for="department-marketing">Marketing</label></div>
                     <!-- gonna have to do jinja stuff for departments bruhhh -->
                 </div>
 
@@ -69,13 +74,13 @@
 
         <div class="catalogue-body">
 
-            <p class="results-meta" id="results-meta">Showing {{ session_count }} sessions</p>
+            <p class="results-meta">Showing <span id="training-count">{{ session_count }}</span> sessions</p>
 
             <div class="training-grid" id="training-grid">
 
                 {% if session_list %}
                     {% for session in session_list %}
-                        <div class="training-card-wrapper" data-delivery="{{ session.DeliveryType }}" data-department="{{ session.BusinessArea }}">
+                        <div class="training-card-wrapper" data-date="{{ session.Date }}" data-delivery="{{ session.DeliveryType }}" data-department="{{ session.BusinessArea }}">
                             <article class="training-card">
                                 <div class="card-banner"></div>
                                 <div class="card-body">
@@ -113,14 +118,6 @@
                             </article>
                         </div>
                     {% endfor %}
-                {% endif %}
-
-                {% if session_list %}
-                    <div class="pagination">
-                        <button id="prev-page" class="pagination-btn">Prev</button>
-                        <span id="page-info" class="pagination-info">Page 1</span>
-                        <button id="next-page" class="pagination-btn">Next</button>
-                    </div>
                 {% endif %}
 
             
@@ -166,6 +163,15 @@
                 {% endif %}
 
             </div>
+
+            {% if session_list %}
+                <div class="pagination">
+                    <button id="prev-page" class="pagination-btn caveat-btn">Prev</button>
+                    <span id="page-info" class="pagination-info">Page 1</span>
+                    <button id="next-page" class="pagination-btn caveat-btn">Next</button>
+                </div>
+            {% endif %}
+
         </div>
     </div>
     

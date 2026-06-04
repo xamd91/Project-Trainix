@@ -15,7 +15,7 @@
 
 <div class="stats-container">
     <div class="stat-card pending">
-        <h2>1</h2><br>
+        <h2>{{ bookings|length }}</h2><br>
         <p>pending requests</p>
     </div>
     <div class="stat-card approved">
@@ -36,7 +36,6 @@
     <div class="dashboard-content">
         <div class="dashboard-section">
             <h2>Pending Training Requests</h2>
-
             <div class="grid-header">
                 <div>Employee</div>
                 <div>Training Session</div>
@@ -44,22 +43,22 @@
                 <div>Date Requested</div>
                 <div>Actions</div>
             </div>
-            
+            {% for booking in bookings %}
             <div class="grid-item">
                 <div class="column">
-                    <strong> Lotanna </strong>
-                    <span class="sub-text">HR business partner</span>
+                    <strong> { booking.session.FirstName } { booking.session.LastName } </strong>
+                    <span class="sub-text">{ booking.session.JobTitle }</span>
                 </div>
                 <div class="column">
-                    <strong> Computing </strong>
-                    <span class="sub-text">Online</span>
+                    <strong> { booking.session.CourseName } </strong>
+                    <span class="sub-text">{ booking.session.DeliveryType }</span>
                 </div>
                 <div class="column">
-                    <strong> Friday 5th June </strong>
-                    <span class="sub-text">10:00 AM - 12:00 PM</span>
+                    <strong> { booking.session.Date.strftime('%D %B %Y') }> </strong>
+                    <span class="sub-text">{ booking.session.Time.strftime('%I:%M %p') }</span>
                 </div>
                 <div class="column">
-                    <strong> 1st June 2026 </strong>
+                    <strong> { booking.BookingDate } </strong>
                 </div>
                 <div class="actions">
                     <form method="POST">
@@ -67,7 +66,8 @@
                         <button type="submit" class="reject-button">Reject</button>
                     </form>
                 </div>
-            </div>  
+            </div>
+            {% endfor %}  
         </div>
     </div>
 </div>

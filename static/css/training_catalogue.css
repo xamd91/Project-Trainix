@@ -290,6 +290,8 @@ body {
 }
 
 .training-card {
+    min-height: 450px;
+    max-height: 450px;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -297,14 +299,70 @@ body {
     border: 1px solid #e5e7eb;
     background: #ffffff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     text-align: left;
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease;
 }
 
-.training-card:hover {
+/* .training-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+} */
+
+.filter-empty-state {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: center;
+
+    opacity: 0;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
+.empty-state {
+    width: 100%;
+    max-width: 600px;
+
+    text-align: center;
+    padding: 5rem 2rem;
+
+    margin: 2rem auto;
+}
+
+.empty-state-icon {
+    font-size: 2.5rem;
+    color: var(--amber-glow);
+    opacity: 0.8;
+    margin-bottom: 1.25rem;
+}
+
+.empty-state-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--navy-blue);
+}
+
+.empty-state-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+}
+
+.training-card-wrapper {
+    display: contents;
+}
+
+.training-card-wrapper.is-hidden {
+    display: none;
+}
+
 
 .card-banner {
     height: 130px;
@@ -349,9 +407,15 @@ body {
     font-size: 1rem;
     color: var(--navy-blue);
     margin: 0;
-    line-height: 1.35;
+    line-height: 1.7;
     margin-bottom: 10px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
+
 
 .card-description {
     font-size: 0.85rem;
@@ -359,6 +423,11 @@ body {
     line-height: 1.6;
     flex: 1;
     margin-bottom: 16px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-meta {
@@ -430,6 +499,46 @@ body {
     text-align: center;
 }
 
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 60px 0 0;
+    padding-top: 40px;
+}
+
+.pagination-btn {
+    padding: 0.85rem 1.5rem;
+    border: 1px solid var(--navy-blue);
+    background: transparent;
+    color: var(--navy-blue);
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--navy-blue);
+    color: #fff;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    min-width: 100px;
+    text-align: center;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 500;
+}
 
 @media (max-width: 768px) {
 
