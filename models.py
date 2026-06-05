@@ -11,9 +11,11 @@ class Users(db.Model):
     Email = db.Column(db.String(100), nullable=False, unique=True)
     Password = db.Column(db.String(255), nullable=False)
     JobTitle = db.Column(db.String(100), nullable=True)
-    BusinessArea = db.Column(db.String(100), nullable=True)
-    Role = db.Column(Enum("Learner", "Manager", "Trainer", "Admin", name="user_role"), nullable=True)
+    DepartmentId = db.Column(db.Integer, db.ForeignKey('departments.DepartmentId'), nullable=True)
     ManagerId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=True)
+    Role = db.Column(Enum("Learner", "Manager", "Trainer", "Admin", name="user_role"), nullable=True)
+    department = db.relationship('Departments', foreign_keys=[DepartmentId], back_populates='users')
+    manager = db.relationship('Users', remote_side=[UserId], backref='subordinates')
 
 class TrainingSessions(db.Model):
     __tablename__ = "training_sessions"
@@ -28,6 +30,7 @@ class TrainingSessions(db.Model):
     Prerequisites = db.Column(db.Text, nullable=True)
     Capacity = db.Column(db.Integer, nullable=False)
     DeliveryType = db.Column(Enum("Face-to-Face", "Online", name="delivery_type"), nullable=False)
+    Booked = db.Column(db.Integer, nullable=True, default=0)
     trainer = db.relationship("Users", foreign_keys=[TrainerId])
     course = db.relationship('TrainingCourses', back_populates='sessions')
     
@@ -36,8 +39,9 @@ class TrainingCourses(db.Model):
     CourseId = db.Column(db.Integer, primary_key=True, nullable=False)
     CourseName = db.Column(db.String(200), nullable=False)
     Description = db.Column(db.Text, nullable=True)
-    BusinessArea = db.Column(db.String(100), nullable=False)
+    DepartmentId = db.Column(db.Integer, db.ForeignKey('departments.DepartmentId'), nullable=True)
     sessions = db.relationship('TrainingSessions', back_populates='course')
+    department = db.relationship('Departments', back_populates='courses')
 
 class Bookings(db.Model):
     __tablename__ = "bookings"
@@ -49,6 +53,7 @@ class Bookings(db.Model):
     ManagerApproval = db.Column(Enum("Yes", "No", name="manager_approval"), nullable=False)
     Notes = db.Column(db.Text, nullable=True)
     session = db.relationship('TrainingSessions', foreign_keys=[SessionId])
+    user = db.relationship('Users', foreign_keys=[UserId])
 
 class Attendance(db.Model):
     __tablename__ = "attendance"
@@ -56,3 +61,12 @@ class Attendance(db.Model):
     BookingId = db.Column(db.Integer, db.ForeignKey('bookings.BookingId'), nullable=False)
     AttendanceStatus = db.Column(Enum("Attended", "Absent", name="attendance_mark"), nullable=False)
     Comments = db.Column(db.Text, nullable=True)
+
+class Departments(db.Model):
+    __tablename__ = "departments"
+    DepartmentId = db.Column(db.Integer, primary_key=True, nullable=False)
+    DepartmentName = db.Column(db.String(100), nullable=False)
+    ManagerId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=True)
+    users = db.relationship('Users', foreign_keys='Users.DepartmentId', back_populates='department')
+    manager = db.relationship('Users', foreign_keys=[ManagerId])
+    courses = db.relationship('TrainingCourses', back_populates='department')

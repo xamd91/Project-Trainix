@@ -14,21 +14,40 @@
 </div>
 
 <div class="stats-container">
-    <div class="stat-card pending">
-        <h2>{{ bookings|length }}</h2><br>
-        <p>pending requests</p>
-    </div>
-    <div class="stat-card approved">
-        <h2>0</h2><br>
-        <p>Approved This Month</p>
-    </div>
-    <div class="stat-card team">
-        <h2>8</h2><br>
-        <p>Team Members</p>
-    </div>
-    <div class="stat-card attendance">
-        <h2>92%</h2><br>
-        <p>Attendance Rate</p>
+    <div class="stats-grid">
+
+        <div class="stat-card pending">
+            <div class="stat-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F99D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-number">{{ bookings | length }}</div>
+            <div class="stat-label">Pending requests</div>
+        </div>
+
+        <div class="stat-card approved">
+            <div class="stat-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B0C2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="stat-number">11</div>
+            <div class="stat-label">Approved this month</div>
+        </div>
+
+        <div class="stat-card team">
+            <div class="stat-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#001842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="stat-number">8</div>
+            <div class="stat-label">Team members</div>
+        </div>
+
+        <div class="stat-card attendance">
+            <div class="stat-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="stat-number">92%</div>
+            <div class="stat-label">Attendance rate</div>
+        </div>
+
     </div>
 </div>
 
@@ -46,24 +65,25 @@
             {% for booking in bookings %}
             <div class="grid-item">
                 <div class="column">
-                    <strong> { booking.session.FirstName } { booking.session.LastName } </strong>
-                    <span class="sub-text">{ booking.session.JobTitle }</span>
+                    <strong> {{ booking.user.FirstName }} {{ booking.user.LastName }} </strong>
+                    <span class="sub-text">{{ booking.user.JobTitle }}</span>
                 </div>
                 <div class="column">
-                    <strong> { booking.session.CourseName } </strong>
-                    <span class="sub-text">{ booking.session.DeliveryType }</span>
+                    <strong> {{ booking.session.course.CourseName }} </strong>
+                    <span class="sub-text">{{ booking.session.DeliveryType }}</span>
                 </div>
                 <div class="column">
-                    <strong> { booking.session.Date.strftime('%D %B %Y') }> </strong>
-                    <span class="sub-text">{ booking.session.Time.strftime('%I:%M %p') }</span>
+                    <strong> {{ booking.session.Date.strftime('%d %B %Y') }}> </strong>
+                    <span class="sub-text">{{ booking.session.Time.strftime('%I:%M %p') }}</span>
                 </div>
                 <div class="column">
-                    <strong> { booking.BookingDate } </strong>
+                    <strong> {{ booking.BookingDate }} </strong>
                 </div>
                 <div class="actions">
-                    <form method="POST">
-                        <button type="submit" class="approve-button">Approve</button>
-                        <button type="submit" class="reject-button">Reject</button>
+                    <form method="POST" action="{{url_for('manager_dashboard')}}">
+                        <input type="hidden" name="booking_id" value="{{ booking.BookingId }}">
+                        <button type="submit" value="approve" class="approve-button">Approve</button>
+                        <button type="submit" value="reject" class="reject-button">Reject</button>
                     </form>
                 </div>
             </div>

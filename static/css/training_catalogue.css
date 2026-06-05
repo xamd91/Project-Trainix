@@ -421,11 +421,11 @@ body {
     font-size: 0.85rem;
     color: #6b7280;
     line-height: 1.6;
-    flex: 1;
+    /* flex: 1; */
     margin-bottom: 16px;
 
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -443,6 +443,11 @@ body {
     gap: 8px;
     font-size: 0.8rem;
     color: #4b5563;
+}
+
+.meta-row span.fully-booked {
+    color: #d94040;
+    font-weight: 500;
 }
 
 .meta-row svg {

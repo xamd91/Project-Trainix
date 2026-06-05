@@ -5,7 +5,7 @@ from app import db
 
 def register_routes(app, db):
 
-    @app.route('/account')
+    @app.route('/account', methods=['GET','POST'])
     def account():
         from pages.account import page
         return page()
@@ -32,7 +32,7 @@ def register_routes(app, db):
         session.clear()
         return redirect(url_for('login'))
     
-    @app.route('/manager_dashboard')
+    @app.route('/manager_dashboard', methods=['GET','POST'])
     def manager_dashboard():
         from pages.manager_dashboard import page
         return page()
@@ -54,7 +54,13 @@ def register_routes(app, db):
     @app.route('/training_details/<int:session_id>')
     def training_details(session_id):
         from pages.training_details_page import page
-        return page(session_id)   
+        return page(session_id) 
+
+    @app.route('/book_session/<int:session_id>', methods=["POST"])
+    def book_session_route(session_id):
+        from pages.book_session_page import book_session
+        return book_session(session_id)
+
     
     @app.route('/information_and_support')
     def information_and_support():

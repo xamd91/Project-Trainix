@@ -60,9 +60,13 @@
                 <div class="filter-section">
                     <p class="filter-section-title">Department</p>
                     <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="all" id="department-all" checked><label for="department-all">All</label></div>
-                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Technology" id="department-tech"><label for="department-tech">Technology</label></div>
-                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Sales" id="department-sales"><label for="department-sales">Sales</label></div>
-                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Marketing" id="department-marketing"><label for="department-marketing">Marketing</label></div>
+                    {% for department in departments %}
+                        <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="{{ department.DepartmentName }}" id="department-{{ department.DepartmentName }}"><label for="department-{{ department.DepartmentName }}">{{ department.DepartmentName }}</label></div>
+                    {% endfor %}
+                    
+                    
+                    <!-- <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Sales" id="department-sales"><label for="department-sales">Sales</label></div>
+                    <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="Marketing" id="department-marketing"><label for="department-marketing">Marketing</label></div> -->
                     <!-- gonna have to do jinja stuff for departments bruhhh -->
                 </div>
 
@@ -80,11 +84,11 @@
 
                 {% if session_list %}
                     {% for session in session_list %}
-                        <div class="training-card-wrapper" data-date="{{ session.Date }}" data-delivery="{{ session.DeliveryType }}" data-department="{{ session.BusinessArea }}">
+                        <div class="training-card-wrapper" data-date="{{ session.Date }}" data-delivery="{{ session.DeliveryType }}" data-department="{{ session.course.department.DepartmentName }}">
                             <article class="training-card">
                                 <div class="card-banner"></div>
                                 <div class="card-body">
-                                    <span class="card-tag">{{ session.course.BusinessArea }}</span>
+                                    <span class="card-tag">{{ session.course.department.DepartmentName }}</span>
                                     <h3 class="card-title">{{ session.Title }}</h3>
                                     <p class="card-description">{{ session.Description }}</p>
                                     <div class="card-meta">
@@ -107,7 +111,11 @@
                                         </div>
                                         <div class="meta-row">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                            <span>{{ session.Capacity }} spaces booked</span>
+                                            {% if session.remaining_slots == 0 %}
+                                                <span class="fully-booked">Fully Booked</span>
+                                            {% else %}
+                                                <span>{{ session.remaining_slots }} spaces remaining</span>
+                                            {% endif %}
                                         </div>
                                     </div>
 

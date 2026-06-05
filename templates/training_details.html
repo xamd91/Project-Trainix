@@ -14,7 +14,7 @@
                 {{ training_session.Title }}
             </p>
             <h1>{{ training_session.Title }}</h1>
-            <p class="hero-subtitle">{{ training_session.course.BusinessArea }}</p>
+            <p class="hero-subtitle">{{ training_session.course.department.DepartmentName }}</p>
         </div>
     </section>
 
@@ -22,7 +22,7 @@
 
         <!-- tag + title + description -->
         <div class="details-intro">
-            <span class="details-tag">{{ training_session.course.BusinessArea }}</span>
+            <span class="details-tag">{{ training_session.course.department.DepartmentName }}</span>
             <h2 class="details-title">{{ training_session.Title }}</h2>
             <p class="details-description">{{ training_session.Description }}</p>
         </div>
@@ -76,8 +76,12 @@
                     </div>
                     <div>
                         <p class="details-item-label">Availability</p>
-                        <p class="details-item-value">??? / {{ training_session.Capacity }} spaces left</p>
-                        <p class="details-item-sub availability-open">Registration open</p>
+                        <p class="details-item-value">{{ remaining_slots }} / {{ training_session.Capacity }} spaces left</p>
+                        {% if remaining_slots > 0 %}
+                            <p class="details-item-sub availability-open">Registration open</p>
+                        {% else %}
+                            <p class="details-item-sub availability-full">Session full.</p>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -144,10 +148,12 @@
                 {% endif %}
             </div>
         </div>
-
+        
         <!-- book button -->
         <div class="book-btn-wrap">
-            <button class="book-trigger-btn caveat-btn" id="open-modal">Book This Session</button>
+            <button class="book-trigger-btn caveat-btn" id="open-modal" {% if session_full or already_booked %}disabled{% endif %}> 
+                {% if already_booked %} Booked {% else %} Book This Session {% endif %}
+            </button>
         </div>
 
     </div>
@@ -163,7 +169,7 @@
                 <p class="modal-subtitle">{{ training_session.Title }} &bull; {{ training_session.Date.strftime('%B %d, %Y') }} &bull; {{ training_session.Time.strftime('%I:%M %p') }}</p>
             </div>
 
-            <form class="booking-form">
+            <form class="booking-form" action="/book_session/{{ training_session.SessionId }}" method="POST">
 
                 <div class="booking-form-row">
                     <div class="booking-form-group">
@@ -188,18 +194,18 @@
                         <input class="booking-input" type="text" id="department" 
                         name="department"
                         placeholder="e.g. Engineering"
-                        value="{{ user.BusinessArea if user else ''}}">
+                        value="{{ user.department.DepartmentName if user else ''}}">
                     </div>
                     <div class="booking-form-group">
                         <label class="booking-label" for="manager-email">Manager Email</label>
                         <input class="booking-input" type="email" id="manager-email" 
-                        placeholder="manager@company.com" value="{{ manager.Email }}">
+                        placeholder="manager@company.com" value="{{ user.manager.Email if user else '' }}">
                     </div>
                 </div>
 
                 <div class="booking-form-group">
                     <label class="booking-label" for="notes">Additional Notes <span class="booking-optional">(Optional)</span></label>
-                    <textarea class="booking-input booking-textarea" id="notes" placeholder="Any special requirements or questions..."></textarea>
+                    <textarea class="booking-input booking-textarea" id="notes" name="notes" placeholder="Any special requirements or questions..."></textarea>
                 </div>
 
                 <p class="booking-approval-note">
