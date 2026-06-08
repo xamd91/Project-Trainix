@@ -1,4 +1,4 @@
-{%extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %} Trainix | Account {% endblock %}
 
@@ -6,82 +6,152 @@
 
 {% block content %}
 
-<!-- profile header banner -->
+    <!-- profile header banner -->
     <div class="account-header">
         <div class="account-header-inner">
-            <div class="account-profile-img">
-                <img src="{{ user.FirstName[0] }}{{ user.LastName[0]}}" alt="Profile Image">
-            </div>
+           <div class="account-profile-img">
+            {{ user.FirstName[0] }}{{ user.LastName[0] }}
+           </div>
             <div class="account-info">
-                <h2 class="account-name">{{ user.FirstName }}, {{user.LastName}} </h2>
+                <h2 class="account-name">{{ user.FirstName }} {{user.LastName}} </h2>
                 <p class="account-email">{{ user.Email }}</p>
                 <p class="account-meta">{{ user.department.DepartmentName }} &bull; {{ user.JobTitle }}</p>
             </div>
         </div>
     </div>
 
-    <div class="account-menu">
-        <a href="{{ url_for('account', tab='bookings') }}" class="account-menu-switch {% if tab == 'bookings' %}active{% endif %}">My Bookings</a>
-        <a href="{{ url_for('account', tab='history') }}" class="account-menu-switch {% if tab == 'history' %}active{% endif %}">Training History</a>
-        <a href="{{ url_for('account', tab='notifications') }}" class="account-menu-switch {% if tab == 'notifications' %}active{% endif %}">Notifications</a>
-        <a href="{{ url_for('account', tab='settings') }}" class="account-menu-switch {% if tab == 'settings' %}active{% endif %}">Settings</a>
+    <div class="account-menu-wrap">
+        <div class="account-menu">
+            <a href="{{ url_for('account', tab='bookings') }}" class="account-menu-switch {% if tab == 'bookings' %}active{% endif %}">My Bookings</a>
+            <a href="{{ url_for('account', tab='history') }}" class="account-menu-switch {% if tab == 'history' %}active{% endif %}">Training History</a>
+            <a href="{{ url_for('account', tab='notifications') }}" class="account-menu-switch {% if tab == 'notifications' %}active{% endif %}">Notifications</a>
+            <a href="{{ url_for('account', tab='settings') }}" class="account-menu-switch {% if tab == 'settings' %}active{% endif %}">Settings</a>
+        </div>
     </div>
 
-    {% if tab == 'bookings' %}
-        <div class="section-title">
-            <h2>Upcoming Bookings</h2>
-            <span class="booking-count">{{ bookings|length }} active</span>
-        </div>
-        {% for booking in bookings %}
-        <div class="booking-card {% if booking.Status == 'Pending Approval' %}pending{% endif %}">
-            <div class="booking-card-header">
-                <h3>{{ booking.session.Title }}</h3>
-                <span class="booking-status">
-                    {{ booking.Status }}
-                </span>
+    <div class="account-body">
+
+        {% if tab == 'bookings' %}
+            <div class="section-title">
+                <h2>Upcoming Bookings</h2>
+                <span class="booking-count">{{ upcoming_bookings|length }} active</span>
             </div>
+            {% for booking in upcoming_bookings %}
+                <div class="booking-card {% if booking.Status == 'Pending Approval' %}pending{% endif %}">
+                    <div class="booking-card-header">
+                        <h3>{{ booking.session.Title }}</h3>
+                        <span class="booking-status 
+                            {% if booking.Status == 'Approved' %}approved 
+                            {% elif booking.Status == 'Pending Approval' %}pending
+                            {% elif booking.Status == 'Declined' %}declined
+                            {% endif %}">
+                            {{ booking.Status }}
+                        </span>
+                    </div>
 
-            <p>{{ booking.session.Date }} &bull; {{ booking.session.Time }}</p>
-            <p>{{ booking.session.Location }} &bull; Trainer: {{ booking.session.trainer.FirstName }} {{ booking.session.trainer.LastName }}</p>
+                    <p>{{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }}</p>
+                    <p>{{ booking.session.Location }} &bull; Trainer: {{ booking.session.trainer.FirstName }} {{ booking.session.trainer.LastName }}</p>
 
-            {% if booking.Status == 'Approved' %}
-            <div class="booking-actions">
-                <a href="#" class="btn cancel">Cancel Booking</a>
-                <a href="#" class="btn ">Add to calendar</a>
+                    {% if booking.Status == 'Approved' %}
+                    <div class="booking-actions">
+                        <a href="#" class="btn cancel">Cancel Booking</a>
+                        <a href="#" class="btn">Add to calendar</a>
+                    </div>
+
+                    {% elif booking.Status == 'Pending Approval' %}
+                    <p class="pending-note">
+                        Waiting for manager approval. Request sent to {{ manager.Email }}.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+        {% elif tab == 'history' %}
+            <h2 class="section-title">History</h2>
+                {% if booking_history %}
+                    {% for booking in booking_history %}
+                        <div class="booking-card">
+                            <div class="booking-card-header">
+                                <h3>{{ booking.session.Title }}</h3>
+                                <span class="booking-status {% if booking.attendance.AttendanceStatus == 'Attended' %}attended
+                                    {% elif booking.attendance.AttendanceStatus == 'Absent' %}absent
+                                    {% endif %}">
+                                    {{ booking.attendance.AttendanceStatus }}
+                                </span>
+                            </div>
+                            <p>{{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }}</p>
+                            <p>{{ booking.session.Location }} &bull; Trainer: {{ booking.session.trainer.FirstName }} {{ booking.session.trainer.LastName }}</p>
+                        </div>
+                    {% endfor %}  
+                {% else %}
+                    <h3 class="no-history">No sessions completed yet.</h3>
+                {% endif %}
+                
+
+        {% elif tab == 'notifications' %}
+            <h2>Notifications</h2>
+
+        {% elif tab == 'settings' %}
+    <h2 class="section-title">Account Settings</h2>
+
+    <div class="profile-settings">
+        <h4>Personal Information</h4>
+        <div class="profile-form">
+            <div class="profile-form-row">
+                <div class="profile-form-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" name="first_name" value="{{ user.FirstName }}" placeholder="Lebron">
+                </div>
+                <div class="profile-form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="last_name" value="{{ user.LastName }}" placeholder="James">
+                </div>
             </div>
-
-            {% elif booking.Status == 'pending' %}
-            <p class="pending-note">
-                Waiting for manager approval. Request sent to {{ manager.Email }}.</p>
-            {% endif %}
+            <div class="profile-form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ user.Email }}" placeholder="lebron.james@ball.com">
+            </div>
+            <div class="profile-form-group">
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" value="{{ user.department.DepartmentName if user.department else '' }}" placeholder="Codeweavers">
+            </div>
+            <div class="profile-form-group">
+                <label for="manager-email">Manager Email</label>
+                <input type="email" id="manager-email" name="manager_email" value="{{ user.manager.Email if user.manager else '' }}" placeholder="manager@company.com">
+            </div>
+            <div class="profile-form-actions">
+                <button class="btn-save caveat-btn">Save Changes</button>
+                <button class="btn-cancel-settings caveat-btn">Cancel</button>
+            </div>
         </div>
-        {% endfor %}
+    </div>
 
-    {% elif tab == 'history' %}
-        <h2 class="section-title">History</h2>
+    <div class="accessibility-settings">
+        <h4>Accessibility Settings</h4>
+        <label class="settings-row">
+            <input type="checkbox" name="high_contrast" {% if user.HighContrast %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+            <div class="settings-row-text">
+                <span>High Contrast Mode</span>
+                <small>Increases colour contrast for better readability</small>
+            </div>
+        </label>
+        <label class="settings-row">
+            <input type="checkbox" name="text_size" {% if user.TextSizeLarge %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+            <div class="settings-row-text">
+                <span>Large Text Size</span>
+                <small>Increases base font size across the platform</small>
+            </div>
+        </label>
+    </div>
 
-    {% elif tab == 'notifications' %}
-        <h2>Notifications</h2>
+    <div class="privacy-settings">
+        <h4>Privacy Settings</h4>
+        <p>Manage your data sharing preferences and account visibility.</p>
+    </div>
 
-    {% elif tab == 'settings' %}
-        <h2 class="section-title">Account Settings</h2>
-        <div class="accessibility-settings">
-            <h4>Accessibility Settings</h4>
-            <a>
-                <input type="checkbox" name="high_contrast" {% if user.HighContrast %}checked{% endif %}>
-                High Contrast Mode
-            </a>
-            <a>
-                <input type="checkbox" name="text_size" {% if user.TextSizeLarge %}checked{% endif %}>
-                Large Text Size
-            </a>
+        {% endif %}
 
-        </div>
-        <div class="privacy-settings">
-            <h4>Privacy Settings</h4> 
-
-        </div>
-
-    {% endif %}
+    </div>
 
 {% endblock %}

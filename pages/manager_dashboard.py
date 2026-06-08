@@ -5,22 +5,83 @@ from app import db
 def page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    user = Users.query.filter_by(UserId=session['user_id']).first()
-    sessions = TrainingSessions.query.all()
-    if request.method == 'POST':
-        booking_id = request.form.get('booking_id')
-        action = request.form.get('action')
-        booking = Bookings.query.get(booking_id)
+    
+    user_id = session.get('user_id')
+    
+    if session['role'] != "manager":
+        return redirect(url_for('login'))
+    
+    manager = Users.query.get(user_id)
 
-        if booking:
-            if action == 'approve':
-                booking.Status = 'Approved'
-                booking.ManagerApproval = "Yes"
-            elif action == 'reject':
-                booking.Status = 'Rejected'
-                booking.ManagerApproval = "No"
-            db.session.commit()
-        return redirect(url_for('account', tab='bookings'))
-    bookings = Bookings.query.join(Users, Bookings.UserId == Users.UserId).filter(Users.DepartmentId == user.DepartmentId).all()
-    return render_template('manager_dashboard.html', user=user, sessions=sessions, bookings=bookings)
+    department = manager.department 
+
+    department_users = department.users if department else []
+
+    team_members = manager.subordinates
+
+    pending_approvals = (
+        Bookings.query
+        .join(Bookings.user)
+        .join(Bookings.session)
+        .join(TrainingSessions.course)
+        .filter(
+            Users.ManagerId == manager.UserId,
+            Bookings.Status == "Pending Approval"
+        )
+        .all()
+    )
+
+
+    return render_template(
+        'manager_dashboard.html',
+        manager=manager,
+        department=department,
+        department_users=department_users,
+        team_members=team_members,
+        pending_approvals=pending_approvals
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # sessions = TrainingSessions.query.all()
+    # if request.method == 'POST':
+    #     booking_id = request.form.get('booking_id')
+    #     action = request.form.get('action')
+    #     booking = Bookings.query.get(booking_id)
+
+    #     if booking:
+    #         if action == 'approve':
+    #             booking.Status = 'Approved'
+    #             booking.ManagerApproval = "Yes"
+    #         elif action == 'reject':
+    #             booking.Status = 'Rejected'
+    #             booking.ManagerApproval = "No"
+    #         db.session.commit()
+            
+        
+
+    # booking_historys = Bookings.query.join(Users, Bookings.UserId == Users.UserId).filter(Users.DepartmentId == user.DepartmentId, Bookings.Status.in_(['Approved', 'Rejected', 'Cancelled'])).all()
+    # return render_template('manager_dashboard.html', user=user, sessions=sessions, booking_historys=booking_historys)
     
