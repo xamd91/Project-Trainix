@@ -10,8 +10,8 @@ const dateFilters = document.querySelectorAll(".date-filter");
 
 dateFilters.forEach(filter => {
     filter.addEventListener("change", (e) => {
+    
         if (e.target.checked) {
-            // uncheck all others
             dateFilters.forEach(other => {
                 if (other !== e.target) {
                     other.checked = false;
@@ -19,11 +19,32 @@ dateFilters.forEach(filter => {
             });
         }
 
-        // show/hide custom range only if "custom" is active
+        if (document.getElementById('date-week').checked) {
+            filterState.date = 'week';
+        } else if (document.getElementById('date-month').checked) {
+            filterState.date = 'month';
+        } else if (document.getElementById('date-custom').checked) {
+            filterState.date = 'custom';
+        } else {
+            filterState.date = 'all';
+        }
+
         dateInput.classList.toggle("visible", customBox.checked);
+        
+        filterState.page = 1;
+        filterTrainingCards();
     });
 });
 
+document.getElementById('custom-from').addEventListener("change", function () {
+    filterState.customFrom = this.value;
+    filterTrainingCards();
+});
+
+document.getElementById('custom-to').addEventListener("change", function () {
+    filterState.customTo = this.value;
+    filterTrainingCards();
+});
 
 // const deliveryFilters = document.querySelectorAll(".delivery-filter");
 
@@ -61,17 +82,12 @@ filtersButton.addEventListener("click", () => {
     filtersButton.classList.toggle("active", open);
 });
 
-document.querySelector('.clear-filters-button').addEventListener('click', () => {
-    document.querySelectorAll('.filter-panel input[type=checkbox]').forEach(cb => cb.checked = false);
-    dateInput.classList.remove('visible');
-});
-
-
-// filter logic - idk what i'm doing but it will work eventually (maybe...)
 
 const filterState = {
     search: '',
     date: 'all',
+    customFrom: '',
+    customTo: '',
     delivery: 'all',
     department: 'all',
     page: 1,
@@ -159,14 +175,34 @@ function getFilteredWrappers() {
     return Array.from(wrappers).filter(wrapper => {
 
         const title = wrapper.querySelector('.card-title').textContent.toLocaleLowerCase();
-        const date = wrapper.dataset.date;
+        const date = new Date(wrapper.dataset.date);
+        const today = new Date();
         const delivery = wrapper.dataset.delivery;
         const department = wrapper.dataset.department;
         const matchesSearch = filterState.search === '' || title.includes(filterState.search);
-        // const matchesDate 
+        
+        today.setHours(0, 0, 0, 0);
+
+        let matchesDate = true; 
+
+        if (filterState.date === "week") {
+            const endOfWeek = new Date(today);
+            endOfWeek.setDate(today.getDate() + 7);
+
+            matchesDate = date >= today && date <= endOfWeek;
+        } else if (filterState.date === "month") {
+            matchesDate = date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+        } else if (filterState.date === "cutsom") {
+            const from = filterState.customFrom ? new Date(filterState.customFrom) : null;
+            const to = filterState.customTo ? new Date(filterState.customTo) : null;
+
+            if (from && date < from) matchesDate = false;
+            if (to && date > to) matchesDate = false;
+        }
+
         const matchesDelivery = filterState.delivery === 'all' || delivery === filterState.delivery;
         const matchesDepartment = filterState.department === 'all' || department === filterState.department;
-        const shouldShow = matchesSearch && matchesDelivery && matchesDepartment;
+        const shouldShow = matchesSearch && matchesDate && matchesDelivery && matchesDepartment;
         return shouldShow;
 
     });
@@ -298,6 +334,37 @@ trainingCards.forEach(card => {
         const title = this.querySelector('.card-title').textContent;
         console.log('Clicked session:', title);
     });
+});
+
+
+document.querySelector('.clear-filters-button').addEventListener('click', () => {
+    // document.querySelectorAll('.filter-panel input[type=radio]').forEach(cb => cb.checked = false);
+    // dateInput.classList.remove('visible');
+    filterState.search = '';
+    filterState.date = 'all';
+    filterState.delivery = 'all';
+    filterState.department = 'all';
+    filterState.page = 1;
+
+    if (searchInput) {
+        searchInput.value = '';
+    }
+
+    document.querySelector('.delivery-filter[data-delivery="all"]').checked = true;
+    document.querySelector('.department-filter[data-department="all"]').checked = true;
+
+    dateInput.classList.remove('visible');
+
+    document.querySelectorAll(".date-filter").forEach(cb => cb.checked = false);
+
+    document.getElementById("custom-from").value = "";
+    document.getElementById("custom-to").value = "";
+
+    filterState.customFrom = "";
+    filterState.customTo = "";
+
+    filterTrainingCards();
+
 });
 
 const allWrappers = Array.from(wrappers)

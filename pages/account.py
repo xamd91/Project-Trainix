@@ -23,7 +23,7 @@ def page():
     
     manager = Users.query.filter_by(DepartmentId=user.DepartmentId, Role='Manager').first()
     upcoming_bookings = Bookings.query.outerjoin(Bookings.attendance).filter(Bookings.UserId == session['user_id'], Bookings.Status.in_(['Pending Approval', 'Approved' ])).all()
-    booking_history = Bookings.query.join(Bookings.attendance).filter(Bookings.UserId == session['user_id'], Attendance.AttendanceStatus.in_(['Attended', 'Absent'])).all()
+    booking_history = Bookings.query.join(Bookings.attendance).filter(Bookings.UserId == session['user_id'], Attendance.AttendanceStatus.in_(['Attended', 'Absent']), Bookings.Status == 'Completed').all()
     
     
     

@@ -210,6 +210,13 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 16px;
 }
 
+.footer-navigation {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: space-between;
+}
+
 .footer-links {
   display: flex;
   flex-direction: column;

@@ -74,3 +74,30 @@ document.querySelectorAll('.action-btn').forEach(button => {
         );
     });
 });
+
+document.getElementById('history-chips').addEventListener('click', e => {
+    const chip = e.target.closest('.chip'); 
+    
+    if(!chip) return;
+    
+    document.querySelectorAll('#history-chips .chip').forEach( c => c
+        .classList.remove('active')
+    );
+
+    chip.classList.add('active');
+    filterHistory();
+});
+
+document.getElementById('history-search').addEventListener('input', filterHistory);
+
+function filterHistory() {
+    const filter = document.querySelector('#history-chips .chip.active').dataset.filter;
+    const search = document.getElementById('history-search').value.toLowerCase();
+
+    document.querySelectorAll('#history-body tr').forEach(row=>{
+        const matchStatus = filter === 'all'|| row.dataset.status === filter;
+        const matchSearch = !search || row.textContent.toLowerCase().includes(search);
+
+        row.style.display = matchStatus && matchSearch ? '' : 'none';
+    });
+}

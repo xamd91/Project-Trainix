@@ -2,6 +2,127 @@
 
 {% block title %} Trainix | Attendance Management {% endblock %}
 
+{% block extra_css %} <link rel="stylesheet" href="../static/css/attendance_management.css"> {% endblock %}
+
 {% block content %}
+
+<div class="page-hero no-select">
+    <div class="page-hero-content">
+        <p class="hero-breadcrumb"><a href="/">Home</a>/ Attendance management</p>
+        <h1>Welcome {{ user.FirstName }}</h1>
+        <p>Mark attendances throughout your sessions.</p>
+    </div>
+</div>
+
+<!-- stat cards here potentially? -->
+
+<div class="dashboard-container">
+
+    <section class="dashboard-section">
+
+        <div class="section-header">
+            <div class="section-title-group">
+                <span class="section-eyebrow">Action Required</span>
+                <h2 class="section-title">
+                    Upcoming Sessions
+                    <span class="session-count" id="session-badge">{{ upcoming_sessions | length }}</span>
+                </h2>
+            </div>
+        </div>
+
+        <div class="session-list" id="upcoming-list">
+            <article class="session-card" id="session-card-1" data-delivery="online">
+                <div class="session-card-bar"></div>
+                <div class="session-card-header">
+                    <div class="session-header-content">
+                        <div class="session-date-block">
+                            <span class="session-day">09</span>
+                            <span class="session-month">JUN</span>
+                        </div>
+                        <div class="session-info">
+                            <div class="session-name">McDonald's Basics</div>
+                            <div class="session-meta-row">
+                                <span class="session-meta-item">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    12:00 am
+                                </span>
+                                <span class="session-meta-item">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    Bradford
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="session-badges">
+                        <span class="badge face-to-face">Face-to-Face</span>
+                    </div>
+
+                    <div class="attendee-summary">
+                        <span class="attendee-fraction" id="fraction-1">
+                            5 / 20
+                        </span>
+                        <span class="attendee-label">Marked</span>
+
+                    </div>
+
+                    <div class="chevron-wrap">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+
+                <div class="attendee-panel" id="panel-1">
+
+                    <form method="POST" action="" id="form-1">
+
+                        <input type="hidden" name="session_id" value="1">
+
+                        <div class="panel-tools">
+                            <span class="panel-label">Attendees</span>
+                            <button type="button" class="mark-all-btn">Mark all attended</button>
+                        </div>
+
+                        <div class="attendee-list" id="list-1">
+                            <div class="attendee-row" data-user="2">
+
+                                <input type="hidden" name="attendance_1" id="input-1-2" value="">
+
+                                <div class="attendee-left">
+                                    <div class="avatar">BA</div>
+                                    <div class="attendee-details">
+                                        <div class="attendee-name">Babatunde</div>
+                                        <div class="attendee-role">Cashier</div>
+                                        <div class="attendee-notes">
+                                            <span class="notes-label">Booking notes</span>
+                                            Help me...
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="attendance-controls">
+                                    <button type="button" class="attendance-btn attended">Attended</button>
+                                    <button type="button" class="attendance-btn absent">Absent</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            <button type="submit" class="save-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                Save attendance
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </article>
+        </div>
+
+    </section>
+
+</div>
 
 {% endblock %}

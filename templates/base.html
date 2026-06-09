@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
     <title>{% block title %} Trainix {% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/base.css">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -62,23 +62,26 @@
                 <p class="footer-tagline">Book training sessions, manage attendance, and grow your skills. Find useful links here.</p>
             </div>
 
-            <div class="footer-column">
-                <h4 class="footer-heading">Navigation</h4>
-                <div class="footer-links">
-                    <a href="/">Home</a>
-                    <a href="/training_catalogue">Training Catalogue</a>
-                    <a href="/information_and_support">Information</a>
+            <div class="footer-navigation">
+                <div class="footer-column">
+                    <h4 class="footer-heading">Navigation</h4>
+                    <div class="footer-links">
+                        <a href="/">Home</a>
+                        <a href="/training_catalogue">Training Catalogue</a>
+                        <a href="/information_and_support">Information</a>
+                    </div>
                 </div>
-            </div>
             
-            <div class="footer-column">
-                <h4 class="footer-heading">Support</h4>
-                <div class="footer-links">
-                    <a href="/information_and_support">Info & Support</a>
-                    <a href="/information_and_support">FAQS</a>
-                    <a href="/information_and_support">Contact Us</a>
+                <div class="footer-column">
+                    <h4 class="footer-heading">Support</h4>
+                    <div class="footer-links">
+                        <a href="/information_and_support">Info & Support</a>
+                        <a href="/information_and_support">FAQS</a>
+                        <a href="/information_and_support">Contact Us</a>
+                    </div>
                 </div>
             </div>
+
         
         </div>
         <div class="footer-bottom">
@@ -86,32 +89,7 @@
         </div>
     </footer>
 
-    <script>
-        window.addEventListener('scroll', () => {
-          document.querySelector('.site-header').classList.toggle('shrink', window.scrollY > 50);
-        });
-
-        const toggle = document.querySelector('.menu-toggle');
-        const nav = document.querySelector('.nav-links');
-        toggle.addEventListener('click', () => {
-          nav.classList.toggle('active');
-          toggle.textContent = nav.classList.contains('active') ? '✕' : '☰';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-                nav.classList.remove('active');
-                toggle.textContent = '☰';
-            }
-        });
-
-        nav.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                nav.classList.remove('active');
-                toggle.textContent = '☰';
-            });
-        });
-    </script>
+    <script src="static/js/base.js"></script>
 
 </body>
 

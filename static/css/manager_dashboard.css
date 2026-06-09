@@ -452,6 +452,7 @@
   padding: 10px 15px 10px 35px;
   border: 1px solid #e5e7eb;
   font-size: 0.8rem;
+  font-family: inherit;
   outline: none;
   width: 180px;
   transition: border-color 0.2s ease;

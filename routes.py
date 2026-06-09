@@ -10,13 +10,14 @@ def register_routes(app, db):
         from pages.account import page
         return page()
 
-    @app.route('/admin_dashboard')
+    @app.route('/admin_dashboard', methods=['GET','POST'])
     def admin_dashboard():
         return render_template('admin_dashboard.html')
 
-    @app.route('/attendance_management')
+    @app.route('/attendance_management', methods=['GET','POST'])
     def attendance_management():
-        return render_template('attendance_management.html')
+        from pages.attendance_management import page
+        return page()
 
     @app.route('/')
     def home():
@@ -37,7 +38,7 @@ def register_routes(app, db):
         from pages.manager_dashboard import page
         return page()
 
-    @app.route('/reports')
+    @app.route('/reports', methods=['GET','POST'])
     def reports():
         return render_template('reports.html')
 

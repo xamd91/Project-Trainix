@@ -29,8 +29,8 @@
             <div class="stat-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00B0C2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <div class="stat-number">-</div>
-            <div class="stat-label">Approved this month</div>
+            <div class="stat-number">{{ approved }}</div>
+            <div class="stat-label">Approved so far</div>
         </div>
 
         <div class="stat-card team">
@@ -172,7 +172,7 @@
                     </tr>
                 </thead>
                 <tbody id="history-body">
-                    {% for booking in booking_history %}
+                    {% for booking in past_approvals %}
                         <tr data-status="{{ booking.Status | lower }}">
                             <td>
                                 <div class="employee-cell">
@@ -191,7 +191,7 @@
                             </td>
                             <td><div class="cell-primary">{{ booking.session.course.CourseName }}</div></td>
                             <td><span class="badge {{ booking.session.DeliveryType | lower | replace(' ', '-') }}">{{ booking.session.DeliveryType }}</span></td>
-                            <td><div class="cell-primary">-</div></td>
+                            <td><div class="cell-primary">{{ booking.DecidedOn.strftime('%d %b %Y') }}</div></td>
                             <td><span class="badge {{ booking.Status | lower }}">{{ booking.Status }}</span></td>
                             <td>
                                 <button class="btn-edit" title="Edit decision" aria-label="Edit decision for {{ booking.user.FirstName }}">

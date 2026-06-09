@@ -56,6 +56,7 @@ class Bookings(db.Model):
     Status = db.Column(Enum("Pending Approval", "Approved", "Rejected", "Cancelled", name="status"), nullable=False)
     ManagerApproval = db.Column(Enum("Yes", "No", name="manager_approval"), nullable=False)
     Notes = db.Column(db.Text, nullable=True)
+    DecidedOn = db.Column(db.DateTime, nullable=True)
     session = db.relationship('TrainingSessions', foreign_keys=[SessionId], back_populates='bookings')
     user = db.relationship('Users', foreign_keys=[UserId], back_populates='bookings')
     attendance = db.relationship('Attendance', back_populates='booking', uselist=False)
