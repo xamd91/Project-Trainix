@@ -1,5 +1,5 @@
 from flask import render_template, session, redirect, url_for, request
-from models import Users, TrainingSessions, Bookings, Departments
+from models import Users, TrainingSessions, Bookings, Attendance
 from sqlalchemy import or_
 from datetime import datetime
 from app import db
@@ -20,6 +20,7 @@ def page():
     department_users = department.users if department else []
 
     team_members = manager.subordinates
+
 
     pending_approvals = (
         Bookings.query
@@ -64,6 +65,19 @@ def page():
                 booking.Status = 'Approved'
                 booking.ManagerApproval = "Yes"
                 booking.DecidedOn = datetime.utcnow()
+                booking.session.Booked += 1
+        
+                if not booking.attendance:
+
+                    attendance = Attendance(
+                        BookingId=booking.BookingId,
+                        UserId=booking.UserId,
+                        AttendanceStatus="N/A"
+                    )
+                    db.session.add(attendance)
+
+# training_session.Booked += 1
+
             elif action == 'reject':
                 booking.Status = 'Rejected'
                 booking.ManagerApproval = "No"

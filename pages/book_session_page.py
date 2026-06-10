@@ -36,7 +36,7 @@ def book_session(session_id):
 
         db.session.add(booking)
 
-        training_session.Booked += 1
+        # training_session.Booked += 1
 
         db.session.commit()
 

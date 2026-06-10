@@ -50,6 +50,108 @@
   letter-spacing: 0.5px;
 }
 
+.stats-container {
+    padding: 0 40px;
+    margin-top: 28px;
+    margin-bottom: 40px
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--s-accent, var(--pacific-blue));
+}
+
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;    
+    background: var(--s-icon-bg, rgba(0,176,194,0.1));
+}
+
+.stat-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 32px rgba(0,24,66,0.09);
+}
+
+.stat-card.assigned {
+  --s-accent:var(--pacific-blue);
+}
+
+.stat-card.today { 
+   --s-accent: var(--amber-glow);
+}
+
+.stat-card.attendees {
+    --s-accent:var(--navy-blue);
+}
+
+.stat-card.attendance { 
+    --s-accent: #10b981;
+}
+
+.stat-card.assigned .stat-icon {
+    background: rgba(0,176,194,0.12);
+}
+
+.stat-card.today .stat-icon {
+    background: rgba(249,157,32,0.12);
+}
+
+.stat-card.attendees .stat-icon {
+    background:rgba(0,24,66,0.08);
+}
+
+.stat-card.attendance .stat-icon {
+    background:rgba(16,185,129,0.12);
+}
+
+.stat-number { 
+    font-size: 2.3rem;
+    font-weight: 900; 
+    font-family: "Caveat", cursive;
+    color: var(--navy-blue);
+    line-height: 1;
+    margin-bottom:9px
+}
+
+.stat-label { 
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #6b7280; 
+    text-transform: lowercase
+}
+
 .dashboard-container {
     max-width: 1100px;
     margin: 0 auto;
@@ -99,6 +201,22 @@
     margin-bottom: 1rem;
 }
 
+.session-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--amber-glow);
+    color: var(--white);
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-left: 7px;
+    vertical-align: middle;
+}
+
 .sessions-list {
   display: flex;
   flex-direction: column;
@@ -110,7 +228,6 @@
   border: 1px solid #e5e7eb;
   overflow: hidden;
   transition: border-color 0.2s ease;
-  border-left: 4px solid var(--pacific-blue);
 }
 
 .session-card.open {
@@ -134,7 +251,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  padding: 20px 24px;
+  padding: 18px 22px;
   min-width: 0;
 }
 
@@ -143,13 +260,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 52px;
+  width: 50px;
   flex-shrink: 0;
-  margin-right: 24px;
+  margin-right: 20px;
 }
 
 .session-day {
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   font-family: 'Caveat', cursive;
   font-weight: 600;
   color: var(--navy-blue);
@@ -157,7 +274,7 @@
 }
 
 .session-month {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: #9ca3af;
@@ -171,9 +288,9 @@
 
 .session-name {
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 500;
   color: #111827;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -190,7 +307,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: #6b7280;
 }
 
@@ -209,10 +326,10 @@
 
 .badge {
   display: inline-block;
-  font-size: 0.74rem;   
+  font-size: 0.7rem;   
   font-weight: 500;
   letter-spacing: 0.5px;
-  padding: 4px 10px;     
+  padding: 4px 9px;     
   text-transform: capitalize;
 }
 
@@ -224,27 +341,27 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 0 22px;
+  padding: 0 20px;
   border-left: 1px solid #e5e7eb;
-  min-width: 82px;
+  min-width: 88px;
   text-align: center;
 }
 
 .attendee-fraction {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-family: 'Caveat', cursive;
   font-weight: 600;
   color: var(--navy-blue);
 }
 
 .attendee-label {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.5px;
   color: #9ca3af;
 }
 
 .chevron-wrap {
-  padding: 0 18px;
+  padding: 0 20px;
   color: #9ca3af;
   transition: transform 0.3s ease;
   flex-shrink: 0;
@@ -266,34 +383,43 @@
   display: block;
 }
 
-.panel-toolbar {
+.panel-tools {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  gap: 1rem;
+  padding: 14px 22px;
   background: #fafafa;
   border-bottom: 1px solid #e5e7eb;
 }
 
 .panel-label {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  font-family: 'Hand Of Sean';
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #6b7280;
   font-weight: 500;
+  white-space: nowrap;
 }
 
-.mark-all-btn {
-  padding: 5px 12px;
+.panel-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-btn {
+  padding: 7px 14px;
   font-size: 0.7rem;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   border: 1px solid #e5e7eb;
   background: transparent;
   color: #6b7280;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .mark-all-btn:hover {
@@ -301,7 +427,17 @@
   color: #065f46;
 }
 
-/* ── ATTENDEE ROWS ── */
+.complete-session-btn {
+  border-color: var(--navy-blue);
+  color: var(--navy-blue);
+}
+
+.complete-session-btn:hover {
+  border-color: var(--amber-glow);
+  background: var(--amber-glow);
+  color: #fff;
+}
+
 .attendee-list {
   display: flex;
   flex-direction: column;
@@ -325,8 +461,8 @@
 .attendee-left {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 14px 20px;
+  gap: 14px;
+  padding: 16px 22px;
   flex: 1;
   min-width: 0;
 }
@@ -358,29 +494,29 @@
 }
 
 .attendee-name {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 400;
   color: #111827;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .attendee-role {
-  font-size: 0.73rem;
+  font-size: 0.8rem;
   color: #6b7280;
 }
 
 .attendee-notes {
-  margin-top: 8px;
-  padding: 8px 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
   background: #f8f7f4;
   border-left: 2px solid var(--pacific-blue);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   color: #4b5563;
   line-height: 1.55;
 }
 
 .notes-label {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--pacific-blue);
@@ -393,17 +529,17 @@
 .attendance-controls {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 14px 20px;
+  gap: 8px;
+  padding: 16px 22px;
   flex-shrink: 0;
 }
 
-.att-btn {
-  padding: 6px 14px;
-  font-size: 0.7rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: 400;
+.attendance-btn {
+  padding: 7px 16px;
+  font-size: 0.8rem;
+  letter-spacing: 1.2px;
+
+  font-weight: 500;
   border: 1.5px solid #e5e7eb;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -412,29 +548,33 @@
   white-space: nowrap;
 }
 
-.att-btn:hover:not(.active) {
-  border-color: var(--navy-blue);
-  color: var(--navy-blue);
+.attendance-btn.attended:hover:not(.active) {
+  border-color: #10b981;
+  color: #10b981;
 }
 
-.att-btn.attended.active {
+.attendance-btn.absent:hover:not(.active) {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.attendance-btn.attended.active {
   border-color: #10b981;
   background: rgba(16, 185, 129, 0.08);
   color: #065f46;
 }
 
-.att-btn.absent.active {
+.attendance-btn.absent.active {
   border-color: #ef4444;
   background: rgba(239, 68, 68, 0.08);
   color: #991b1b;
 }
 
-/* ── PANEL FOOTER / SAVE ── */
 .panel-footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 14px 20px;
+  padding: 16px 22px;
   background: #fafafa;
   border-top: 1px solid #e5e7eb;
 }
@@ -442,12 +582,12 @@
 .save-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 20px;
-  font-size: 0.75rem;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 0.78rem;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-weight: 400;
+  font-weight: 500;
   border: 1.5px solid var(--navy-blue);
   background: var(--navy-blue);
   color: var(--white);
@@ -456,10 +596,47 @@
 }
 
 .save-btn:hover {
-  background: #002d6b;
-  border-color: #002d6b;
+  background: var(--amber-glow);
+  border-color: var(--amber-glow);
+  transform: scale(1.01);
 }
 
-.save-btn:active {
+.save-btn:disabled {
+  background: #9aa3ad;
+  border: none;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+
+.save-btn:active:not(:disabled) {
   transform: translateY(1px);
+}
+
+.empty-state {
+  background: var(--white);
+  border: 1px solid #e5e7eb;
+  padding: 52px 24px;
+  text-align: center;
+}
+
+.empty-icon {
+  display: block;
+  margin: 0 auto 12px;
+  color: #d1d5db;
+}
+
+.empty-title {
+  font-size: 1.3rem;
+  font-weight: 500;
+  font-family: 'Hand Of Sean';
+  color: var(--navy-blue);
+  margin-bottom: 5px;
+}
+
+.empty-sub {
+  font-size: 0.83rem;
+  color: #6b7280;
 }

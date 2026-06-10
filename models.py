@@ -34,6 +34,8 @@ class TrainingSessions(db.Model):
     Capacity = db.Column(db.Integer, nullable=False)
     DeliveryType = db.Column(Enum("Face-to-Face", "Online", name="delivery_type"), nullable=False)
     Booked = db.Column(db.Integer, nullable=True, default=0)
+    Status = db.Column(Enum("Completed", "Not completed", name="session_status"), nullable=True)
+    Marked = db.Column(db.Integer, nullable=True, default=0)
     trainer = db.relationship("Users", foreign_keys=[TrainerId], back_populates='training_sessions')
     course = db.relationship('TrainingCourses', back_populates='sessions')
     bookings = db.relationship('Bookings', back_populates='session')
@@ -53,7 +55,7 @@ class Bookings(db.Model):
     UserId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=False)
     SessionId = db.Column(db.Integer, db.ForeignKey('training_sessions.SessionId'), nullable=False)
     BookingDate = db.Column(db.DateTime, nullable=False)
-    Status = db.Column(Enum("Pending Approval", "Approved", "Rejected", "Cancelled", name="status"), nullable=False)
+    Status = db.Column(Enum("Pending Approval", "Approved", "Rejected", "Cancelled", "Completed", name="status"), nullable=False)
     ManagerApproval = db.Column(Enum("Yes", "No", name="manager_approval"), nullable=False)
     Notes = db.Column(db.Text, nullable=True)
     DecidedOn = db.Column(db.DateTime, nullable=True)
@@ -64,7 +66,7 @@ class Bookings(db.Model):
 class Attendance(db.Model):
     __tablename__ = "attendance"
     AttendanceId = db.Column(db.Integer, primary_key=True, nullable=False)
-    BookingId = db.Column(db.Integer, db.ForeignKey('bookings.BookingId'), nullable=False)
+    BookingId = db.Column(db.Integer, db.ForeignKey('bookings.BookingId'), nullable=False, unique=True)
     UserId = db.Column(db.Integer,db.ForeignKey('users.UserId'), nullable=True )
     AttendanceStatus = db.Column(Enum("Attended", "Absent", "N/A", name="attendance_mark"), nullable=False, default="N/A")
     Comments = db.Column(db.Text, nullable=True)

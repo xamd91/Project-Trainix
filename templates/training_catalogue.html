@@ -130,44 +130,6 @@
                     {% endfor %}
                 {% endif %}
 
-            
-            
-                <!-- <div class="training-card">
-                    <div class="card-banner"></div>
-                    <div class="card-body">
-                        <span class="card-tag">{{ session.BusinessArea }}</span>
-                        <h3 class="card-title">{{ session.CourseName }}</h3>
-                        <p class="card-description">{{ session.Description }}</p>
-
-                        <div class="card-meta">
-
-                            <div class="meta-row">
-                                <span>{{ session.Date }} • {{ session.Time }}</span>
-                            </div>
-
-                            <div class="meta-row">
-                                {% if session.DeliveryType == 'Online' %}
-                                    <span>Virtual</span>
-                                {% else %}
-                                    <span>{{ session.Location }}</span>
-                                {% endif %}
-                                <span class="card-delivery-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">
-                                    {{ session.DeliveryType }}
-                                </span>
-                            </div>
-
-                            <div class="meta-row">
-                                <span>{{ session.Capacity }} spaces booked</span>
-                            </div>
-
-                        </div>
-
-                        <a href="/training/{{ session.SessionId }}" class="card-btn caveat-btn">
-                            View Details
-                        </a>
-                    </div>
-                </div> -->
-
                 {% if not session_list %}
                     <p class="no-results">No results found...</p>
                 {% endif %}

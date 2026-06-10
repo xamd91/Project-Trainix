@@ -9,10 +9,32 @@ def page():
 
     # if session['role'] != "trainer":
     #      return redirect(url_for('login'))
+    user_id = session.get('user_id') 
 
-    user = Users.query.filter_by(UserId=session['user_id']).first()
+    trainer = Users.query.filter_by(UserId=user_id).first()
+    # print(trainer.UserId)
+    upcoming_sessions = (
+        TrainingSessions.query
+        .filter(
+            or_(
+                TrainingSessions.Status != "Completed",
+                TrainingSessions.Status.is_(None)
+            ),
+            TrainingSessions.TrainerId == user_id
+        )
+        .all()
+    )
+    # print(upcoming_sessions)
+
+    for training_session in upcoming_sessions:
+        training_session.approved_bookings = [
+            booking
+            for booking in training_session.bookings
+            if booking.Status == "Approved"
+        ]
     
     return render_template(
         'attendance_management.html', 
-        user=user
+        trainer=trainer,
+        upcoming_sessions=upcoming_sessions,
         )

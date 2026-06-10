@@ -18,6 +18,11 @@ def register_routes(app, db):
     def attendance_management():
         from pages.attendance_management import page
         return page()
+    
+    @app.route('/mark_attendance', methods=["POST"])
+    def mark_attendance_route():
+        from pages.mark_attendance_page import mark_attendance
+        return mark_attendance()
 
     @app.route('/')
     def home():
@@ -62,7 +67,6 @@ def register_routes(app, db):
         from pages.book_session_page import book_session
         return book_session(session_id)
 
-    
     @app.route('/information_and_support')
     def information_and_support():
         return render_template('information_and_support.html')  
