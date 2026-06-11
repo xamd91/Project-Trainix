@@ -152,10 +152,15 @@
         <!-- book button -->
         <div class="book-btn-wrap">
             <button class="book-trigger-btn caveat-btn" id="open-modal" {% if session_full or already_booked %}disabled{% endif %}> 
-                {% if already_booked %} Booked {% else %} Book This Session {% endif %}
+                {% if already_booked %} 
+                    Already Booked
+                {% elif session_full %}
+                    Session Full 
+                {% else %} 
+                    Book This Session 
+                {% endif %}
             </button>
         </div>
-
     </div>
 
     <!-- overlay -->
@@ -171,13 +176,14 @@
 
             <form class="booking-form" action="/book_session/{{ training_session.SessionId }}" method="POST">
 
-                <div class="booking-form-row">
+                <!-- <div class="booking-form-row">
                     <div class="booking-form-group">
                         <label class="booking-label" for="full-name">Full Name</label>
                         <input class="booking-input" type="text" id="full-name" 
                         name="full_name"
                         placeholder="John Doe"
-                        value="{{ user.FirstName }}">
+                        value="{{ user.FirstName }}"
+                        required>
                     </div>
                     <div class="booking-form-group">
                         <label class="booking-label" for="email">Email</label>
@@ -186,9 +192,9 @@
                         placeholder="john.doe@company.com"
                         value="{{ user.Email if user else ''}}">
                     </div>
-                </div>
+                </div> -->
 
-                <div class="booking-form-row">
+                <!-- <div class="booking-form-row">
                     <div class="booking-form-group">
                         <label class="booking-label" for="department">Department</label>
                         <input class="booking-input" type="text" id="department" 
@@ -201,7 +207,7 @@
                         <input class="booking-input" type="email" id="manager-email" 
                         placeholder="manager@company.com" value="{{ user.manager.Email if user else '' }}">
                     </div>
-                </div>
+                </div> -->
 
                 <div class="booking-form-group">
                     <label class="booking-label" for="notes">Additional Notes <span class="booking-optional">(Optional)</span></label>

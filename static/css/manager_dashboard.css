@@ -49,9 +49,6 @@
   letter-spacing: 0.5px;
 }
 
-
-
-
 .grid-header, .grid-item {
   display: grid;
   grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1.5fr;

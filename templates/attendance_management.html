@@ -9,8 +9,8 @@
 <div class="page-hero no-select">
     <div class="page-hero-content">
         <p class="hero-breadcrumb"><a href="/">Home</a>/ Attendance management</p>
-        <h1>Welcome {{ trainer.FirstName }}</h1>
-        <p>Mark attendances throughout your sessions.</p>
+        <h1>Welcome back, {{ trainer.FirstName }}</h1>
+        <p>Record and manage learner attendance for your scheduled training sessions.</p>
     </div>
 </div>
 
@@ -26,7 +26,7 @@
                     <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
             </div>
-            <div class="stat-number">-</div>
+            <div class="stat-number">{{ session_count }}</div>
             <div class="stat-label">Assigned sessions</div>
         </div>
 
@@ -34,7 +34,7 @@
             <div class="stat-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F99D20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-            <div class="stat-number">-</div>
+            <div class="stat-number">{{ sessions_today | length }}</div>
             <div class="stat-label">Sessions today</div>
         </div>
 
@@ -42,7 +42,7 @@
             <div class="stat-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#001842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
-            <div class="stat-number">-</div>
+            <div class="stat-number">{{ total_upcoming_attendees }}</div>
             <div class="stat-label">Total attendees upcoming</div>
         </div>
 
@@ -50,7 +50,7 @@
             <div class="stat-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
-            <div class="stat-number">-%</div>
+            <div class="stat-number">{{ average_attendance_rate }}%</div>
             <div class="stat-label">Avg. attendance rate</div>
         </div>
 
@@ -75,8 +75,9 @@
             {% for session in upcoming_sessions %}
 
                 <article class="session-card" id="session-card-{{ session.SessionId }}" data-delivery="{{ session.DeliveryType }}">
-                    <div class="session-card-bar"></div>
+                    
                     <div class="session-card-header" onclick="toggleSession('session-card-{{ session.SessionId }}')">
+                        <div class="session-status-bar"></div>
                         <div class="session-header-content">
                             <div class="session-date-block">
                                 <span class="session-day"> {{ session.Date.strftime('%d') }} </span>
@@ -114,8 +115,8 @@
                         </div>
                     </div>
 
-                    <div class="attendee-panel" id="panel-{{ session.sessionId }}">
-                        <form method="POST" action="{{ url_for('mark_attendance_route') }}" id="form-{{ session.sessionId }}">
+                    <div class="attendee-panel" id="panel-{{ session.SessionId }}">
+                        <form method="POST" action="{{ url_for('mark_attendance_route') }}" id="attendance-form-{{ session.SessionId }}">
 
                             <input type="hidden" name="session_id" value="{{ session.SessionId }}">
 
@@ -123,7 +124,7 @@
                                 <span class="panel-label">Attendees</span>
                                 <div class="panel-btns">
                                     <button type="button" class="panel-btn mark-all-btn caveat-btn">Mark all attended</button>
-                                    <button type="button" class="panel-btn complete-session-btn caveat-btn">Complete session</button>
+                                    <a class="panel-btn complete-session-btn caveat-btn" href="/complete_session/{{ session.SessionId }}">Complete session</a>
                                 </div>
                             </div>
 
@@ -137,6 +138,11 @@
                                                 name="{{ booking.user.UserId }}" 
                                                 id="input-{{ session.SessionId }}-{{ booking.user.UserId }}" 
                                                 value="{{ booking.attendance.AttendanceStatus or '' }}">
+
+                                            <input type="hidden"
+                                                name="comment-{{ booking.user.UserId }}"
+                                                id="comment-input-{{ session.SessionId }}-{{ booking.user.UserId }}"
+                                                value="">
 
                                             <div class="attendee-left">
                                                 <div class="avatar">{{ booking.user.FirstName[0] }}{{ booking.user.LastName[0] }}</div>
@@ -153,10 +159,25 @@
                                             </div>
 
                                             <div class="attendance-controls">
-                                                <button type="button" class="attendance-btn attended caveat-btn"
-                                                onclick="markAttendance(this, 'attended', '{{ session.SessionId }}', '{{ booking.user.UserId }}')"
-                                                >Attended</button>
-                                                <button type="button" class="attendance-btn absent caveat-btn">Absent</button>
+                                                <button type="button"
+                                                    class="attendance-btn comment-btn caveat-btn"
+                                                    onclick="openCommentModal('{{ session.SessionId }}', '{{ booking.user.UserId }}', '{{ booking.user.FirstName }} {{ booking.user.LastName }}')">
+                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                                    </svg>
+                                                    Notes
+                                                </button>
+                                                <button type="button" 
+                                                    class="attendance-btn attended {% if booking.attendance.AttendanceStatus == 'Attended' %}active{% endif %} caveat-btn"
+                                                    onclick="markAttendance(this, 'attended', '{{ session.SessionId }}', '{{ booking.user.UserId }}')">
+                                                    Attended
+                                                </button>
+                                                <button type="button" 
+                                                    class="attendance-btn absent {% if booking.attendance.AttendanceStatus == 'Absent' %}active{% endif %} caveat-btn"
+                                                    onclick="markAttendance(this, 'absent', '{{ session.SessionId }}', '{{ booking.user.UserId }}')">
+                                                    Absent
+                                                </button>
                                             </div>
 
                                         </div>
@@ -196,7 +217,150 @@
 
     </section>
 
+    <section class="dashboard-section">
+
+        <div class="section-header">
+            <div class="section-title-group">
+                <span class="section-eyebrow">Completed</span>
+                <h2 class="section-title">
+                    Past Sessions
+                    <span class="session-count muted">{{ past_sessions | length }}</span>
+                </h2>
+            </div>
+        </div>
+
+        <div class="sessions-list">
+            {% for session in past_sessions %}
+                <article class="past-card" id="past-card-{{ session.SessionId }}">
+
+                    <div class="past-card-header" onclick="togglePast('past-card-{{ session.SessionId }}')">
+                        <div class="past-status-bar"></div>
+                        <div class="past-header-content">
+                            <div class="past-date-block">
+                                <span class="past-day"> {{ session.Date.strftime('%d') }} </span>
+                                <span class="past-month"> {{ session.Date.strftime('%b') }} </span>
+                            </div>
+                            <div class="past-info">
+                                <div class="past-name">{{ session.Title }}</div>
+                                <div class="past-meta">
+                                    <span class="past-meta-item">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        {{ session.Time.strftime('%I:%M %p') }}
+                                    </span>
+                                    <span class="past-meta-item">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                        {{ session.Location }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="past-summary">
+                            <div class="summary-stat">
+                                <span class="summary-number attended-count">{{ session.attended_count }}</span>
+                                <span class="summary-label">Attended</span>
+                            </div>
+
+                            <div class="summary-stat">
+                                <span class="summary-number absent-count">{{ session.absent_count }}</span>
+                                <span class="summary-label">Absent</span>
+                            </div>
+
+                            <div class="summary-stat">
+                                <span class="summary-number">{{ session.rate }}%</span>
+                                <span class="summary-label">Rate</span>
+                            </div>
+                        </div>
+
+                        <div class="chevron-wrap">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+
+                    </div>
+
+                    <div class="past-panel">
+                        <div class="past-attendee-list">
+                            {% for booking in session.approved_bookings %}
+
+                                <div class="past-attendee-row">
+                                    <div class="past-attendee-left">
+                                        <div class="avatar">
+                                            {{ booking.user.FirstName[0] }}{{ booking.user.LastName[0] }}
+                                        </div>
+                                        <div class="past-attendee-details">
+                                            <div class="past-attendee-name">{{ booking.user.FirstName }} {{ booking.user.LastName }}</div>
+                                            <div class="past-attendee-role">{{ booking.user.JobTitle }}</div>
+                                            {% if booking.attendance.Comments %}
+                                                <div class="past-attendee-notes">
+                                                    <span class="past-notes-label">Attendance Comments</span>
+                                                    {{ booking.attendance.Comments }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <span class="past-attendee-status {{ booking.attendance.AttendanceStatus | lower }}">{{ booking.attendance.AttendanceStatus }}</span>
+                                </div>
+
+                                
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </article>
+            {% else %}
+
+                <div class="empty-state">
+                    <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <p class="empty-title">No past sessions</p>
+                    <p class="empty-sub">Completed sessions will appear here.</p>
+                </div>
+
+            {% endfor %}
+        </div>
+
+    </section>
+
 </div>
+
+<div id="comment-modal" class="comment-modal-overlay" hidden>
+    <div class="comment-modal">
+        <div class="comment-modal-header">
+            <div class="comment-modal-title">Attendance Notes</div>
+            <div class="comment-modal-subtitle" id="comment-modal-name"></div>
+        </div>
+        <label class="comment-modal-label" for="comment-modal-textarea">
+            Comment <span class="comment-modal-optional">(optional)</span>
+        </label>
+        <textarea id="comment-modal-textarea" class="comment-modal-textarea" placeholder="Leave an optional comment about this attendee…"></textarea>
+        <div class="comment-modal-footer">
+            <button type="button" class="comment-modal-cancel caveat-btn" onclick="closeCommentModal()">Cancel</button>
+            <button type="button" class="comment-modal-save caveat-btn" onclick="saveComment()">Save note</button>
+        </div>
+    </div>
+</div>
+
+    <div class="error-modal-container" id="error-modal-container">
+        <div class="modal-content">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <!-- <h2>Login Failed!</h2> -->
+            <p id="error-modal-message"></p>
+            <button class="error-modal-close caveat-btn" id="error-modal-close">Close</button>
+        </div>
+    </div>
+
+    <div class="success-modal-container" id="success-modal-container">
+        <div class="modal-content success">
+            <div class="success-icon">
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <!-- <h2>Login Successful!</h2> -->
+            <p id="success-modal-message"></p>
+            <button class="success-modal-close caveat-btn" id="success-modal-close">Close</button>
+        </div>
+    </div>
 
 {% endblock %}
 

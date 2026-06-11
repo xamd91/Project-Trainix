@@ -189,7 +189,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td><div class="cell-primary">{{ booking.session.course.CourseName }}</div></td>
+                            <td><div class="cell-primary">{{ booking.session.Title }}</div></td>
                             <td><span class="badge {{ booking.session.DeliveryType | lower | replace(' ', '-') }}">{{ booking.session.DeliveryType }}</span></td>
                             <td><div class="cell-primary">{{ booking.DecidedOn.strftime('%d %b %Y') }}</div></td>
                             <td><span class="badge {{ booking.Status | lower }}">{{ booking.Status }}</span></td>

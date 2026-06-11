@@ -12,7 +12,18 @@ def register_routes(app, db):
 
     @app.route('/admin_dashboard', methods=['GET','POST'])
     def admin_dashboard():
-        return render_template('admin_dashboard.html')
+        from pages.admin_dashboard import page
+        return page()
+
+    @app.route('/admin_dashboard/edit_user/<int:user_id>', methods=['GET','POST'])
+    def edit_user_route(user_id):
+        from pages.edit_user import edit_user
+        return edit_user(user_id)
+    
+    @app.route('/admin_dashboard/delete_user/<int:user_id>', methods=['GET','POST'])
+    def delete_user_route(user_id):
+        from pages.delete_user import delete_user
+        return delete_user(user_id)
 
     @app.route('/attendance_management', methods=['GET','POST'])
     def attendance_management():
@@ -23,6 +34,11 @@ def register_routes(app, db):
     def mark_attendance_route():
         from pages.mark_attendance_page import mark_attendance
         return mark_attendance()
+    
+    @app.route('/complete_session/<int:session_id>')
+    def complete_session_route(session_id):
+        from pages.complete_session import complete_session
+        return complete_session(session_id) 
 
     @app.route('/')
     def home():

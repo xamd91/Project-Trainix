@@ -1,5 +1,6 @@
 from flask import render_template, session
 from collections import Counter
+from sqlalchemy import or_
 from models import Users, Departments, TrainingSessions, Departments
 from app import db
 
@@ -7,7 +8,17 @@ def page():
 
     UserId = session.get('user_id')
 
-    session_list = TrainingSessions.query.order_by(TrainingSessions.Date.asc()).all()
+    session_list = (
+        TrainingSessions.query
+        .filter(
+            or_(
+                TrainingSessions.Status != "Completed",
+                TrainingSessions.Status.is_(None)
+            )
+        )
+        .order_by(TrainingSessions.Date.asc()).all()
+    )
+
     session_count = len(session_list)
 
     for training_session in session_list:
