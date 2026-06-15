@@ -9,7 +9,7 @@ def mark_attendance():
 
         session_id = request.form.get('session_id')
 
-        print(session_id)
+        training_session = TrainingSessions.query.filter_by(SessionId=session_id).first()
 
         bookings = Bookings.query.filter_by(SessionId=session_id).all()
 
@@ -56,6 +56,8 @@ def mark_attendance():
 
             if comment is not None:
                 booking.attendance.Comments = comment
+
+        # training_session.Status = "Completed"
 
         db.session.commit()
 

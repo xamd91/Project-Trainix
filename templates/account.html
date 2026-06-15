@@ -15,57 +15,134 @@
             <div class="account-info">
                 <h2 class="account-name">{{ user.FirstName }} {{user.LastName}} </h2>
                 <p class="account-email">{{ user.Email }}</p>
-                <p class="account-meta">{{ user.department.DepartmentName }} &bull; {{ user.JobTitle }}</p>
+                <p class="account-meta">
+                    <span class="department">{{ user.department.DepartmentName }}</span>
+                    <span class="separator">&bull;</span>
+                    <span class="job-title">{{ user.JobTitle }}</span>
+                </p>
             </div>
         </div>
     </div>
 
     <div class="account-menu-wrap">
-        <div class="account-menu">
+        <nav class="account-menu">
             <a href="{{ url_for('account', tab='bookings') }}" class="account-menu-switch {% if tab == 'bookings' %}active{% endif %}">My Bookings</a>
             <a href="{{ url_for('account', tab='history') }}" class="account-menu-switch {% if tab == 'history' %}active{% endif %}">Training History</a>
             <a href="{{ url_for('account', tab='notifications') }}" class="account-menu-switch {% if tab == 'notifications' %}active{% endif %}">Notifications</a>
             <a href="{{ url_for('account', tab='settings') }}" class="account-menu-switch {% if tab == 'settings' %}active{% endif %}">Settings</a>
-        </div>
+        </nav>
     </div>
 
     <div class="account-body">
 
         {% if tab == 'bookings' %}
-            <div class="section-title">
-                <h2>Upcoming Bookings</h2>
-                <span class="booking-count">{{ upcoming_bookings|length }} active</span>
-            </div>
-            {% for booking in upcoming_bookings %}
-                <div class="booking-card {% if booking.Status == 'Pending Approval' %}pending{% endif %}">
-                    <div class="booking-card-header">
-                        <h3>{{ booking.session.Title }}</h3>
-                        <span class="booking-status 
-                            {% if booking.Status == 'Approved' %}approved 
-                            {% elif booking.Status == 'Pending Approval' %}pending
-                            {% elif booking.Status == 'Declined' %}declined
-                            {% endif %}">
-                            {{ booking.Status }}
-                        </span>
+
+            <section class="tab-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">Upcoming</span>
+                        <h2 class="section-title">
+                            My Current Bookings
+                            <span class="booking-count">{{ upcoming_bookings | length }}</span>
+                        </h2>
                     </div>
-
-                    <p>{{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }}</p>
-                    <p>{{ booking.session.Location }} &bull; Trainer: {{ booking.session.trainer.FirstName }} {{ booking.session.trainer.LastName }}</p>
-
-                    {% if booking.Status == 'Approved' %}
-                    <div class="booking-actions">
-                        <a href="#" class="btn cancel">Cancel Booking</a>
-                        <a href="#" class="btn">Add to calendar</a>
-                    </div>
-
-                    {% elif booking.Status == 'Pending Approval' %}
-                    <p class="pending-note">
-                        Waiting for manager approval. Request sent to {{ manager.Email }}.</p>
-                    {% endif %}
                 </div>
-            {% endfor %}
+
+                <div class="booking-list">
+                    {% for booking in upcoming_bookings %}
+
+                        <article class="booking-card {{ booking.Status | lower | replace(' ', '-') }}">
+                            <div class="booking-card-header">
+                                <h3 class="booking-card-title">{{ booking.session.Title }}</h3>
+                                <span class="booking-status {{ booking.Status | lower | replace(' ', '-') }}">
+                                    {{ booking.Status }}
+                                </span>
+                            </div>
+
+                            <p class="booking-meta">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                {{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }}
+                            </p>
+                            <p class="booking-meta">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                {{ booking.session.Location }} &bull; Trainer: {{ booking.session.trainer.FirstName }} {{ booking.session.trainer.LastName }}
+                            </p>
+
+                            {% if booking.Status == 'Approved' %}
+                                <div class="booking-actions">
+                                    <form method="POST" action="">
+                                        <button type="submit" class="btn-action danger caveat-btn">Cancel booking</button>
+                                    </form>
+                                    <a href="#" class="btn-action caveat-btn">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        Add to calendar
+                                    </a>
+                                </div>
+                            {% elif booking.Status == 'Pending Approval' %}
+                                <div class="pending-note">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                    Waiting for manager approval. Request sent to {{ manager.Email if manager else 'your manager.' }}
+                                </div>
+                            {% endif %}
+                        </article>
+                    {% else %}
+                        <div class="empty-state">
+                            <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <p class="empty-title">No upcoming bookings</p>
+                            <p class="empty-sub">Browse the <a href="{{ url_for('training_catalogue') }}" class="empty-link">training catalogue</a> to book a session.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </section>
+            
+            <section class="tab-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">Inactive</span>
+                        <h2 class="section-title">
+                            Past Bookings
+                            <span class="booking-count">{{ inactive_bookings | length }}</span>
+                        </h2>
+                    </div>
+                </div>
+                
+                <div class="booking-list">
+                    {% for booking in inactive_bookings %}
+                        <article class="booking-card {{ booking.Status | lower | replace(' ', '-') }}">
+                            <div class="booking-card-header">
+                                <h3 class="booking-card-title">{{ booking.session.Title }}</h3>
+                                <span class="booking-status {{ booking.Status | lower | replace(' ', '-') }}">
+                                    {{ booking.Status }}
+                                </span>
+                            </div>
+
+                            <p class="booking-meta">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                {{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }}
+                            </p>
+                            <p class="booking-meta">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                {{ booking.session.Location }} &bull; Trainer: {{ booking.session.trainer.FirstName }} {{ booking.session.trainer.LastName }}
+                            </p>
+                        </article>
+                    {% else %}
+                        <div class="empty-state">
+                            <p class="empty-title">No past bookings</p>
+                            <p class="empty-sub">Cancelled and declined bookings will appear here.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </section>
+            
 
         {% elif tab == 'history' %}
+
+
+        
             <h2 class="section-title">History</h2>
                 {% if booking_history %}
                     {% for booking in booking_history %}

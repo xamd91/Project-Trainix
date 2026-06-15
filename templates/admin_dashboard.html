@@ -18,7 +18,7 @@
         <div class="admin-menu">
             <a href="{{ url_for('admin_dashboard', tab='overview') }}" class="admin-menu-switch {% if tab == 'overview' %}active{% endif %}">Overview</a>
             <a href="{{ url_for('admin_dashboard', tab='user_management') }}" class="admin-menu-switch {% if tab == 'user_management' %}active{% endif %}">Users</a>
-            <a href="{{ url_for('admin_dashboard', tab='course_&_session_management') }}" class="admin-menu-switch {% if tab == 'course_&_session_management' %}active{% endif %}">Courses & Sessions</a>
+            <a href="{{ url_for('admin_dashboard', tab='session_management') }}" class="admin-menu-switch {% if tab == 'ession_management' %}active{% endif %}">Sessions</a>
             <a href="{{ url_for('admin_dashboard', tab='department_management') }}" class="admin-menu-switch {% if tab == 'department_management' %}active{% endif %}">Departments</a>
         </div>
     </div>
@@ -92,7 +92,7 @@
                     {% for user in users %}
                         <tr>
                             <td>
-                                <div class="employee-cell">
+                                <div class="user-cell">
                                     <div class="avatar">{{ user.FirstName[0] }}{{ user.LastName[0] }}</div>
                                     <div>
                                         <div class="cell-primary">{{ user.FirstName }} {{ user.LastName }}</div>
@@ -110,7 +110,7 @@
                             </td>
                             <td>
                                 <div class="actions-cell">
-                                        <button type="button" onclick="openEditModal(
+                                        <button type="button" onclick="openUsersEditModal(
                                             '{{ user.UserId }}',
                                             '{{ user.FirstName }}',
                                             '{{ user.LastName }}',
@@ -139,14 +139,37 @@
                             </td>
                         </tr>
                     {% endfor %}
+                    <div id="editUserModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeUsersEditModal()">&times;</span>
+                            <h2>Edit User</h2>
+                            <form id="editUserForm" method="POST">
+                                <input type="text" name="first_name" id="editFirstName" placeholder="First Name" required>
+                                <input type="text" name="last_name" id="editLastName" placeholder="Last Name" required>
+                                <input type="text" name="job_title" id="editJobTitle" placeholder="Job Title" required>
+                                <select name="role" id="editRole" required>
+                                    <option value="Learner">Learner</option>
+                                    <option value="Trainer">Trainer</option>
+                                    <option value="Manager">Manager</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                                <select name="department" id="editUserDepartment" required>
+                                    {% for department in departments %}
+                                        <option value="{{ department.DepartmentName }}">{{ department.DepartmentName if department else 'N/A' }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="caveat-btn btn-edit">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
                 </tbody>
             </table>
         </div>
-    {% elif tab == 'course_&_session_management' %}
+    {% elif tab == 'session_management' %}
         <div class="section-header">
             <div class="section-title-group">
                 <h2 class="section-title">
-                    Courses & Sessions Management
+                    Sessions Management
                 </h2>
             </div>
         </div>
@@ -154,12 +177,79 @@
             <table class="admin-tables">
                 <thead>
                     <tr>
-                        <th scope="col">Course</th>
+                        <th scope="col">Session</th>
                         <th scope="col">Department</th>
                         <th scope="col">Trainer</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
+                <tbody id="pending-body">
+                    {% for session in training_sessions %}
+                        <tr>
+                            <td>
+                                <div class="session-cell">
+                                    <div class="avatar">{{ session.Title[0] }}</div>
+                                    <div>
+                                        <div class="cell-primary">{{ session.Title }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cell-primary">{{ session.course.department.DepartmentName if session.course.department else "N/A" }}</div>
+                            </td>
+                            <td>
+                                <div class="cell-primary">{{ session.trainer.FirstName }} {{ session.trainer.LastName }} </div>
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                        <button type="button" onclick="openSessionsEditModal(
+                                            '{{ session.SessionId }}',
+                                            '{{ session.Title }}',
+                                            '{{ session.TrainerId }}',
+                                            '{{ session.course.DepartmentId }}'
+                                        )" class="btn-edit caveat-btn action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: rgb(74, 85, 101);"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="m16.475 5.408l2.117 2.117m-.756-3.982L12.109 9.27a2.1 2.1 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621"></path><path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"></path></g></svg>
+                                        </button>
+                                    <form method="POST" action="{{ url_for('delete_sessions_route', session_id=session.SessionId) }}" class="action-form">
+                                        <button type="submit" class="btn-delete caveat-btn action-btn" onclick="return confirm('Are you sure you want to delete this course?');">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 15 15" style="color: #ef4444;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M1 3.5h12m-10.5 0h9v9a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9h0Zm2 0V3a2.5 2.5 0 0 1 5 0v.5m-4 2V11m3-5.5V11"></path></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr class="empty-row">
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <p class="empty-title">No Sessions</p>
+                                    <p class="empty-sub">there are no sessions.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <div id="editSessionsModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeSessionsEditModal()">&times;</span>
+                            <h2>Edit Course</h2>
+                            <form id="editSessionsForm" method="POST">
+                                <input type="text" name="session_name" id="editSessionName" placeholder="Session Name" required>
+                                <select name="trainer" id="editTrainer" required>
+                                    {% for trainer in trainers %}
+                                        <option value="{{ trainer.UserId }}">{{ trainer.FirstName }} {{ trainer.LastName }} </option>
+                                    {% endfor %}
+                                </select>
+                                <select name="department" id="editSessionsDepartment" required>
+                                    {% for department in departments %}
+                                        <option value="{{ department.DepartmentName }}">{{ department.DepartmentName }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="caveat-btn btn-edit">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </tbody>
             </table>
     {% elif tab == 'department_management' %}
         <div class="section-header">
@@ -178,35 +268,73 @@
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
+                <tbody id="pending-body">
+                    {% for department in departments %}
+                        <tr>
+                            <td>
+                                <div class="department-cell">
+                                    <div class="avatar">{{ department.DepartmentName[0] }}</div>
+                                    <div>
+                                        <div class="cell-primary">{{ department.DepartmentName }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cell-primary">{{ department.manager.FirstName if department.manager else "N/A" }}</div>
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                        <button type="button" onclick="openDepartmentEditModal(
+                                            '{{ department.DepartmentId }}',
+                                            '{{ department.DepartmentName }}',
+                                            '{{ department.ManagerId }}',
+                                        )" class="btn-edit caveat-btn action-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: rgb(74, 85, 101);"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="m16.475 5.408l2.117 2.117m-.756-3.982L12.109 9.27a2.1 2.1 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621"></path><path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"></path></g></svg>
+                                        </button>
+                                    <form method="POST" action="{{ url_for('delete_departments_route', department_id=department.DepartmentId) }}" class="action-form">
+                                        <button type="submit" class="btn-delete caveat-btn action-btn" onclick="return confirm('Are you sure you want to delete this department?');">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 15 15" style="color: #ef4444;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M1 3.5h12m-10.5 0h9v9a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9h0Zm2 0V3a2.5 2.5 0 0 1 5 0v.5m-4 2V11m3-5.5V11"></path></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr class="empty-row">
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <p class="empty-title">No Departments</p>
+                                    <p class="empty-sub">there are no departments.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <div id="editDepatmentModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeDepartmentEditModal()">&times;</span>
+                            <h2>Edit Department</h2>
+                            <form id="editDepartmentForm" method="POST">
+                                <input type="text" name="department_name" id="editDepartmentName" placeholder="Department Name" required>
+                                <select name="manager" id="editManager" required>
+                                    {% for manager in managers %}
+                                        <option value="{{ manager.UserId }}">{{ manager.FirstName }} {{ manager.LastName }} </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="caveat-btn btn-edit">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </tbody>
             </table>
         </div>
     {% endif %}
 </div>
 
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeEditModal()">&times;</span>
-        <h2>Edit User</h2>
-        <form id="editForm" method="POST">
-            <input type="text" name="first_name" id="editFirstName" placeholder="First Name" required>
-            <input type="text" name="last_name" id="editLastName" placeholder="Last Name" required>
-            <input type="text" name="job_title" id="editJobTitle" placeholder="Job Title" required>
-            <select name="role" id="editRole" required>
-                <option value="Learner">Learner</option>
-                <option value="Trainer">Trainer</option>
-                <option value="Manager">Manager</option>
-                <option value="Admin">Admin</option>
-            </select>
-            <select name="department" id="editDepartment" required>
-                {% for department in departments %}
-                    <option value="{{ department.DepartmentId }}">{{ department.DepartmentName }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="caveat-btn btn-edit">Save Changes</button>
-        </form>
-    </div>
-</div>
-
 {% endblock %}
 
-{% block extra_js %} <script src="../static/js/admin_dashboard.js"></script> {%endblock %}
+{% block extra_js %} 
+
+<script src="../static/js/admin_dashboard.js"></script> 
+
+{%endblock %}

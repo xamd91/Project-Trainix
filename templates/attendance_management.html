@@ -176,7 +176,7 @@
                                                 <button type="button" 
                                                     class="attendance-btn absent {% if booking.attendance.AttendanceStatus == 'Absent' %}active{% endif %} caveat-btn"
                                                     onclick="markAttendance(this, 'absent', '{{ session.SessionId }}', '{{ booking.user.UserId }}')">
-                                                    Absent
+                                                    DNA
                                                 </button>
                                             </div>
 
@@ -263,7 +263,7 @@
 
                             <div class="summary-stat">
                                 <span class="summary-number absent-count">{{ session.absent_count }}</span>
-                                <span class="summary-label">Absent</span>
+                                <span class="summary-label">DNA</span>
                             </div>
 
                             <div class="summary-stat">
@@ -299,7 +299,7 @@
                                         </div>
                                     </div>
 
-                                    <span class="past-attendee-status {{ booking.attendance.AttendanceStatus | lower }}">{{ booking.attendance.AttendanceStatus }}</span>
+                                    <span class="past-attendee-status {{ booking.attendance.AttendanceStatus | lower }}">{{ "DNA" if booking.attendance.AttendanceStatus == "Absent" else booking.attendance.AttendanceStatus}}</span>
                                 </div>
 
                                 

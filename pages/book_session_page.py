@@ -46,6 +46,6 @@ def book_session(session_id):
 
             return jsonify({
                  "status": "success",
-                 "message": "Booking successfully completed!"
+                 "message": f"Booking request for {training_session.Title} has been placed successfully!"
             }), 201
 

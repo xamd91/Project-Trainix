@@ -46,7 +46,7 @@ function openCommentModal(sessionId, userId, name) {
 }
 
 function closeCommentModal() {
-    const modal = document.getElementById('comment-modal').hidden = true;
+    const modal = document.getElementById('comment-modal');
     modal.classList.remove('open');
     modal.addEventListener('transitionend', () => modal.setAttribute('hidden', ''), { once: true });
     _commentTarget = null;
@@ -125,7 +125,8 @@ document.querySelectorAll('form[id^="attendance-form-"]').forEach(form => {
                 showSuccessModal(data.message);
                 document.getElementById('success-modal-close').onclick = () => {
                     document.body.classList.remove('modal-open');
-                    window.location.href = '/attendance_management';
+                    successModal.classList.remove('active');
+                    // window.location.href = '/attendance_management';
                 }
             }
 

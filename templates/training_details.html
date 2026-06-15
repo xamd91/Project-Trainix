@@ -174,7 +174,7 @@
                 <p class="modal-subtitle">{{ training_session.Title }} &bull; {{ training_session.Date.strftime('%B %d, %Y') }} &bull; {{ training_session.Time.strftime('%I:%M %p') }}</p>
             </div>
 
-            <form class="booking-form" action="/book_session/{{ training_session.SessionId }}" method="POST">
+            <form class="booking-form" action="/book_session/{{ training_session.SessionId }}" method="POST" id="booking-form">
 
                 <!-- <div class="booking-form-row">
                     <div class="booking-form-group">
@@ -226,6 +226,28 @@
 
             </form>
 
+        </div>
+    </div>
+
+    <div class="error-modal-container" id="error-modal-container">
+        <div class="modal-content">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <!-- <h2>Login Failed!</h2> -->
+            <p id="error-modal-message"></p>
+            <button class="error-modal-close caveat-btn" id="error-modal-close">Close</button>
+        </div>
+    </div>
+
+    <div class="success-modal-container" id="success-modal-container">
+        <div class="modal-content success">
+            <div class="success-icon">
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <!-- <h2>Login Successful!</h2> -->
+            <p id="success-modal-message"></p>
+            <button class="success-modal-close caveat-btn" id="success-modal-close">Close</button>
         </div>
     </div>
 

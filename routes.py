@@ -24,6 +24,26 @@ def register_routes(app, db):
     def delete_user_route(user_id):
         from pages.delete_user import delete_user
         return delete_user(user_id)
+    
+    @app.route('/admin_dashboard/edit_sessions/<int:session_id>', methods=['GET','POST'])
+    def edit_sessions_route(session_id):
+        from pages.edit_sessions import edit_sessions
+        return edit_sessions(session_id)
+    
+    @app.route('/admin_dashboard/delete_sessions/<int:session_id>', methods=['GET','POST'])
+    def delete_sessions_route(session_id):
+        from pages.delete_sessions import delete_sessions
+        return delete_sessions(session_id)
+    
+    @app.route('/admin_dashboard/edit_departments/<int:department_id>', methods=['GET','POST'])
+    def edit_departments_route(department_id):
+        from pages.edit_departments import edit_departments
+        return edit_departments(department_id)
+
+    @app.route('/admin_dashboard/delete_departments/<int:department_id>', methods=['GET','POST'])
+    def delete_departments_route(department_id):
+        from pages.delete_departments import delete_departments
+        return delete_departments(department_id)
 
     @app.route('/attendance_management', methods=['GET','POST'])
     def attendance_management():
