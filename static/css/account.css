@@ -135,7 +135,7 @@
 .account-body {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 2.5rem 2rem 5rem;
+    padding: 2.5rem 2rem 7rem;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -226,21 +226,11 @@
 .booking-card.approved { --c-accent: var(--pacific-blue); }
 .booking-card.pending-approval { --c-accent: var(--amber-glow); }
 .booking-card.cancelled,
-.booking-card.declined { --c-accent: #ef4444; }
+.booking-card.rejected { --c-accent: #ef4444; }
  
 .booking-card:hover {
     box-shadow: 0 4px 16px rgba(0, 24, 66, 0.07);
 }
- 
-/* .booking-card.pending {
-    background-color: #fdf9ec;
-    border-color: #f5d878;
-}
- 
-.booking-card.declined {
-    background-color: #fef2f2;
-    border-color: #fca5a5;
-} */
  
 .booking-card-header {
     display: flex;
@@ -281,32 +271,13 @@
     border: 1px solid #fbbf24;
 }
  
-.booking-status.declined,
+.booking-status.rejected,
 .booking-status.cancelled,
 .booking-status.absent {
     background: #fee2e2; 
     color: #991b1b;
     border: 1px solid #fca5a5;
 }
- 
-/* .booking-actions {
-    margin-top: 1rem;
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-}
-
-.booking-status.attended {
-    background-color: rgba(34, 163, 90, 0.12);
-    color: #166534;
-    border: 1px solid rgba(34, 163, 90, 0.25);
-}
-
-.booking-status.absent {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-} */
 
 .booking-meta {
     display: flex;
@@ -416,30 +387,216 @@
 .empty-link:hover {
   text-decoration: underline;
 }
+
+.table-wrap {
+    background: var(--white);
+    border: 1px solid #e5e7eb;
+    overflow-x: auto;
+    padding: 4px 0;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table thead tr {
+    border-bottom: 1px solid #e5e7eb;
+    background: #fafafa;
+}
+
+.history-table thead th {
+    padding: 14px 20px;  
+    text-align: left;
+    font-size: 0.75rem;      
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 500;
+    font-family: 'Caveat', cursive;
+    white-space: nowrap;
+}
+
+.history-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background 0.15s;
+}
+
+.history-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.history-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.history-table td {
+    padding: 16px 20px;
+    vertical-align: middle;
+}
+
+.cell-primary {
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: var(--navy-blue);
+    line-height: 1.2;
+}
+
+.cell-muted {
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.table-badge {
+    display: inline-block;
+    font-size: 0.74rem;   
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;      
+    text-transform: capitalize;
+}
+
+.table-badge.attended  { background: #dcfce7; color: #166534; }
+.table-badge.absent    { background: #fee2e2; color: #991b1b; }
+.table-badge.unmarked  { background: #f3f4f6; color: #9ca3af; }
+.table-badge.online    { background: #dcfce7; color: #166534; }
+.table-badge.face-to-face { background: #dbeafe; color: #1e40af; }
+.table-badge.hybrid    { background: #fef9c3; color: #854d0e; }
+
+
+
  
 /* settings */
-.accessibility-settings,
-.privacy-settings {
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    padding: 1.6rem 1.8rem;
-    margin-bottom: 1.2rem;
-    box-shadow: 0 2px 10px rgba(0, 24, 66, 0.04);
+.user-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
- 
-.accessibility-settings h4,
-.privacy-settings h4 {
+
+.settings-block {
+    background: var(--white);
+    border: 1px solid #e5e7eb;
+    padding: 24px 26px;
+}
+
+.settings-block-title {
+    font-size: 0.8rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
     font-family: 'Hand Of Sean';
-    font-size: 1.05rem;
-    font-weight: 300;
     color: var(--navy-blue);
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1.5px solid rgba(0, 176, 194, 0.2);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
 }
- 
-.settings-row {
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.form-input {
+    padding: 0.72rem 0.9rem;
+    border: 1.5px solid #e5e7eb;
+    font-size: 0.88rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: var(--white);
+    color: var(--navy-blue);
+    width: 100%;
+}
+
+.form-input:focus {
+    border-color: var(--pacific-blue);
+    box-shadow: 0 0 0 3px rgba(0, 176, 194, 0.12);
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+}
+
+.account-edit-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: #999;
+    line-height: 1.5;
+    padding: 0.7rem 0.9rem;
+    background: rgba(0, 24, 66, 0.04);
+    border-left: 2.5px solid rgba(0, 176, 194, 0.4);
+}
+
+.account-edit-note svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--pacific-blue);
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 20px;
+}
+
+.btn-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.15rem;
+    font-weight: 400;
+    border: 1.5px solid var(--navy-blue);
+    background: var(--navy-blue);
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-save:hover {
+    background: var(--amber-glow);
+    border-color: var(--amber-glow);
+    transform: translateY(-1px);
+}
+
+.btn-cancel-settings {
+    padding: 0.7rem 1.6rem;
+    font-size: 1rem;
+    background: transparent;
+    color: #555;
+    border: 1.5px solid rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-cancel-settings:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.toggle-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -449,45 +606,53 @@
     cursor: pointer;
 }
  
-.settings-row:last-child {
+.toggle-row:last-child {
     border-bottom: none;
     padding-bottom: 0;
 }
  
-.settings-row-text {
+.toggle-text {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
  
-.settings-row-text span {
+.toggle-text span {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #222;
+    color: var(--navy-blue);
 }
  
-.settings-row-text small {
+.toggle-text small {
     font-size: 0.75rem;
-    color: #999;
+    color: #6b7280;
     line-height: 1.4;
 }
- 
-/* hide checkbox */
-.settings-row input[type="checkbox"] {
-    display: none;
+
+.toggle-wrap {
+    flex-shrink: 0;
+    position: relative;
 }
  
-.toggle-slider {
-    flex-shrink: 0;
+.toggle-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+ 
+.toggle-track {
     width: 40px;
     height: 22px;
-    background: #ddd;
     border-radius: 11px;
+    background: #d1d5db;
     position: relative;
     transition: background 0.25s ease;
+    display: block;
+    cursor: pointer;
 }
  
-.toggle-slider::after {
+.toggle-track::after {
     content: '';
     position: absolute;
     width: 16px;
@@ -500,119 +665,17 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
  
-.settings-row input:checked ~ .toggle-slider {
+.toggle-input:checked + .toggle-track {
     background: var(--pacific-blue);
 }
- 
-.settings-row input:checked ~ .toggle-slider::after {
+
+.toggle-input:checked + .toggle-track::after {
     transform: translateX(18px);
 }
- 
-.profile-settings {
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    padding: 1.6rem 1.8rem;
-    margin-bottom: 1.2rem;
-    box-shadow: 0 2px 10px rgba(0, 24, 66, 0.04);
-}
 
-.profile-settings h4 {
-    font-family: 'Hand Of Sean';
-    font-size: 1.05rem;
-    font-weight: 300;
-    color: var(--navy-blue);
-    letter-spacing: 0.5px;
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1.5px solid rgba(0, 176, 194, 0.2);
-}
 
-.profile-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
 
-.profile-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
 
-.profile-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.profile-form-group label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    color: #444;
-    text-transform: uppercase;
-}
-
-.profile-form-group input,
-.profile-form-group select {
-    padding: 0.72rem 0.9rem;
-    border: 1.5px solid rgba(0, 0, 0, 0.12);
-    font-size: 0.88rem;
-    font-family: "Montserrat", sans-serif;
-    color: #222;
-    background: #fff;
-    outline: none;
-    border-radius: 6px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    appearance: auto;
-}
-
-.profile-form-group input::placeholder {
-    color: #bbb;
-}
-
-.profile-form-group input:focus,
-.profile-form-group select:focus {
-    border-color: var(--pacific-blue);
-    box-shadow: 0 0 0 3px rgba(0, 176, 194, 0.12);
-}
-
-.profile-form-actions {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: 0.5rem;
-}
-
-.btn-save {
-    padding: 0.7rem 1.6rem;
-    font-size: 1rem;
-    background: var(--navy-blue);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.25s ease, transform 0.2s ease;
-}
-
-.btn-save:hover {
-    background: var(--pacific-blue);
-    transform: translateY(-1px);
-}
-
-.btn-cancel-settings {
-    padding: 0.7rem 1.6rem;
-    font-size: 1rem;
-    background: transparent;
-    color: #555;
-    border: 1.5px solid rgba(0, 0, 0, 0.15);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.btn-cancel-settings:hover {
-    background: rgba(0, 0, 0, 0.04);
-}
 
 @media (max-width: 640px) {
     .profile-form-row {

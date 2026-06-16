@@ -34,7 +34,7 @@ def page():
             ),
             Bookings.Status == "Pending Approval"
         )
-        .all()
+        .order_by(Bookings.BookingDate.desc()).all()
     )
 
     past_approvals = (
@@ -49,7 +49,7 @@ def page():
             ),
             Bookings.Status.in_(['Approved', 'Rejected', 'Cancelled'])
         )
-        .all()
+        .order_by(Bookings.DecidedOn.desc()).all()
     )
 
     # sessions = TrainingSessions.query.all()

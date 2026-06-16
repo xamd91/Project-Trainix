@@ -3,7 +3,7 @@ from models import TrainingSessions
 from sqlalchemy import or_
 from app import db
 
-def delete_sessions(session_id):
+def delete_session(session_id):
 
     sessions = TrainingSessions.query.get(session_id)
 

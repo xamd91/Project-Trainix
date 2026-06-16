@@ -20,7 +20,8 @@ def page():
     managers = Users.query.filter_by(Role='Manager').all()
     departments = Departments.query.all()
     training_sessions = TrainingSessions.query.all()
-
+    roles = db.session.scalars(db.session.query(Users.Role).distinct()).all()
+    
     return render_template(
         'admin_dashboard.html',
         admin=admin,
@@ -31,5 +32,6 @@ def page():
         managers=managers,
         departments=departments,
         training_sessions=training_sessions,
-        session_id=session_id
+        session_id=session_id,
+        roles=roles
         )

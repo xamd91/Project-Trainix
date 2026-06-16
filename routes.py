@@ -15,6 +15,11 @@ def register_routes(app, db):
         from pages.admin_dashboard import page
         return page()
 
+    @app.route('/admin_dashboard/create_user', methods=['GET','POST'])
+    def create_user_route():
+        from pages.create_user import create_user
+        return create_user()
+
     @app.route('/admin_dashboard/edit_user/<int:user_id>', methods=['GET','POST'])
     def edit_user_route(user_id):
         from pages.edit_user import edit_user
@@ -24,41 +29,62 @@ def register_routes(app, db):
     def delete_user_route(user_id):
         from pages.delete_user import delete_user
         return delete_user(user_id)
-    
-    @app.route('/admin_dashboard/edit_sessions/<int:session_id>', methods=['GET','POST'])
-    def edit_sessions_route(session_id):
-        from pages.edit_sessions import edit_sessions
-        return edit_sessions(session_id)
-    
-    @app.route('/admin_dashboard/delete_sessions/<int:session_id>', methods=['GET','POST'])
-    def delete_sessions_route(session_id):
-        from pages.delete_sessions import delete_sessions
-        return delete_sessions(session_id)
-    
-    @app.route('/admin_dashboard/edit_departments/<int:department_id>', methods=['GET','POST'])
-    def edit_departments_route(department_id):
-        from pages.edit_departments import edit_departments
-        return edit_departments(department_id)
 
-    @app.route('/admin_dashboard/delete_departments/<int:department_id>', methods=['GET','POST'])
-    def delete_departments_route(department_id):
-        from pages.delete_departments import delete_departments
-        return delete_departments(department_id)
+    @app.route('/admin_dashboard/create_session', methods=['GET','POST'])
+    def create_session_route():
+        from pages.create_session import create_session
+        return create_session()
+    
+    @app.route('/admin_dashboard/edit_session/<int:session_id>', methods=['GET','POST'])
+    def edit_session_route(session_id):
+        from pages.edit_session import edit_session
+        return edit_session(session_id)
+    
+    @app.route('/admin_dashboard/delete_session/<int:session_id>', methods=['GET','POST'])
+    def delete_session_route(session_id):
+        from pages.delete_session import delete_session
+        return delete_session(session_id)
+    
+    @app.route('/admin_dashboard/create_department', methods=['GET','POST'])
+    def create_department_route():
+        from pages.create_department import create_department
+        return create_department()
+    
+    @app.route('/admin_dashboard/edit_department/<int:department_id>', methods=['GET','POST'])
+    def edit_department_route(department_id):
+        from pages.edit_department import edit_department
+        return edit_department(department_id)
+
+    @app.route('/admin_dashboard/delete_department/<int:department_id>', methods=['GET','POST'])
+    def delete_department_route(department_id):
+        from pages.delete_department import delete_department
+        return delete_department(department_id)
+
 
     @app.route('/attendance_management', methods=['GET','POST'])
     def attendance_management():
         from pages.attendance_management import page
         return page()
     
-    @app.route('/mark_attendance', methods=["POST"])
+    @app.route('/attendance_management/mark_attendance', methods=["POST"])
     def mark_attendance_route():
         from pages.mark_attendance_page import mark_attendance
         return mark_attendance()
     
-    @app.route('/complete_session/<int:session_id>')
+    @app.route('/attendance_management/complete_session/<int:session_id>')
     def complete_session_route(session_id):
         from pages.complete_session import complete_session
         return complete_session(session_id) 
+    
+    @app.route('/account/cancel_booking/<int:booking_id>')
+    def cancel_booking_route(booking_id):
+        from pages.cancel_booking_page import cancel_booking
+        return cancel_booking(booking_id)
+    
+    @app.route('/account/update_profile', methods=["POST"])
+    def update_profile_route():
+        from pages.update_profile import update_profile
+        return update_profile()
 
     @app.route('/')
     def home():

@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request
 from models import TrainingSessions
 from app import db
 
-def edit_sessions(session_id):
+def edit_session(session_id):
 
     training_sessions = TrainingSessions.query.get(session_id)
 

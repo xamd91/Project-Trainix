@@ -13,27 +13,51 @@ function closeUsersEditModal() {
     document.getElementById('editUserModal').style.display = 'none';
 }
 
-function openSessionsEditModal(SessionId, title, trainer, department) {
-    document.getElementById('editSessionsModal').style.display = 'block';
+function openSessionEditModal(SessionId, title, trainer, department) {
+    document.getElementById('editSessionModal').style.display = 'block';
     document.getElementById('editSessionName').value = title;
     document.getElementById('editTrainer').value = trainer;
-    document.getElementById('editSessionsDepartment').value = department;
+    document.getElementById('editSessionDepartment').value = department;
 
-    document.getElementById('editSessionsForm').action = "/admin_dashboard/edit_sessions/" + SessionId;
+    document.getElementById('editSessionForm').action = "/admin_dashboard/edit_session/" + SessionId;
 }
 
-function closeSessionsEditModal() {
-    document.getElementById('editSessionsModal').style.display = 'none';
+function closeSessionEditModal() {
+    document.getElementById('editSessionModal').style.display = 'none';
 }
 
-function openDepartmentsEditModal(DepartmentId, DepartmentName, manager) {
-    document.getElementById('editDepartmentsModal').style.display = 'block';
+function openDepartmentEditModal(DepartmentId, DepartmentName, manager) {
+    document.getElementById('editDepartmentModal').style.display = 'block';
     document.getElementById('editDepartmentName').value = DepartmentName;
     document.getElementById('editManager').value = manager;
 
-    document.getElementById('editSessionsForm').action = "/admin_dashboard/edit_departments/" + DepartmentId;
+    document.getElementById('editDepartmentForm').action = "/admin_dashboard/edit_department/" + DepartmentId;
 }
 
-function closeDepartmentsEditModal() {
-    document.getElementById('editDepartmentsModal').style.display = 'none';
+function closeDepartmentEditModal() {
+    document.getElementById('editDepartmentModal').style.display = 'none';
+}
+
+
+function openCreateUserModal() {
+    document.getElementById('createUserModal').style.display = 'block';
+}
+
+function closeCreateUserModal() {
+    document.getElementById('createUserModal').style.display = 'none';
+}
+
+function openCreateSessionModal() {
+    document.getElementById('createSessionModal').style.display = 'block';
+}
+
+function closeCreateSessionModal() {
+    document.getElementById('createSessionModal').style.display = 'none';
+}
+function openCreateDepartmentModal() {
+    document.getElementById('createDepartmentModal').style.display = 'block';
+}
+
+function closeCreateDepartmentModal() {
+    document.getElementById('createDepartmentModal').style.display = 'none';
 }
