@@ -15,7 +15,15 @@ def book_session(session_id):
         user = Users.query.filter_by(UserId=user_id).first()
         training_session = TrainingSessions.query.filter_by(SessionId=session_id).first()
 
-        existing = Bookings.query.filter_by(UserId=user_id, SessionId=session_id).first()
+        existing = (
+            Bookings.query
+            .filter(
+                Bookings.SessionId==session_id, 
+                Bookings.UserId==user_id,
+                Bookings.Status != "Cancelled"
+            )
+            .first()
+        )
 
         if existing:
             return jsonify({

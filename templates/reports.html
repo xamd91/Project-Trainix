@@ -2,6 +2,91 @@
 
 {% block title %} Trainix | Reports {% endblock %}
 
+{% block extra_css %} <link rel="stylesheet" href="../static/css/reports.css"> {% endblock %}
+
 {% block content %}
+
+ <div class="page-hero no-select">
+    <div class="page-hero-content">
+        <p class="hero-breadcrumb"><a href="/">Home</a> / Reports</p>
+        <h1>Welcome {{ admin.FirstName }}</h1>
+        <p>Analyse training data, generate reports and view historty.</p>
+    </div>
+</div>
+
+<div class="admin-menu-wrap">
+    <div class="admin-menu">
+        <a href="{{ url_for('reports', tab='overview') }}" class="admin-menu-switch {% if tab =='overview' %}active{% endif %}">Overview</a>
+        <a href="{{ url_for('reports', tab='view_reports') }}" class="admin-menu-switch {% if tab =='view_reports' %}active{% endif %}">View Reports</a>
+        <a href="{{ url_for('reports', tab='reports_history') }}" class="admin-menu-switch {% if tab =='reports_history' %}active{% endif %}">Reports History</a>
+    </div>
+</div>
+
+<div class="dashboard-container">
+    {% if tab == 'overview' %}
+        <section>
+            <h2>Overview</h2>
+            <div class="stats">
+                <div>Total Users:{{ users|length }}</div>
+                <div>Total Sessions {{ sessions|length }}</div>
+                <div>Total Bookings: {{ bookings|length }}</div>
+            </div>
+        </section>
+        <section>
+            <h2>Upcoming Sessions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Session</th>
+                        <th>Date</th>
+                        <th>Trainer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions [:5] %}
+                        <tr>
+                            <td>{{ session.Title }}</td>
+                            <td>{{ session.Date.strftime('%d %b %Y') }}</td>
+                            <td>{{ session.trainer.FirstName }} {{ session.trainer.lastName }} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    {% elif tab =='view_reports' %}
+        <section>
+            <h2>View Reports</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Session</th>
+                        <th>Capacity</th>
+                        <th>Booked</th>
+                        <th>Attendance %</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session, booked in sessions_count %}
+                        <tr>
+                            <td>{{ session.Title }}</td>
+                            <td>{{ session.Capacity }}</td>
+                            <td>{{ booked }}</td>
+                            <td>
+                                {% if session.Capacity > 0 %}
+                                    {{ (booked / session.Capacity * 100 | round(1)) }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </td>
+                            <td>{{ session.Status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button onclick="exportCSV()">Export CSV</button>
+        </section>
+    {% endif %}
+</div>
 
 {% endblock %}

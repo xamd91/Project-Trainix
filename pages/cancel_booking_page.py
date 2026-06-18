@@ -8,6 +8,8 @@ def cancel_booking(booking_id):
     booking = Bookings.query.filter_by(BookingId=booking_id).first()
 
     booking.Status = "Cancelled"
+
+    booking.session.Booked -= 1
     
     db.session.commit()
 

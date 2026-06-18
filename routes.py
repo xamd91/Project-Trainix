@@ -107,8 +107,9 @@ def register_routes(app, db):
 
     @app.route('/reports', methods=['GET','POST'])
     def reports():
-        return render_template('reports.html')
-
+        from pages.reports import page
+        return page()
+    
     @app.route('/register', methods=["GET", "POST"])
     def register():
         from pages.register_page import page

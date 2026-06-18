@@ -13,7 +13,15 @@ def page(session_id):
     if training_session is None:
         return redirect(url_for('training_catalogue'))
 
-    already_booked = Bookings.query.filter_by(SessionId=session_id, UserId=user_id).first()
+    already_booked = (
+        Bookings.query
+        .filter(
+            Bookings.SessionId==session_id, 
+            Bookings.UserId==user_id,
+            Bookings.Status != "Cancelled"
+        )
+        .first()
+    )
 
     total_bookings = training_session.Booked
     remaining_slots = training_session.Capacity - total_bookings

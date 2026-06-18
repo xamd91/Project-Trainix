@@ -6,23 +6,430 @@
 
 {% block content %}
 
-<div class="page-hero no-select">
-    <div class="page-hero-content">
-        <p class="hero-breadcrumb"><a href="/">Home</a> / Admin Dashboard</p>
-        <h1>Welcome {{ admin.FirstName }}</h1>
-        <p>Centralised control for managing users, sessions, departments, and performance insights</p>
-    </div>
-</div>
-
-<div class="admin-menu-wrap">
-        <div class="admin-menu">
-            <a href="{{ url_for('admin_dashboard', tab='overview') }}" class="admin-menu-switch {% if tab == 'overview' %}active{% endif %}">Overview</a>
-            <a href="{{ url_for('admin_dashboard', tab='user_management') }}" class="admin-menu-switch {% if tab == 'user_management' %}active{% endif %}">Users</a>
-            <a href="{{ url_for('admin_dashboard', tab='session_management') }}" class="admin-menu-switch {% if tab == 'session_management' %}active{% endif %}">Courses</a>
-            <a href="{{ url_for('admin_dashboard', tab='department_management') }}" class="admin-menu-switch {% if tab == 'department_management' %}active{% endif %}">Departments</a>
+    <div class="page-hero no-select">
+        <div class="page-hero-content">
+            <p class="hero-breadcrumb"><a href="/">Home</a> / Admin Dashboard</p>
+            <h1>Welcome {{ admin.FirstName }}</h1>
+            <p>Centralised control for managing users, sessions, departments, and performance insights</p>
         </div>
     </div>
-</div>
+
+    <div class="admin-menu-wrap">
+            <div class="admin-menu">
+                <a href="{{ url_for('admin_dashboard', tab='overview') }}" class="admin-menu-switch {% if tab == 'overview' %}active{% endif %}">Overview</a>
+                <a href="{{ url_for('admin_dashboard', tab='user_management') }}" class="admin-menu-switch {% if tab == 'user_management' %}active{% endif %}">Users</a>
+                <a href="{{ url_for('admin_dashboard', tab='session_management') }}" class="admin-menu-switch {% if tab == 'session_management' %}active{% endif %}">Sessions</a>
+                <a href="{{ url_for('admin_dashboard', tab='department_management') }}" class="admin-menu-switch {% if tab == 'department_management' %}active{% endif %}">Departments</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+
+        {% if tab == 'overview' %}
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">At a glance</span>
+                        <h2 class="section-title">Platform Overview</h2>
+                    </div>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stats-grid">
+                        <div class="stat-card total-users">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: var(--amber-glow);"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M3 19v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1m6 0v-1a4 4 0 0 0-4-4m-2.5-8.83a3 3 0 1 1 0 5.659M12 8a3 3 0 1 1-6 0a3 3 0 0 1 6 0Z"></path></svg>
+                            </div>
+                            <div class="stat-number">{{ users | length }}</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-card active-sessions">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: var(--pacific-blue);"><path fill="currentColor" d="M4 6.633q.21-.085.503-.181A9.8 9.8 0 0 1 7.5 6a9.8 9.8 0 0 1 2.997.452q.293.096.503.181v10.88A11.8 11.8 0 0 0 7.5 17c-1.46 0-2.649.248-3.5.513zm8-1.748a9 9 0 0 0-.888-.337A11.8 11.8 0 0 0 7.5 4c-1.526 0-2.755.271-3.612.548a9 9 0 0 0-1.001.389a6 6 0 0 0-.357.18l-.025.014l-.009.005l-.003.002h-.001c-.002.002-.247.147-.002.002A1 1 0 0 0 2 6v13a1 1 0 0 0 1.51.86l-.005.003h.001l.002-.001l.001-.001l.037-.02q.056-.03.182-.09c.17-.078.43-.188.775-.3A9.8 9.8 0 0 1 7.5 19a9.8 9.8 0 0 1 2.997.451a7 7 0 0 1 .775.3a4 4 0 0 1 .223.112m0 0l-.002-.001l-.001-.001c.314.185.704.185 1.018 0l.037-.02q.056-.03.182-.09a7 7 0 0 1 .775-.3A9.8 9.8 0 0 1 16.5 19a9.8 9.8 0 0 1 2.997.451a7 7 0 0 1 .775.3a4 4 0 0 1 .219.11A1 1 0 0 0 22 19V6a1 1 0 0 0-.49-.86l-.002-.001h-.001l-.003-.003l-.01-.005l-.024-.014a6 6 0 0 0-.357-.18a9 9 0 0 0-1-.389A11.8 11.8 0 0 0 16.5 4c-1.525 0-2.755.271-3.612.548a9 9 0 0 0-.888.337m8 1.748v10.88A11.8 11.8 0 0 0 16.5 17c-1.46 0-2.649.248-3.5.513V6.633q.21-.085.503-.181A9.8 9.8 0 0 1 16.5 6a9.8 9.8 0 0 1 2.997.452q.293.096.503.181m.49.228l.005.002h-.001zm0 13l.004.002l-.002-.002"></path></svg>
+                            </div>
+                            <div class="stat-number">{{ active_sessions }}</div>
+                            <div class="stat-label">Active Sessions</div>
+                        </div>
+                        <div class="stat-card trainers">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: rgb(74, 85, 101);"><path fill="currentColor" d="M12 4a4 4 0 1 0 0 8a4 4 0 0 0 0-8M6 8a6 6 0 1 1 12 0A6 6 0 0 1 6 8m2 10a3 3 0 0 0-3 3a1 1 0 1 1-2 0a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5a1 1 0 1 1-2 0a3 3 0 0 0-3-3z"></path></svg>
+                            </div>
+                            <div class="stat-number">{{ trainers | length }}</div>
+                            <div class="stat-label">Trainers</div>
+                        </div>
+                        <div class="stat-card attendance">
+                            <div class="stat-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            </div>
+                            <div class="stat-number">-%</div>
+                            <div class="stat-label">Overall attendance rate</div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">Shortcuts</span>
+                        <h2 class="section-title">Quick Actions</h2>
+                    </div>
+                </div>
+
+                <div class="quick-grid">
+
+                    <a class="quick-tile" href="{{ url_for('admin_dashboard', tab='session_management') }}" aria-label="Create a new training session">
+                    <div class="tile-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B0C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="tile-label caveat-btn">Create Session</div>
+                        <div class="tile-sub">Schedule a new training session</div>
+                    </div>
+                    </a>
+
+                    <a class="quick-tile" href="{{ url_for('admin_dashboard', tab='user_management') }}" aria-label="Add a new user">
+                    <div class="tile-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F99D20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                        <!-- <line x1="19" y1="8" x2="19" y2="14"/>
+                        <line x1="22" y1="11" x2="16" y2="11"/> -->
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="tile-label caveat-btn">Add User</div>
+                        <div class="tile-sub">Register a new platform user</div>
+                    </div>
+                    </a>
+
+                    <a class="quick-tile" href="{{ url_for('reports') }}" aria-label="Generate a report">
+                    <div class="tile-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#001842" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="tile-label caveat-btn">Generate Report</div>
+                        <div class="tile-sub">Export attendance and usage data</div>
+                    </div>
+                    </a>
+
+                </div>
+
+            </section>
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">Latest activity</span>
+                        <h2 class="section-title">Upcoming Sessions</h2>
+                    </div>
+                    <a href="{{ url_for('admin_dashboard', tab='session_management') }}" class="btn-ghost caveat-btn">View all</a>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="recent-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Session</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Trainer</th>
+                            <th scope="col">Delivery</th>
+                            <th scope="col">Capacity</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in upcoming_sessions %}
+                            <tr>
+                                <td class="cell-primary">{{ session.course.CourseName }}</td>
+                                <td class="cell-muted">{{ session.Date.strftime('%d %b %Y') }}</td>
+                                <td class="cell-muted">{{ session.trainer.FirstName }} {{ session.trainer.LastName }}</td>
+                                <td><span class="table-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">{{ session.DeliveryType }}</span></td>
+                                <td class="cell-muted">{{ session.Booked }} / {{ session.Capacity }}</td>
+                                <td>
+                                    {% if session.Status == 'Completed' %}
+                                    <span class="table-badge completed">Completed</span>
+                                    {% else %}
+                                    <span class="table-badge upcoming">Upcoming</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr class="empty-row">
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                        <p class="empty-title">Nothing to show yet</p>
+                                        <p class="empty-sub">Recent sessions will appear here once training activities are scheduled or conducted.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        {% elif tab == 'user_management' %}
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">Directory</span>
+                        <h2 class="section-title">Users</h2>
+                    </div>
+                </div>
+
+                <div class="table-toolbar">
+                    <div class="search">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="text" id="users-search" placeholder="Search users..." aria-label="Search users">
+                    </div>
+                    <a href="" class="btn-create caveat-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        Create user
+                    </a>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="recent-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">User</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Department</th>
+                            <th scope="col">Job title</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-body">
+                        {% for user in users %}
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="avatar">
+                                            {{ user.FirstName[0] }}{{ user.LastName[0] }}
+                                        </div>
+                                        <span class="cell-primary">{{ user.FirstName }} {{ user.LastName }}</span>
+                                    </div>
+                                </td>
+                                <td class="cell-muted">{{ user.Email }}</td>
+                                <td class="cell-muted">{{ user.department.DepartmentName if user.department else '—' }}</td>
+                                <td class="cell-muted">{{ user.JobTitle }}</td>
+                                <td><span class="table-badge {{ user.Role | lower }}">{{ user.Role }}</span></td>
+                                <td>
+                                    <div class="row-actions">
+                                    <a href="" class="btn-icon" title="Edit {{ user.FirstName }}" aria-label="Edit {{ user.FirstName }} {{ user.LastName }}">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    </a>
+                                    <form method="POST" action="" style="display:contents">
+                                        <button type="submit" class="btn-icon danger" title="Delete {{ user.FirstName }}" aria-label="Delete {{ user.FirstName }} {{ user.LastName }}">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                        </button>
+                                    </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr class="empty-row">
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <p class="empty-title">No users found</p>
+                                        <p class="empty-sub">Create the first user to get started.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        {% elif tab == 'session_management' %}
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">Schedule</span>
+                        <h2 class="section-title">Sessions</h2>
+                    </div>
+                </div>
+
+                <div class="table-toolbar">
+                    <div class="search">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="text" id="sessions-search" placeholder="Search sessions..." aria-label="Search sessions">
+                    </div>
+                    <a href="" class="btn-create caveat-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        Create session
+                    </a>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="recent-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Session</th>
+                                <th scope="col">Date & Time</th>
+                                <!-- <th scope="col">Time</th> -->
+                                <th scope="col">Trainer</th>
+                                <th scope="col">Delivery</th>
+                                <th scope="col">Capacity</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-body">
+                            {% for session in training_sessions %}
+                                <tr>
+                                    <td>
+                                        <div class="cell-primary">{{ session.course.CourseName }}</div>
+                                    </td>
+                                    <td class="cell-muted">{{ session.Date.strftime('%d %b %Y') }} &bull; {{ session.Time.strftime('%I:%M %p') }}</td>
+                                    <!-- <td class="cell-muted">{{ session.Time.strftime('%H:%M') }}</td> -->
+                                    <td class="cell-muted">{{ session.trainer.FirstName }} {{ session.trainer.LastName }}</td>
+                                    <td><span class="table-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">{{ session.DeliveryType }}</span></td>
+                                    <td class="cell-muted">{{ session.Booked }} / {{ session.Capacity }}</td>
+                                    <td>
+                                        {% if session.Status == 'Completed' %}
+                                            <span class="table-badge completed">Completed</span>
+                                        {% else %}
+                                            <span class="table-badge upcoming">Upcoming</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="row-actions">
+                                            <a href="" class="btn-icon" title="Edit session">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </a>
+                                            <form method="POST" action="" style="display:contents">
+                                                <button type="submit" class="btn-icon danger" title="Delete session">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr class="empty-row">
+                                    <td colspan="8">
+                                        <div class="empty-state">
+                                            <p class="empty-title">No sessions found</p>
+                                            <p class="empty-sub">Create the first session to get started.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        {% elif tab == 'department_management' %}
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <span class="section-eyebrow">Organisation</span>
+                        <h2 class="section-title">Departments</h2>
+                    </div>
+                </div>
+
+                <div class="table-toolbar">
+                    <div class="search">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="text" id="departments" placeholder="Search departments..." aria-label="Search departments">
+                    </div>
+                    <a href="" class="btn-create caveat-btn">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        Create department
+                    </a>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="recent-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Department</th>
+                                <th scope="col">Manager</th>
+                                <th scope="col">Members</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="departments-body">
+                            {% for department in departments %}
+                                <tr>
+                                    <td>
+                                        <div class="cell-primary">{{ department.DepartmentName }}</div>
+                                    </td>
+                                    <td class="cell-muted">
+                                        {% if department.manager %}
+                                            {{ department.manager.FirstName }} {{ department.manager.LastName }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                    <td class="cell-muted">{{ department.users | length }}</td>
+                                    <td>
+                                        <div class="row-actions">
+                                            <a href="" class="btn-icon" title="Edit session">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </a>
+                                            <form method="POST" action="" style="display:contents">
+                                                <button type="submit" class="btn-icon danger" title="Delete session">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr class="empty-row">
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <p class="empty-title">No departments found</p>
+                                            <p class="empty-sub">Create the first department to get started.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        {% endif %}
+
+    </div>
+
+
+<!-- 
+
 
 
 <div class="dashboard-container">
@@ -34,38 +441,7 @@
                 </h2>
             </div>
         </div>
-        <div class="stats-container">
-            <div class="stats-grid">
-                <div class="stat-card total-users">
-                    <div class="stat-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: var(--amber-glow);"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M3 19v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1m6 0v-1a4 4 0 0 0-4-4m-2.5-8.83a3 3 0 1 1 0 5.659M12 8a3 3 0 1 1-6 0a3 3 0 0 1 6 0Z"></path></svg>
-                    </div>
-                    <div class="stat-number">{{ users | length }}</div>
-                    <div class="stat-label">Total Users</div>
-                </div>
-                <div class="stat-card active-sessions">
-                    <div class="stat-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: var(--pacific-blue);"><path fill="currentColor" d="M4 6.633q.21-.085.503-.181A9.8 9.8 0 0 1 7.5 6a9.8 9.8 0 0 1 2.997.452q.293.096.503.181v10.88A11.8 11.8 0 0 0 7.5 17c-1.46 0-2.649.248-3.5.513zm8-1.748a9 9 0 0 0-.888-.337A11.8 11.8 0 0 0 7.5 4c-1.526 0-2.755.271-3.612.548a9 9 0 0 0-1.001.389a6 6 0 0 0-.357.18l-.025.014l-.009.005l-.003.002h-.001c-.002.002-.247.147-.002.002A1 1 0 0 0 2 6v13a1 1 0 0 0 1.51.86l-.005.003h.001l.002-.001l.001-.001l.037-.02q.056-.03.182-.09c.17-.078.43-.188.775-.3A9.8 9.8 0 0 1 7.5 19a9.8 9.8 0 0 1 2.997.451a7 7 0 0 1 .775.3a4 4 0 0 1 .223.112m0 0l-.002-.001l-.001-.001c.314.185.704.185 1.018 0l.037-.02q.056-.03.182-.09a7 7 0 0 1 .775-.3A9.8 9.8 0 0 1 16.5 19a9.8 9.8 0 0 1 2.997.451a7 7 0 0 1 .775.3a4 4 0 0 1 .219.11A1 1 0 0 0 22 19V6a1 1 0 0 0-.49-.86l-.002-.001h-.001l-.003-.003l-.01-.005l-.024-.014a6 6 0 0 0-.357-.18a9 9 0 0 0-1-.389A11.8 11.8 0 0 0 16.5 4c-1.525 0-2.755.271-3.612.548a9 9 0 0 0-.888.337m8 1.748v10.88A11.8 11.8 0 0 0 16.5 17c-1.46 0-2.649.248-3.5.513V6.633q.21-.085.503-.181A9.8 9.8 0 0 1 16.5 6a9.8 9.8 0 0 1 2.997.452q.293.096.503.181m.49.228l.005.002h-.001zm0 13l.004.002l-.002-.002"></path></svg>
-                    </div>
-                    <div class="stat-number">{{ active_sessions | length }}</div>
-                    <div class="stat-label">Active Sessions</div>
-                </div>
-                <div class="stat-card trainers">
-                    <div class="stat-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: rgb(74, 85, 101);"><path fill="currentColor" d="M12 4a4 4 0 1 0 0 8a4 4 0 0 0 0-8M6 8a6 6 0 1 1 12 0A6 6 0 0 1 6 8m2 10a3 3 0 0 0-3 3a1 1 0 1 1-2 0a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5a1 1 0 1 1-2 0a3 3 0 0 0-3-3z"></path></svg>
-                    </div>
-                    <div class="stat-number">{{ trainers | length }}</div>
-                    <div class="stat-label">Trainers</div>
-                </div>
-                <div class="stat-card attendance">
-                    <div class="stat-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    </div>
-                    <div class="stat-number">-%</div>
-                    <div class="stat-label">Attendance</div>
-                </div>
-            </div>
-        </div>
+        
 
         
 
@@ -392,7 +768,7 @@
             </table>
         </div>
     {% endif %}
-</div>
+</div> -->
 
 {% endblock %}
 

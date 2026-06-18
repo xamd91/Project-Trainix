@@ -13,13 +13,25 @@ def page():
     session_id = request.args.get('SessionId')
 
     admin = Users.query.filter_by(UserId=user_id).first()
-    users = Users.query.all()
+    users = Users.query.order_by(Users.LastName.asc()).all()
     tab = request.args.get('tab', 'overview')
-    active_sessions = TrainingSessions.query.filter(TrainingSessions.Date >= db.func.current_date()).order_by(TrainingSessions.Date).all()
+
+    upcoming_sessions = (
+        TrainingSessions.query.filter(TrainingSessions.Date >= db.func.current_date())
+        .order_by(TrainingSessions.Date.asc())
+        .limit(5)
+    )
+
+    active_sessions = len(
+        TrainingSessions.query.filter(TrainingSessions.Date >= db.func.current_date())
+        .order_by(TrainingSessions.Date.asc())
+        .all()
+    )
+    
     trainers = Users.query.filter_by(Role='Trainer').all()
     managers = Users.query.filter_by(Role='Manager').all()
-    departments = Departments.query.all()
-    training_sessions = TrainingSessions.query.all()
+    departments = Departments.query.order_by(Departments.DepartmentName.asc()).all()
+    training_sessions = TrainingSessions.query.order_by(TrainingSessions.Date.desc()).all()
     roles = db.session.scalars(db.session.query(Users.Role).distinct()).all()
     
     return render_template(
@@ -27,11 +39,12 @@ def page():
         admin=admin,
         users=users,
         tab=tab,
-        active_sessions=active_sessions,
+        upcoming_sessions=upcoming_sessions,
         trainers=trainers,
         managers=managers,
         departments=departments,
         training_sessions=training_sessions,
+        active_sessions=active_sessions,
         session_id=session_id,
         roles=roles
         )
