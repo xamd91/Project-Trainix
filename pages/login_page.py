@@ -60,6 +60,9 @@ def page():
             elif user.Role == 'Manager':
                 session['role'] = 'manager'
 
+                if user.TrainerPerms == 'Yes':
+                    session['trainer_perms'] = True
+
                 return jsonify({
                     "status": "success",
                     "message": f"Welcome back {user.FirstName}.",
@@ -68,6 +71,9 @@ def page():
 
             elif user.Role == 'Admin':
                 session['role'] = 'admin'
+
+                if user.TrainerPerms == 'Yes':
+                    session['trainer_perms'] = True
 
                 return jsonify({
                     "status": "success",

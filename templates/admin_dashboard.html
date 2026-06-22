@@ -112,7 +112,7 @@
                     </div>
                     </a>
 
-                    <a class="quick-tile" href="{{ url_for('reports') }}" aria-label="Generate a report">
+                    <a class="quick-tile" href="{{ url_for('reports_and_analytics') }}" aria-label="Generate a report">
                     <div class="tile-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#001842" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -203,10 +203,10 @@
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         <input type="text" id="users-search" placeholder="Search users..." aria-label="Search users">
                     </div>
-                    <a href="" class="btn-create caveat-btn">
+                    <button class="btn-create caveat-btn" id="open-user-modal">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                         Create user
-                    </a>
+                    </button>
                 </div>
 
                 <div class="table-wrap">
@@ -238,14 +238,24 @@
                                 <td><span class="table-badge {{ user.Role | lower }}">{{ user.Role }}</span></td>
                                 <td>
                                     <div class="row-actions">
-                                    <a href="" class="btn-icon" title="Edit {{ user.FirstName }}" aria-label="Edit {{ user.FirstName }} {{ user.LastName }}">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                    </a>
-                                    <form method="POST" action="" style="display:contents">
-                                        <button type="submit" class="btn-icon danger" title="Delete {{ user.FirstName }}" aria-label="Delete {{ user.FirstName }} {{ user.LastName }}">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                        <button class="btn-action edit user"
+                                            id="open-edit-user-modal"
+                                            data-id="{{ user.UserId }}"
+                                            data-firstname="{{ user.FirstName }}"
+                                            data-lastname="{{ user.LastName }}"
+                                            data-email="{{ user.Email }}"
+                                            data-role="{{ user.Role }}"
+                                            data-department="{{ user.department.DepartmentId or '' }}"
+                                            data-job="{{ user.JobTitle or '' }}"
+                                            data-perms="{{ user.TrainerPerms or '' }}"
+                                        >
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                         </button>
-                                    </form>
+                                        <form method="POST" action="" style="display:contents">
+                                            <button type="submit" class="btn-action danger" title="Delete {{ user.FirstName }}" aria-label="Delete {{ user.FirstName }} {{ user.LastName }}">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -281,10 +291,10 @@
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         <input type="text" id="sessions-search" placeholder="Search sessions..." aria-label="Search sessions">
                     </div>
-                    <a href="" class="btn-create caveat-btn">
+                    <button class="btn-create caveat-btn" id="open-session-modal">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                         Create session
-                    </a>
+                    </button>
                 </div>
 
                 <div class="table-wrap">
@@ -295,7 +305,7 @@
                                 <th scope="col">Date & Time</th>
                                 <!-- <th scope="col">Time</th> -->
                                 <th scope="col">Trainer</th>
-                                <th scope="col">Delivery</th>
+                                <th scope="col">Location</th>
                                 <th scope="col">Capacity</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Actions</th>
@@ -310,7 +320,7 @@
                                     <td class="cell-muted">{{ session.Date.strftime('%d %b %Y') }} &bull; {{ session.Time.strftime('%I:%M %p') }}</td>
                                     <!-- <td class="cell-muted">{{ session.Time.strftime('%H:%M') }}</td> -->
                                     <td class="cell-muted">{{ session.trainer.FirstName }} {{ session.trainer.LastName }}</td>
-                                    <td><span class="table-badge {{ session.DeliveryType | lower | replace(' ', '-') }}">{{ session.DeliveryType }}</span></td>
+                                    <td class="cell-muted">{{ session.Location }}</td>
                                     <td class="cell-muted">{{ session.Booked }} / {{ session.Capacity }}</td>
                                     <td>
                                         {% if session.Status == 'Completed' %}
@@ -321,11 +331,23 @@
                                     </td>
                                     <td>
                                         <div class="row-actions">
-                                            <a href="" class="btn-icon" title="Edit session">
+                                            <button class="btn-action edit session"
+                                                id="open-edit-session-modal"
+                                                data-id="{{ session.SessionId }}"
+                                                data-title="{{ session.Title }}"
+                                                data-course="{{ session.CourseId }}"
+                                                data-trainer="{{ session.trainer.UserId }}"
+                                                data-date="{{ session.Date.strftime('%Y-%m-%d') }}"
+                                                data-time="{{ session.Time.strftime('%H:%M') }}"
+                                                data-location="{{ session.Location }}"
+                                                data-capacity="{{ session.Capacity }}"
+                                                data-delivery="{{ session.DeliveryType }}"
+                                                data-description="{{ session.Description or '' }}"
+                                                data-prerequisites="{{ session.Prerequisites or '' }}">
                                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </a>
+                                            </button>
                                             <form method="POST" action="" style="display:contents">
-                                                <button type="submit" class="btn-icon danger" title="Delete session">
+                                                <button type="submit" class="btn-action danger" title="Delete session">
                                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                                                 </button>
                                             </form>
@@ -364,10 +386,10 @@
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         <input type="text" id="departments" placeholder="Search departments..." aria-label="Search departments">
                     </div>
-                    <a href="" class="btn-create caveat-btn">
+                    <button class="btn-create caveat-btn" id="open-department-modal">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                         Create department
-                    </a>
+                    </button>
                 </div>
 
                 <div class="table-wrap">
@@ -396,11 +418,15 @@
                                     <td class="cell-muted">{{ department.users | length }}</td>
                                     <td>
                                         <div class="row-actions">
-                                            <a href="" class="btn-icon" title="Edit session">
+                                            <button class="btn-action edit department" id="open-edit-department-modal"
+                                                data-id="{{ department.DepartmentId }}"
+                                                data-name="{{ department.DepartmentName }}"
+                                                data-manager="{{ department.ManagerId or ''}}"
+                                            >
                                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                             </a>
                                             <form method="POST" action="" style="display:contents">
-                                                <button type="submit" class="btn-icon danger" title="Delete session">
+                                                <button type="submit" class="btn-action danger" title="Delete session">
                                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                                                 </button>
                                             </form>
@@ -428,347 +454,556 @@
     </div>
 
 
-<!-- 
+    <div class="modal-overlay" id="add-user-modal">
+        <div class="modal-panel">
 
+            <button class="modal-close" id="close-user-modal" aria-label="Close">&times;</button>
 
-
-<div class="dashboard-container">
-    {% if tab == 'overview' %}
-        <div class="section-header">
-            <div class="section-title-group">
-                <h2 class="section-title">
-                    Overview
-                </h2>
+            <div class="modal-header">
+                <h2 class="modal-title">Add New User</h2>
+                <p class="modal-subtitle">Enter the user's details below to create a new account.</p>
             </div>
-        </div>
-        
 
-        
+            <form class="add-form" action="/admin_dashboard/create_user" method="POST" id="add-user-form">
 
-    {% elif tab == 'user_management' %}
-        <div class="section-header">
-            <div class="section-title-group">
-                <h2 class="section-title">
-                    User Management
-                </h2>
-            </div>
-            <div>
-                <button onclick="openCreateUserModal()" class="create-btn caveat-btn btn-edit"> + Create User</button>
-            </div>
-            <div id="createUserModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeCreateUserModal()">&times;</span>
-                    <form method="POST" action="/admin_dashboard/create_user">
-                        <input type="text" name="first_name" id="createUserFirstName" placeholder="First Name" required>
-                        <input type="text" name="last_name" id="createUserLastName" placeholder="Last Name" required>
-                        <input type="text" name="job_title" id="createUserJobTitle" placeholder="Job Title" required>
-                        <select name="role" id="createUserRole">
-                            {% for role in roles %}
-                                <option value="{{ role }}">{{ role }}</option>
-                            {% endfor %}
+                <!-- <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="user-full-name">Full Name</label>
+                        <input class="add-input" type="text" id="user-full-name" 
+                        name="full_name"
+                        placeholder="John Doe"
+                        required>
+                    </div>
+                </div> -->
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="user-firstname">First Name</label>
+                        <input class="add-input" type="text" id="user-firstname" 
+                        name="firstname"
+                        placeholder="John"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="user-lastname">Last Name</label>
+                        <input class="add-input" type="text" id="user-lastname" 
+                        name="lastname"
+                        placeholder="Doe"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="user-email">Email</label>
+                        <input class="add-input" type="email" id="user-email" 
+                        name="email"
+                        placeholder="john.doe@company.com"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="user-password">Password</label>
+                        <input class="add-input" type="password" id="user-password" 
+                        name="password"
+                        placeholder="Password123@"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="user-role">Role</label>
+                        <select class="add-select" id="user-role" name="role" required>
+                            <option value="">Select role...</option>
+                            <option value="Learner">Learner</option>
+                            <option value="Trainer">Trainer</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Admin">Admin</option>
                         </select>
-                        <select name="department" id="createUserDepartment">
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="user-department">Department</label>
+                        <select class="add-select" id="user-department" name="department" required>
+                            <option value="">Select department...</option>
                             {% for department in departments %}
                                 <option value="{{ department.DepartmentId }}">{{ department.DepartmentName }}</option>
                             {% endfor %}
                         </select>
-                        <button type="submit" class="create-btn caveat-btn btn-edit"> Create User</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="table-wrap">
-            <table class="admin-tables">
-                <thead>
-                    <tr>
-                        <th scope="col">Employee</th>
-                        <th scope="col">Department</th>
-                        <th scope="col">Job Title</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="pending-body">
-                    {% for user in users %}
-                        <tr>
-                            <td>
-                                <div class="user-cell">
-                                    <div class="avatar">{{ user.FirstName[0] }}{{ user.LastName[0] }}</div>
-                                    <div>
-                                        <div class="cell-primary">{{ user.FirstName }} {{ user.LastName }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="cell-primary">{{ user.department.DepartmentName if user.department else "N/A" }}</div>
-                            </td>
-                            <td>
-                                <div class="cell-primary">{{ user.JobTitle }}</div>
-                            </td>
-                            <td>
-                                <div class="cell-primary">{{ user.Role }}</div>
-                            </td>
-                            <td>
-                                <div class="actions-cell">
-                                        <button type="button" onclick="openUsersEditModal(
-                                            '{{ user.UserId }}',
-                                            '{{ user.FirstName }}',
-                                            '{{ user.LastName }}',
-                                            '{{ user.JobTitle }}',
-                                            '{{ user.Role }}',
-                                            '{{ user.department.DepartmentId }}'
-                                        )" class="btn-edit caveat-btn action-btn">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: rgb(74, 85, 101);"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="m16.475 5.408l2.117 2.117m-.756-3.982L12.109 9.27a2.1 2.1 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621"></path><path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"></path></g></svg>
-                                        </button>
-                                    <form method="POST" action="{{ url_for('delete_user_route', user_id=user.UserId) }}" class="action-form">
-                                        <button type="submit" class="btn-delete caveat-btn action-btn" onclick="return confirm('Are you sure you want to delete this user?');">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 15 15" style="color: #ef4444;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M1 3.5h12m-10.5 0h9v9a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9h0Zm2 0V3a2.5 2.5 0 0 1 5 0v.5m-4 2V11m3-5.5V11"></path></svg>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr class="empty-row">
-                            <td colspan="5">
-                                <div class="empty-state">
-                                    <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                                    <p class="empty-title">No Users</p>
-                                    <p class="empty-sub">there are no users.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <div id="editUserModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" onclick="closeUsersEditModal()">&times;</span>
-                            <h2>Edit User</h2>
-                            <form id="editUserForm" method="POST">
-                                <input type="text" name="first_name" id="editFirstName" placeholder="First Name" required>
-                                <input type="text" name="last_name" id="editLastName" placeholder="Last Name" required>
-                                <input type="text" name="job_title" id="editJobTitle" placeholder="Job Title" required>
-                                <select name="role" id="editRole" required>
-                                    <option value="Learner">Learner</option>
-                                    <option value="Trainer">Trainer</option>
-                                    <option value="Manager">Manager</option>
-                                    <option value="Admin">Admin</option>
-                                </select>
-                                <select name="department" id="editUserDepartment" required>
-                                    {% for department in departments %}
-                                        <option value="{{ department.DepartmentId }}">{{ department.DepartmentName }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button type="submit" class="caveat-btn btn-edit">Save Changes</button>
-                            </form>
-                        </div>
                     </div>
-                </tbody>
-            </table>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="user-job-title">Job Title</label>
+                        <input class="add-input" type="text" id="user-job-title" 
+                        name="job"
+                        placeholder="HR Assistant"
+                        required>
+                    </div>
+                </div>
+
+                <!-- <div class="booking-form-group">
+                    <label class="booking-label" for="notes">Additional Notes <span class="booking-optional">(Optional)</span></label>
+                    <textarea class="booking-input booking-textarea" id="notes" name="notes" placeholder="Any special requirements or questions..."></textarea>
+                </div> -->
+
+                <p class="add-user-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    The user will receive access to the platform and can sign in using the credentials configured above.
+                </p>
+
+                <div class="add-form-actions">
+                    <button type="button" class="add-cancel-btn caveat-btn" id="cancel-user-modal">Cancel</button>
+                    <button type="submit" class="add-submit-btn caveat-btn">Create New User</button>
+                </div>
+
+            </form>
+
         </div>
-    {% elif tab == 'session_management' %}
-        <div class="section-header">
-            <div class="section-title-group">
-                <h2 class="section-title">
-                    Course Management
-                </h2>
+    </div>
+
+    <div class="modal-overlay" id="add-session-modal">
+        <div class="modal-panel">
+
+            <button class="modal-close" id="close-session-modal" aria-label="Close">&times;</button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Session</h2>
+                <p class="modal-subtitle">Fill in the details below to create a new training session.</p>
             </div>
-            <div>
-                <button onclick="openCreateSessionModal()" class="create-btn caveat-btn btn-edit"> + Create Session</button>
-            </div>
-            <div id="createSessionModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeCreateSessionModal()">&times;</span>
-                    <form method="POST" action="/admin_dashboard/create_session">
-                        <input type="text" name="title" id="createSessionTitle" placeholder="Session Title" required>
-                        <select name="trainer" id="createSessionTrainer" required>
+
+            <form class="add-form" action="" method="POST" id="add-session-form">
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="session-title">Session Title</label>
+                        <input class="add-input" type="text" id="session-title" 
+                        name="title"
+                        placeholder="Codeweavers Advanced Setup"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="session-course">Course</label>
+                        <select class="add-select" id="session-course" name="course" required>
+                            <option value="">Select course...</option>
+                            {% for course in courses %}
+                                <option value="{{ course.CourseId }}">{{ course.CourseName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="session-trainer">Trainer</label>
+                        <select class="add-select" id="session-trainer" name="trainer" required>
+                            <option value="">Select trainer...</option>
                             {% for trainer in trainers %}
-                                <option value="{{ trainer.UserId }}">{{ trainer.FirstName }} {{ trainer.LastName }} </option>
+                                <option value="{{ trainer.UserId }}">{{ trainer.FirstName }} {{ trainer.LastName }}</option>
                             {% endfor %}
                         </select>
-                        <select name="department" id="createSessionDepartment" required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="session-date">Date</label>
+                        <input class="add-input" type="date" id="session-date" 
+                        name="date"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="session-time">Time</label>
+                        <input class="add-input" type="time" id="session-time" 
+                        name="time"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="session-location">Location</label>
+                        <input class="add-input" type="text" id="session-location" 
+                        name="location"
+                        placeholder="Leeds office room 101"
+                        required>
+                    </div>
+                </div>
+
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="session-capacity">Capacity</label>
+                        <input class="add-input" type="number" id="session-capacity" 
+                        name="capacity"
+                        placeholder="15"
+                        min="1"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="session-delivery">Delivery Type</label>
+                        <select class="add-select" id="session-delivery" name="delivery" required>
+                            <option value="">Select type...</option>
+                            <option value="Online">Online</option>
+                            <option value="Face-to-Face">Face-to-Face</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="add-form-group">
+                    <label class="add-label" for="session-description">Description <span class="add-optional">(Optional)</span></label>
+                    <textarea class="add-input add-textarea" 
+                    id="session-description" 
+                    name="description" 
+                    placeholder="A brief description to help participants understand the session..."></textarea>
+                </div>
+                <div class="add-form-group">
+                    <label class="add-label" for="session-prerequisites">Prerequisites <span class="add-optional">(Optional)</span></label>
+                    <textarea class="add-input add-textarea" 
+                    id="session-prerequisites" 
+                    name="prerequisites" 
+                    placeholder="Any required prerequisites..."></textarea>
+                </div>
+                <!-- <p class="add-user-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    The user will receive access to the platform and can sign in using the credentials configured above.
+                </p> -->
+
+                <div class="add-form-actions">
+                    <button type="button" class="add-cancel-btn caveat-btn" id="cancel-session-modal">Cancel</button>
+                    <button type="submit" class="add-submit-btn caveat-btn">Create New Session</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="add-department-modal">
+        <div class="modal-panel">
+
+            <button class="modal-close" id="close-department-modal" aria-label="Close">&times;</button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Department</h2>
+                <p class="modal-subtitle">Create a new department and assign its manager.</p>
+            </div>
+
+            <form class="add-form" action="" method="POST" id="add-department-form">
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="department-name">Department Name</label>
+                        <input class="add-input" type="text" id="department-name" 
+                        name="name"
+                        placeholder="Codeweavers"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="department-manager">Manager</label>
+                        <select class="add-select" id="department-manager" name="manager" required>
+                            <option value="">Select manager...</option>
+                            {% for user in users %}
+                                <option value="{{ user.UserId }}">{{ user.FirstName }} {{ user.LastName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- <div class="booking-form-group">
+                    <label class="booking-label" for="notes">Additional Notes <span class="booking-optional">(Optional)</span></label>
+                    <textarea class="booking-input booking-textarea" id="notes" name="notes" placeholder="Any special requirements or questions..."></textarea>
+                </div> -->
+
+                <p class="add-user-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    The assigned manager must have the 'Manager' role configured.
+                </p>
+
+                <div class="add-form-actions">
+                    <button type="button" class="add-cancel-btn caveat-btn" id="cancel-department-modal">Cancel</button>
+                    <button type="submit" class="add-submit-btn caveat-btn">Create New Department</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!------------------------------>
+
+    <div class="modal-overlay" id="edit-user-modal">
+        <div class="modal-panel">
+
+            <button class="modal-close" id="close-edit-user-modal" aria-label="Close">&times;</button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Edit User</h2>
+                <p class="modal-subtitle">Update this user's information.</p>
+            </div>
+
+            <form class="add-form" action="" method="POST" id="edit-user-form">
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-firstname">First Name</label>
+                        <input class="add-input" type="text" id="edit-firstname" 
+                        name="firstname"
+                        placeholder="John"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-lastname">Last Name</label>
+                        <input class="add-input" type="text" id="edit-lastname" 
+                        name="lastname"
+                        placeholder="Doe"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-email">Email</label>
+                        <input class="add-input" type="email" id="edit-email" 
+                        name="email"
+                        placeholder="john.doe@company.com"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-role">Role</label>
+                        <select class="add-select" id="edit-role" name="role" required>
+                            <option value="">Select role...</option>
+                            <option value="Learner">Learner</option>
+                            <option value="Trainer">Trainer</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-department">Department</label>
+                        <select class="add-select" id="edit-department" name="department" required>
+                            <option value="">Select department...</option>
                             {% for department in departments %}
                                 <option value="{{ department.DepartmentId }}">{{ department.DepartmentName }}</option>
                             {% endfor %}
                         </select>
-                        <button type="submit" class="create-btn caveat-btn btn-edit"> Create Session</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="table-wrap">
-            <table class="admin-tables">
-                <thead>
-                    <tr>
-                        <th scope="col">Session</th>
-                        <th scope="col">Department</th>
-                        <th scope="col">Trainer</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="pending-body">
-                    {% for session in training_sessions %}
-                        <tr>
-                            <td>
-                                <div class="session-cell">
-                                    <div class="avatar">{{ session.Title[0] }}</div>
-                                    <div>
-                                        <div class="cell-primary">{{ session.Title }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="cell-primary">{{ session.course.department.DepartmentName if session.course.department else "N/A" }}</div>
-                            </td>
-                            <td>
-                                <div class="cell-primary">{{ session.trainer.FirstName }} {{ session.trainer.LastName }} </div>
-                            </td>
-                            <td>
-                                <div class="actions-cell">
-                                        <button type="button" onclick="openSessionEditModal(
-                                            '{{ session.SessionId }}',
-                                            '{{ session.Title }}',
-                                            '{{ session.TrainerId }}',
-                                            '{{ session.course.DepartmentId }}'
-                                        )" class="btn-edit caveat-btn action-btn">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: rgb(74, 85, 101);"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="m16.475 5.408l2.117 2.117m-.756-3.982L12.109 9.27a2.1 2.1 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621"></path><path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"></path></g></svg>
-                                        </button>
-                                    <form method="POST" action="{{ url_for('delete_session_route', session_id=session.SessionId) }}" class="action-form">
-                                        <button type="submit" class="btn-delete caveat-btn action-btn" onclick="return confirm('Are you sure you want to delete this course?');">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 15 15" style="color: #ef4444;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M1 3.5h12m-10.5 0h9v9a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9h0Zm2 0V3a2.5 2.5 0 0 1 5 0v.5m-4 2V11m3-5.5V11"></path></svg>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr class="empty-row">
-                            <td colspan="5">
-                                <div class="empty-state">
-                                    <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                                    <p class="empty-title">No Sessions</p>
-                                    <p class="empty-sub">there are no sessions.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <div id="editSessionModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" onclick="closeSessionEditModal()">&times;</span>
-                            <h2>Edit Session</h2>
-                            <form id="editSessionForm" method="POST">
-                                <input type="text" name="session_name" id="editSessionName" placeholder="Session Name" required>
-                                <select name="trainer" id="editTrainer" required>
-                                    {% for trainer in trainers %}
-                                        <option value="{{ trainer.UserId }}">{{ trainer.FirstName }} {{ trainer.LastName }} </option>
-                                    {% endfor %}
-                                </select>
-                                <select name="department" id="editSessionDepartment" required>
-                                    {% for department in departments %}
-                                        <option value="{{ department.DepartmentId }}">{{ department.DepartmentName }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button type="submit" class="caveat-btn btn-edit">Save Changes</button>
-                            </form>
-                        </div>
                     </div>
-                </tbody>
-            </table>
-    {% elif tab == 'department_management' %}
-        <div class="section-header">
-            <div class="section-title-group">
-                <h2 class="section-title">
-                    Department Management
-                </h2>
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-trainer-perms">Trainer Permissions <span class="add-optional">(Optional)</span></label>
+                        <select class="add-select" id="edit-trainer-perms" name="trainer-perms">
+                            <option value="">Select option...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="edit-job-title">Job Title</label>
+                        <input class="add-input" type="text" id="edit-job-title" 
+                        name="job"
+                        placeholder="Senior Developer"
+                        required>
+                    </div>
+                </div>
+
+                <!-- <div class="booking-form-group">
+                    <label class="booking-label" for="notes">Additional Notes <span class="booking-optional">(Optional)</span></label>
+                    <textarea class="booking-input booking-textarea" id="notes" name="notes" placeholder="Any special requirements or questions..."></textarea>
+                </div> -->
+
+                <p class="add-user-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Changing this user's department will also change their assigned manager.
+                </p>
+
+                <div class="add-form-actions">
+                    <button type="button" class="add-cancel-btn caveat-btn" id="cancel-edit-user-modal">Cancel</button>
+                    <button type="submit" class="add-submit-btn caveat-btn">Save Changes</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="edit-session-modal">
+        <div class="modal-panel">
+
+            <button class="modal-close" id="close-edit-session-modal" aria-label="Close">&times;</button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Session</h2>
+                <p class="modal-subtitle">Update this session's information.</p>
             </div>
-            <div>
-            <button onclick="openCreateDepartmentModal()" class="create-btn caveat-btn btn-edit"> + Create Department</button>
-            </div>
-            <div id="createDepartmentModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeCreateDepartmentModal()">&times;</span>
-                    <form method="POST" action="/admin_dashboard/create_department">
-                        <input type="text" name="department_name" id="createDepartmentName" placeholder="Department Name" required>
-                        <select name="manager" id="createDepartmentManager" required>
-                            {% for manager in managers %}
-                                <option value="{{ manager.UserId }}">{{ manager.FirstName }} {{ manager.LastName }} </option>
+
+            <form class="add-form" action="" method="POST" id="edit-session-form">
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="edit-title">Session Title</label>
+                        <input class="add-input" type="text" id="edit-title" 
+                        name="title"
+                        placeholder="Codeweavers Advanced Setup"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-course">Course</label>
+                        <select class="add-select" id="edit-course" name="course" required>
+                            <option value="">Select course...</option>
+                            {% for course in courses %}
+                                <option value="{{ course.CourseId }}">{{ course.CourseName }}</option>
                             {% endfor %}
                         </select>
-                        <button type="submit" class="create-btn caveat-btn btn-edit"> Create Department</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="table-wrap">
-            <table class="admin-tables">
-                <thead>
-                    <tr>
-                        <th scope="col">Department</th>
-                        <th scope="col">Manager</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="pending-body">
-                    {% for department in departments %}
-                        <tr>
-                            <td>
-                                <div class="department-cell">
-                                    <div class="avatar">{{ department.DepartmentName[0] }}</div>
-                                    <div>
-                                        <div class="cell-primary">{{ department.DepartmentName }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="cell-primary">{{ department.manager.FirstName if department.manager else "N/A" }}</div>
-                            </td>
-                            <td>
-                                <div class="actions-cell">
-                                        <button type="button" onclick="openDepartmentEditModal(
-                                            '{{ department.DepartmentId }}',
-                                            '{{ department.DepartmentName }}',
-                                            '{{ department.ManagerId }}'
-                                        )" class="btn-edit caveat-btn action-btn">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 24 24" style="color: rgb(74, 85, 101);"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="m16.475 5.408l2.117 2.117m-.756-3.982L12.109 9.27a2.1 2.1 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621"></path><path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3"></path></g></svg>
-                                        </button>
-                                    <form method="POST" action="{{ url_for('delete_department_route', department_id=department.DepartmentId) }}" class="action-form">
-                                        <button type="submit" class="btn-delete caveat-btn action-btn" onclick="return confirm('Are you sure you want to delete this department?');">
-                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="64" height="64" viewBox="0 0 15 15" style="color: #ef4444;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M1 3.5h12m-10.5 0h9v9a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-9h0Zm2 0V3a2.5 2.5 0 0 1 5 0v.5m-4 2V11m3-5.5V11"></path></svg>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr class="empty-row">
-                            <td colspan="5">
-                                <div class="empty-state">
-                                    <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                                    <p class="empty-title">No Departments</p>
-                                    <p class="empty-sub">there are no departments.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <div id="editDepartmentModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" onclick="closeDepartmentEditModal()">&times;</span>
-                            <h2>Edit Department</h2>
-                            <form id="editDepartmentForm" method="POST">
-                                <input type="text" name="department_name" id="editDepartmentName" placeholder="Department Name" required>
-                                <select name="manager" id="editManager" required>
-                                    {% for manager in managers %}
-                                        <option value="{{ manager.UserId }}">{{ manager.FirstName }} {{ manager.LastName }} </option>
-                                    {% endfor %}
-                                </select>
-                                <button type="submit" class="caveat-btn btn-edit">Save Changes</button>
-                            </form>
-                        </div>
                     </div>
-                </tbody>
-            </table>
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-trainer">Trainer</label>
+                        <select class="add-select" id="edit-trainer" name="trainer" required>
+                            <option value="">Select trainer...</option>
+                            {% for trainer in trainers %}
+                                <option value="{{ trainer.UserId }}">{{ trainer.FirstName }} {{ trainer.LastName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-date">Date</label>
+                        <input class="add-input" type="date" id="edit-date" 
+                        name="date"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-time">Time</label>
+                        <input class="add-input" type="time" id="edit-time" 
+                        name="time"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="edit-location">Location</label>
+                        <input class="add-input" type="text" id="edit-location" 
+                        name="location"
+                        placeholder="Leeds office room 101"
+                        required>
+                    </div>
+                </div>
+
+
+                <div class="add-form-row">
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-capacity">Capacity</label>
+                        <input class="add-input" type="number" id="edit-capacity" 
+                        name="capacity"
+                        placeholder="15"
+                        min="1"
+                        required>
+                    </div>
+                    <div class="add-form-group">
+                        <label class="add-label" for="edit-delivery">Delivery Type</label>
+                        <select class="add-select" id="edit-delivery" name="delivery" required>
+                            <option value="">Select type...</option>
+                            <option value="Online">Online</option>
+                            <option value="Face-to-Face">Face-to-Face</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="add-form-group">
+                    <label class="add-label" for="edit-description">Description <span class="add-optional">(Optional)</span></label>
+                    <textarea class="add-input add-textarea" 
+                    id="edit-description" 
+                    name="description" 
+                    placeholder="A brief description to help participants understand the session..."></textarea>
+                </div>
+                <div class="add-form-group">
+                    <label class="add-label" for="edit-prerequisites">Prerequisites <span class="add-optional">(Optional)</span></label>
+                    <textarea class="add-input add-textarea" 
+                    id="edit-prerequisites" 
+                    name="prerequisites" 
+                    placeholder="Any required prerequisites..."></textarea>
+                </div>
+                <!-- <p class="add-user-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    The user will receive access to the platform and can sign in using the credentials configured above.
+                </p> -->
+
+                <div class="add-form-actions">
+                    <button type="button" class="add-cancel-btn caveat-btn" id="cancel-edit-session-modal">Cancel</button>
+                    <button type="submit" class="add-submit-btn caveat-btn">Save Changes</button>
+                </div>
+
+            </form>
+
         </div>
-    {% endif %}
-</div> -->
+    </div>
+
+    <div class="modal-overlay" id="edit-department-modal">
+        <div class="modal-panel">
+
+            <button class="modal-close" id="close-edit-department-modal" aria-label="Close">&times;</button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Department</h2>
+                <p class="modal-subtitle">Edit this department's information.</p>
+            </div>
+
+            <form class="add-form" action="" method="POST" id="edit-department-form">
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="edit-department-name">Department Name</label>
+                        <input class="add-input" type="text" id="edit-department-name" 
+                        name="name"
+                        placeholder="Codeweavers"
+                        required>
+                    </div>
+                </div>
+
+                <div class="add-form-row">
+                    <div class="add-form-group form-group-wide">
+                        <label class="add-label" for="edit-manager">Manager</label>
+                        <select class="add-select" id="edit-manager" name="manager" required>
+                            <option value="">Select manager...</option>
+                            {% for user in users %}
+                                <option value="{{ user.UserId }}">{{ user.FirstName }} {{ user.LastName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- <div class="booking-form-group">
+                    <label class="booking-label" for="notes">Additional Notes <span class="booking-optional">(Optional)</span></label>
+                    <textarea class="booking-input booking-textarea" id="notes" name="notes" placeholder="Any special requirements or questions..."></textarea>
+                </div> -->
+
+                <p class="add-user-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    The assigned manager must have the 'Manager' role configured.
+                </p>
+
+                <div class="add-form-actions">
+                    <button type="button" class="add-cancel-btn caveat-btn" id="cancel-edit-department-modal">Cancel</button>
+                    <button type="submit" class="add-submit-btn caveat-btn">Save Changes</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 
 {% endblock %}
 

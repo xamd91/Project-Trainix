@@ -105,8 +105,8 @@ def register_routes(app, db):
         from pages.manager_dashboard import page
         return page()
 
-    @app.route('/reports', methods=['GET','POST'])
-    def reports():
+    @app.route('/reports_and_analytics', methods=['GET','POST'])
+    def reports_and_analytics():
         from pages.reports import page
         return page()
     

@@ -48,3 +48,208 @@
   line-height: 1.7;
   letter-spacing: 0.5px;
 }
+
+.admin-menu-wrap {
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  position: sticky;
+  top: 80px;
+  z-index: 50;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.admin-menu {
+  max-width: 1100px;
+  min-height: 72px;
+  align-items: stretch;
+  margin: 0 auto;
+  display: flex;
+  gap: 0.75rem;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+.admin-menu-switch {
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  font-family: "Caveat", cursive;
+  letter-spacing: 1.2px;
+  color: #666;
+  text-decoration: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+}
+
+.admin-menu-switch:hover {
+  color: var(--navy-blue);
+  background-color: transparent;
+}
+
+.admin-menu-switch.active {
+  color: var(--navy-blue);
+  font-weight: 600;
+  border-bottom-color: var(--pacific-blue);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.dashboard-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 0 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-bottom: 120px;
+}
+
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dashboard-section > .section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.section-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.section-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--pacific-blue);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 1.3px;
+  color: var(--navy-blue);
+  margin-bottom: 1rem;
+}
+
+.stats-container {
+  margin-top: 28px;
+  margin-bottom: 40px
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 28px 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--s-accent, var(--pacific-blue));
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;    
+  background: var(--s-icon-bg, rgba(0,176,194,0.1));
+}
+
+.stat-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 32px rgba(0,24,66,0.09);
+}
+
+.stat-card.participants {
+  --s-accent: #1b8917;
+}
+
+.stat-card.normal-sessions{ 
+  --s-accent: var(--pacific-blue);
+}
+
+.stat-card.total-bookings {
+  --s-accent: var(--amber-glow);
+}
+
+.stat-card.attendance { 
+  --s-accent: #7a1789;
+}
+
+.stat-card.participants .stat-icon {
+  background:rgba(32, 249, 39, 0.12);
+}
+
+.stat-card.normal-sessions .stat-icon {
+  background:rgba(0,176,194,0.12);
+}
+
+.stat-card.total-bookings .stat-icon {
+  background: rgba(251, 255, 0, 0.1);
+}
+
+.stat-card.attendance .stat-icon {
+  background:rgba(145, 16, 162, 0.12);
+}
+
+.stat-number { 
+  font-size: 2.3rem;
+  font-weight: 900; 
+  font-family: "Caveat", cursive;
+  color: var(--navy-blue);
+  line-height: 1;
+  margin-bottom:9px
+}
+
+.stat-label { 
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  color: #6b7280; 
+}

@@ -28,10 +28,20 @@ def page():
         .all()
     )
     
-    trainers = Users.query.filter_by(Role='Trainer').all()
+    trainers = (
+        Users.query
+        .filter(
+            or_(
+                Users.Role == "Trainer",
+                Users.TrainerPerms == "Yes"
+            )
+        )
+        .all()
+    )
     managers = Users.query.filter_by(Role='Manager').all()
     departments = Departments.query.order_by(Departments.DepartmentName.asc()).all()
     training_sessions = TrainingSessions.query.order_by(TrainingSessions.Date.desc()).all()
+    courses = TrainingCourses.query.all()
     roles = db.session.scalars(db.session.query(Users.Role).distinct()).all()
     
     return render_template(
@@ -45,6 +55,7 @@ def page():
         departments=departments,
         training_sessions=training_sessions,
         active_sessions=active_sessions,
+        courses=courses,
         session_id=session_id,
         roles=roles
         )
