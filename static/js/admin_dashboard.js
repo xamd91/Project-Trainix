@@ -1,3 +1,49 @@
+const editProfileForm = document.getElementById('edit-profile-form');
+const errorModal = document.getElementById('error-modal-container');
+const errorMessage = document.getElementById('error-modal-message');
+const errorCloseBtn = document.getElementById('error-modal-close');
+const warningModal = document.getElementById('warning-modal-container');
+const warningMessage = document.getElementById('warning-modal-message');
+const warningCloseBtn = document.getElementById('warning-modal-close');
+const successModal = document.getElementById('success-modal-container');
+const successMessage = document.getElementById('success-modal-message');
+
+function showErrorModal(message) {
+    errorMessage.textContent = message;
+    errorModal.classList.add('active');
+    document.body.classList.add("modal-open");
+}
+
+function hideErrorModal() {
+    errorModal.classList.remove('active');
+    document.body.classList.remove("modal-open");
+}
+
+function showWarningModal(message) {
+    warningMessage.textContent = message;
+    warningModal.classList.add('active');
+    document.body.classList.add("modal-open");
+}
+
+function hideWarningModal() {
+    warningModal.classList.remove('active');
+    document.body.classList.remove("modal-open");
+}
+
+function showSuccessModal(message) {
+    successMessage.textContent = message;
+    successModal.classList.add('active');
+    document.body.classList.add("modal-open");
+}
+
+if (errorCloseBtn) {
+    errorCloseBtn.addEventListener('click', hideErrorModal);
+}
+
+if (warningCloseBtn) {
+    warningCloseBtn.addEventListener('click', hideWarningModal);
+}
+
 function setupModal(modalId, openId, closeId, cancelId, formId) {
     const modal = document.getElementById(modalId);
     const openBtn = document.getElementById(openId);
@@ -39,14 +85,16 @@ const closeSessionModal = setupModal(
     'add-session-modal',
     'open-session-modal',
     'close-session-modal',
-    'cancel-session-modal'
+    'cancel-session-modal',
+    'add-session-form'
 );
 
 const closeDepartmentModal = setupModal(
     'add-department-modal',
     'open-department-modal',
     'close-department-modal',
-    'cancel-department-modal'
+    'cancel-department-modal',
+    'add-department-form'
 );
 
 const closeEditUserModal = setupModal(
@@ -61,15 +109,25 @@ const closeEditSessionModal = setupModal(
     'edit-session-modal',
     null,
     'close-edit-session-modal',
-    'cancel-edit-session-modal'
+    'cancel-edit-session-modal',
+    'edit-session-form'
 );
 
 const closeEditDepartmentModal = setupModal(
     'edit-department-modal',
     null,
     'close-edit-department-modal',
-    'cancel-edit-department-modal'
+    'cancel-edit-department-modal',
+    'edit-department-form'
 );
+
+const closeDeleteModal = setupModal(
+    'delete-user-modal',
+    null,
+    null,
+    'cancel-delete-modal',
+    'delete-user-form'
+)
 
 const editUserForm = document.getElementById('edit-user-form');
 
@@ -104,6 +162,74 @@ document.querySelectorAll('.btn-action.edit.user').forEach(btn => {
     });
 });
 
+const addUserForm = document.getElementById('add-user-form');
+
+if (addUserForm) {
+    addUserForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
+if (editUserForm) {
+    editUserForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
 const editSessionForm = document.getElementById('edit-session-form');
 
 function openEditSession(btn) {
@@ -119,7 +245,7 @@ function openEditSession(btn) {
     const description = btn.dataset.description;
     const prerequisites = btn.dataset.prerequisites;
 
-    editSessionForm.action = `/update-session/${id}`;
+    editSessionForm.action = `/admin_dashboard/edit_session/${id}`;
 
     document.getElementById('edit-title').value = title;
     document.getElementById('edit-course').value = course;
@@ -143,6 +269,74 @@ document.querySelectorAll('.btn-action.edit.session').forEach(btn => {
     });
 });
 
+const addSessionForm = document.getElementById('add-session-form');
+
+if (addSessionForm) {
+    addSessionForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
+if (editSessionForm) {
+    editSessionForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
 const editDepartmentForm = document.getElementById('edit-department-form');
 
 function openEditDepartment(btn) {
@@ -150,7 +344,7 @@ function openEditDepartment(btn) {
     const name = btn.dataset.name;
     const manager = btn.dataset.manager;
 
-    editUserForm.action = `/update-department/${id}`;
+    editDepartmentForm.action = `/admin_dashboard/edit_department/${id}`;
 
     document.getElementById('edit-department-name').value = name;
     document.getElementById('edit-manager').value = manager;
@@ -164,5 +358,98 @@ document.querySelectorAll('.btn-action.edit.department').forEach(btn => {
     btn.addEventListener('click', function (e) {
         e.stopPropagation();
         openEditDepartment(this);
+    });
+});
+
+const addDepartmentForm = document.getElementById('add-department-form');
+
+if (addDepartmentForm) {
+    addDepartmentForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
+if (editDepartmentForm) {
+    editDepartmentForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
+const deleteUserModal = document.getElementById('delete-user-modal');
+const deleteCancelBtn = document.getElementById('delete-cancel-btn');
+const deleteUserForm = document.getElementById('delete-user-form');
+const deleteUserName = document.getElementById('delete-user-name');
+
+function openDeleteUser(btn) {
+    const id = btn.dataset.id;
+    const firstname = btn.dataset.firstname;
+    const lastname = btn.dataset.lastname;
+
+    deleteUserName.textContent = firstname;
+
+    deleteUserForm.action = `/admin_dashboard/delete_user/${id}`;
+
+    deleteUserModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+document.querySelectorAll('.btn-action.delete.user').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openDeleteUser(this);
     });
 });

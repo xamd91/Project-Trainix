@@ -6,8 +6,6 @@ from app import db
 
 def edit_user(user_id):
 
-    
-
     user = Users.query.filter_by(UserId=user_id).first()
 
     if not user:
@@ -23,11 +21,11 @@ def edit_user(user_id):
         trainer_perms = request.form.get('trainer-perms') or None
         job_title = request.form.get('job')
 
-        # if not all([firstname, lastname, email, role, department_id, job_title]):
-        #     return jsonify({
-        #         "status": "error",
-        #         "message": "Please fill in all mandatory fields."
-        #     }), 400
+        if not all([firstname, lastname, email, role, department_id, job_title]):
+            return jsonify({
+                "status": "error",
+                "message": "Please fill in all mandatory fields."
+            }), 400
         
         no_change = (firstname == user.FirstName and lastname == user.LastName
                      and email == user.Email and role == user.Role and department_id == user.DepartmentId
@@ -77,6 +75,9 @@ def edit_user(user_id):
                 "status": "error",
                 "message": "Invalid role."
             }), 400
+        
+        if role == "Trainer":
+            trainer_perms = "Yes"
 
         if not Departments.query.filter_by(DepartmentId=department_id).first():
             return jsonify({

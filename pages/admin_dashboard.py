@@ -1,6 +1,7 @@
 from flask import render_template, session, redirect, url_for, request
 from models import Users, TrainingSessions, Bookings, Departments, TrainingCourses
 from sqlalchemy import or_
+from datetime import date
 from app import db
 
 def page():
@@ -44,6 +45,8 @@ def page():
     courses = TrainingCourses.query.all()
     roles = db.session.scalars(db.session.query(Users.Role).distinct()).all()
     
+    today = date.today()
+
     return render_template(
         'admin_dashboard.html',
         admin=admin,
@@ -57,5 +60,6 @@ def page():
         active_sessions=active_sessions,
         courses=courses,
         session_id=session_id,
-        roles=roles
+        roles=roles,
+        today=today
         )

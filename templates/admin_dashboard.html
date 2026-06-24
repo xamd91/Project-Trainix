@@ -83,7 +83,7 @@
 
                 <div class="quick-grid">
 
-                    <a class="quick-tile" href="{{ url_for('admin_dashboard', tab='session_management') }}" aria-label="Create a new training session">
+                    <a class="quick-tile" id="open-session-modal" aria-label="Create a new training session">
                     <div class="tile-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00B0C2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"/>
@@ -97,7 +97,7 @@
                     </div>
                     </a>
 
-                    <a class="quick-tile" href="{{ url_for('admin_dashboard', tab='user_management') }}" aria-label="Add a new user">
+                    <a class="quick-tile" id="open-user-modal" aria-label="Add a new user">
                     <div class="tile-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F99D20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -251,11 +251,13 @@
                                         >
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                         </button>
-                                        <form method="POST" action="" style="display:contents">
-                                            <button type="submit" class="btn-action danger" title="Delete {{ user.FirstName }}" aria-label="Delete {{ user.FirstName }} {{ user.LastName }}">
-                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                                            </button>
-                                        </form>
+                                        <button class="btn-action delete user"
+                                            data-id="{{ user.UserId }}"
+                                            data-firstname="{{ user.FirstName }}"
+                                            data-lastname="{{ user.LastName }}"
+                                        >
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -315,7 +317,7 @@
                             {% for session in training_sessions %}
                                 <tr>
                                     <td>
-                                        <div class="cell-primary">{{ session.course.CourseName }}</div>
+                                        <div class="cell-primary">{{ session.Title }}</div>
                                     </td>
                                     <td class="cell-muted">{{ session.Date.strftime('%d %b %Y') }} &bull; {{ session.Time.strftime('%I:%M %p') }}</td>
                                     <!-- <td class="cell-muted">{{ session.Time.strftime('%H:%M') }}</td> -->
@@ -572,7 +574,7 @@
                 <p class="modal-subtitle">Fill in the details below to create a new training session.</p>
             </div>
 
-            <form class="add-form" action="" method="POST" id="add-session-form">
+            <form class="add-form" action="/admin_dashboard/create_session" method="POST" id="add-session-form">
 
                 <div class="add-form-row">
                     <div class="add-form-group form-group-wide">
@@ -610,6 +612,7 @@
                         <label class="add-label" for="session-date">Date</label>
                         <input class="add-input" type="date" id="session-date" 
                         name="date"
+                        min="{{ today }}"
                         required>
                     </div>
                     <div class="add-form-group">
@@ -651,11 +654,12 @@
                 </div>
                 
                 <div class="add-form-group">
-                    <label class="add-label" for="session-description">Description <span class="add-optional">(Optional)</span></label>
-                    <textarea class="add-input add-textarea" 
+                    <label class="add-label" for="session-description">Description</label>
+                    <textarea class="add-input add-textarea"
                     id="session-description" 
                     name="description" 
-                    placeholder="A brief description to help participants understand the session..."></textarea>
+                    placeholder="A brief description to help participants understand the session..."
+                    required></textarea>
                 </div>
                 <div class="add-form-group">
                     <label class="add-label" for="session-prerequisites">Prerequisites <span class="add-optional">(Optional)</span></label>
@@ -689,7 +693,7 @@
                 <p class="modal-subtitle">Create a new department and assign its manager.</p>
             </div>
 
-            <form class="add-form" action="" method="POST" id="add-department-form">
+            <form class="add-form" action="/admin_dashboard/create_department" method="POST" id="add-department-form">
 
                 <div class="add-form-row">
                     <div class="add-form-group form-group-wide">
@@ -706,8 +710,8 @@
                         <label class="add-label" for="department-manager">Manager</label>
                         <select class="add-select" id="department-manager" name="manager" required>
                             <option value="">Select manager...</option>
-                            {% for user in users %}
-                                <option value="{{ user.UserId }}">{{ user.FirstName }} {{ user.LastName }}</option>
+                            {% for manager in managers %}
+                                <option value="{{ manager.UserId }}">{{ manager.FirstName }} {{ manager.LastName }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -923,11 +927,12 @@
                 </div>
                 
                 <div class="add-form-group">
-                    <label class="add-label" for="edit-description">Description <span class="add-optional">(Optional)</span></label>
+                    <label class="add-label" for="edit-description">Description</label>
                     <textarea class="add-input add-textarea" 
                     id="edit-description" 
                     name="description" 
-                    placeholder="A brief description to help participants understand the session..."></textarea>
+                    placeholder="A brief description to help participants understand the session..."
+                    required></textarea>
                 </div>
                 <div class="add-form-group">
                     <label class="add-label" for="edit-prerequisites">Prerequisites <span class="add-optional">(Optional)</span></label>
@@ -978,8 +983,8 @@
                         <label class="add-label" for="edit-manager">Manager</label>
                         <select class="add-select" id="edit-manager" name="manager" required>
                             <option value="">Select manager...</option>
-                            {% for user in users %}
-                                <option value="{{ user.UserId }}">{{ user.FirstName }} {{ user.LastName }}</option>
+                            {% for manager in managers %}
+                                <option value="{{ manager.UserId }}">{{ manager.FirstName }} {{ manager.LastName }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -1004,6 +1009,67 @@
 
         </div>
     </div>
+
+
+    <div class="modal-overlay" id="delete-user-modal">
+        <div class="delete-modal">
+
+            <div class="delete-modal-header">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <h3>Delete User?</h3>
+            </div>
+
+            <div class="delete-modal-body">
+                <p>Are you sure you want to delete <strong id="delete-user-name"></strong>'s account?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
+            </div>
+
+            <form id="delete-user-form" method="POST">
+                <div class="delete-modal-actions">
+                    <button type="button" class="delete-modal-btn cancel caveat-btn" id="cancel-delete-modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="delete-modal-btn confirm caveat-btn" id="delete-confirm">
+                        <!-- <i class="fa-regular fa-trash-can"></i> -->
+                        Delete
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+    <div class="error-modal-container" id="error-modal-container">
+        <div class="modal-content">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <p id="error-modal-message"></p>
+            <button class="error-modal-close caveat-btn" id="error-modal-close">Close</button>
+        </div>
+    </div>
+
+    <div class="warning-modal-container" id="warning-modal-container">
+        <div class="modal-content warning">
+            <div class="warning-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <p id="warning-modal-message"></p>
+            <button class="warning-modal-close caveat-btn" id="warning-modal-close">Close</button>
+        </div>
+    </div>
+
+    <div class="success-modal-container" id="success-modal-container">
+        <div class="modal-content success">
+            <div class="success-icon">
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <p id="success-modal-message"></p>
+            <button class="success-modal-close caveat-btn" id="success-modal-close">Close</button>
+        </div>
+    </div>
+
 
 {% endblock %}
 
