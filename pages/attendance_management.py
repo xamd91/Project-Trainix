@@ -1,7 +1,7 @@
 from flask import render_template, session, redirect, url_for, request
 from models import Users, TrainingSessions, Bookings, Departments
 from sqlalchemy import or_
-from datetime import date
+from datetime import date, datetime
 from app import db
 
 def page():
@@ -96,6 +96,9 @@ def page():
     today = date.today()
 
     sessions_today = TrainingSessions.query.filter_by(Date=today).all()
+
+    session_datetime = datetime.combine(training_session.Date, training_session.Time)
+    training_session.has_started = datetime.now() >= session_datetime
 
     return render_template(
         'attendance_management.html', 

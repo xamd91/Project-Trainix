@@ -123,8 +123,13 @@
                             <div class="panel-tools">
                                 <span class="panel-label">Attendees</span>
                                 <div class="panel-btns">
-                                    <button type="button" class="panel-btn mark-all-btn caveat-btn">Mark all attended</button>
-                                    <a class="panel-btn complete-session-btn caveat-btn" href="/attendance_management/complete_session/{{ session.SessionId }}">Complete session</a>
+                                    <button type="button" class="panel-btn mark-all-btn caveat-btn" {% if not session.has_started %} disabled {% endif %}>Mark all attended</button>
+                                    <button
+                                        class="panel-btn complete-session-btn caveat-btn"
+                                        {% if not session.has_started %}disabled{% endif %}
+                                        onclick="window.location.href='/attendance_management/complete_session/{{ session.SessionId }}'">
+                                        Complete session
+                                    </button>    
                                 </div>
                             </div>
 
@@ -169,12 +174,12 @@
                                                     Notes
                                                 </button>
                                                 <button type="button" 
-                                                    class="attendance-btn attended {% if booking.attendance.AttendanceStatus == 'Attended' %}active{% endif %} caveat-btn"
+                                                    class="attendance-btn attended {% if booking.attendance.AttendanceStatus == 'Attended' %}active{% endif %} caveat-btn" {% if not session.has_started %}disabled {% endif %} 
                                                     onclick="markAttendance(this, 'attended', '{{ session.SessionId }}', '{{ booking.user.UserId }}')">
                                                     Attended
                                                 </button>
                                                 <button type="button" 
-                                                    class="attendance-btn absent {% if booking.attendance.AttendanceStatus == 'Absent' %}active{% endif %} caveat-btn"
+                                                    class="attendance-btn absent {% if booking.attendance.AttendanceStatus == 'Absent' %}active{% endif %} caveat-btn" {% if not session.has_started %}disabled {% endif %}
                                                     onclick="markAttendance(this, 'absent', '{{ session.SessionId }}', '{{ booking.user.UserId }}')">
                                                     DNA
                                                 </button>
@@ -192,7 +197,7 @@
                             </div>
 
                             <div class="panel-footer">
-                                <button type="submit" class="save-btn caveat-btn" {% if not session.approved_bookings %}disabled{% endif %}>
+                                <button type="submit" class="save-btn caveat-btn" {% if not session.approved_bookings or not session.has_started %}disabled{% endif %}>
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                                     Save attendance
                                 </button>

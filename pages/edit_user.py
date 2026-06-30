@@ -97,11 +97,39 @@ def edit_user(user_id):
         user.FirstName = firstname.capitalize()
         user.LastName = lastname.capitalize()
         user.Email = email
+
+        if user.Role == "Manager":
+
+            team_members = user.subordinates
+
+            if team_members:
+                return jsonify({
+                    "status": "warning",
+                    "message": f"This user is currently the manager of {user.department.DepartmentName}. Please change this department's manager before proceeding."
+                }),400
+
+        was_trainer = user.Role == 'Trainer' or user.TrainerPerms == 'Yes'
+
+        if was_trainer:
+
+            training_sessions = user.training_sessions
+
+            if training_sessions:
+                if role != 'Trainer' and trainer_perms != 'Yes':
+                    return jsonify({
+                        "status": "warning",
+                        "message": f"This user is currently assigned as the trainer for at least 1 session. Please change the assigned session's trainer before proceeding."
+                    }),400
+
+
         user.Role = role
         user.DepartmentId = department_id
         user.TrainerPerms = trainer_perms
-        user.JobTitle = job_title.title()
-        user.ManagerId = dep_manager.UserId
+        user.JobTitle = job_title
+        
+
+        if dep_manager:
+            user.ManagerId = dep_manager.UserId
         
         db.session.commit()
 

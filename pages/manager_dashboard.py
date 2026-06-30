@@ -1,13 +1,14 @@
 from flask import render_template, session, redirect, url_for, request
 from models import Users, TrainingSessions, Bookings, Attendance
 from sqlalchemy import or_
-from datetime import datetime
+from datetime import datetime, date
 from app import db
 
 def page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
+
     user_id = session.get('user_id')
     
     if session['role'] != "manager":
@@ -65,6 +66,7 @@ def page():
                 booking.Status = 'Approved'
                 booking.ManagerApproval = "Yes"
                 booking.DecidedOn = datetime.utcnow()
+                booking.ApprovedAt = date.today()
                 booking.session.Booked += 1
         
                 if not booking.attendance:
@@ -82,6 +84,7 @@ def page():
                 booking.Status = 'Rejected'
                 booking.ManagerApproval = "No"
                 booking.DecidedOn = datetime.utcnow()
+                booking.RejectedAt = date.today()
 
             db.session.commit()
 
@@ -102,6 +105,47 @@ def page():
         .count()
     )
 
+    for member in team_members:
+        member_bookings = [
+            b for b in member.bookings
+            if b.Status == "Approved" and b.attendance
+        ]
+
+        member.total_sessions = len(member_bookings)
+
+        member.attend = sum(
+            1 for b in member_bookings
+            if b.attendance.AttendanceStatus == "Attended"
+        )
+
+        member.attendance_rate = (
+            round((member.attend / member.total_sessions) * 100)
+            if member.total_sessions > 0
+            else 0
+        )
+
+        member.pending_count = sum(
+            1 for b in member.bookings
+            if b.Status == "Pending Approval"
+        )
+
+    all_member_bookings = [
+        b for m in team_members
+        for b in m.bookings
+        if b.Status == "Approved" and b.attendance
+    ]
+
+    total_attended = sum(
+        1 for b in all_member_bookings
+        if b.attendance.AttendanceStatus == "Attended"
+    )
+
+    department_attendance_rate = (
+        round((total_attended / len(all_member_bookings)) * 100)
+        if all_member_bookings
+        else 0
+    )
+
     return render_template(
         'manager_dashboard.html',
         manager=manager,
@@ -110,5 +154,6 @@ def page():
         team_members=team_members,
         pending_approvals=pending_approvals,
         past_approvals=past_approvals,
-        approved = approved
+        approved = approved,
+        department_attendance_rate = department_attendance_rate
     )

@@ -429,9 +429,13 @@
   font-weight: 500;
 }
 
-.mark-all-btn:hover {
+.mark-all-btn:hover:not(:disabled) {
   border-color: #10b981;
   color: #065f46;
+}
+
+.mark-all-btn:disabled {
+  cursor: not-allowed;
 }
 
 .complete-session-btn {
@@ -440,10 +444,18 @@
   color: var(--navy-blue);
 }
 
-.complete-session-btn:hover {
+.complete-session-btn:hover:not(:disabled) {
   border-color: var(--amber-glow);
   background: var(--amber-glow);
   color: #fff;
+}
+
+.complete-session-btn:disabled {
+  background: #9aa3ad;
+  color: white;
+  border: none;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .attendee-list {

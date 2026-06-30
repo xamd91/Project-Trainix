@@ -114,7 +114,7 @@ def create_user():
             Role=role,
             DepartmentId=department_id,
             JobTitle=job_title.title(),
-            ManagerId=dep_manager.UserId
+            ManagerId=dep_manager.UserId if dep_manager else None
         )
 
 

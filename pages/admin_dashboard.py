@@ -1,6 +1,6 @@
 from flask import render_template, session, redirect, url_for, request
-from models import Users, TrainingSessions, Bookings, Departments, TrainingCourses
-from sqlalchemy import or_
+from models import Users, TrainingSessions, Bookings, Departments, TrainingCourses, Attendance
+from sqlalchemy import or_, func
 from datetime import date
 from app import db
 
@@ -39,6 +39,7 @@ def page():
         )
         .all()
     )
+
     managers = Users.query.filter_by(Role='Manager').all()
     departments = Departments.query.order_by(Departments.DepartmentName.asc()).all()
     training_sessions = TrainingSessions.query.order_by(TrainingSessions.Date.desc()).all()
@@ -46,6 +47,23 @@ def page():
     roles = db.session.scalars(db.session.query(Users.Role).distinct()).all()
     
     today = date.today()
+
+    attendance_counts = (
+        db.session.query(Attendance.AttendanceStatus, func.count(Attendance.AttendanceId))
+        .join(Bookings, Attendance.BookingId == Bookings.BookingId)
+        .join(TrainingSessions, Bookings.SessionId == TrainingSessions.SessionId)
+        .filter(TrainingSessions.Status == 'Completed')
+        .group_by(Attendance.AttendanceStatus)
+        .all()
+    )
+
+    att_counts = {status: count for status, count in attendance_counts}
+    attended = att_counts.get('Attended', 0)
+    absent = att_counts.get('Absent', 0)
+    marked_total = attended + absent
+
+    overall_attendance_rate = round((attended / marked_total) * 100, 1) if marked_total else 0
+    
 
     return render_template(
         'admin_dashboard.html',
@@ -61,5 +79,6 @@ def page():
         courses=courses,
         session_id=session_id,
         roles=roles,
-        today=today
+        today=today,
+        overall_attendance_rate=overall_attendance_rate
         )

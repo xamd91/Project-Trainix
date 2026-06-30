@@ -110,6 +110,16 @@ def register_routes(app, db):
         from pages.reports import page
         return page()
     
+    @app.route('/reports_and_analytics/export_sessions')
+    def export_sessions_route():
+        from pages.export_sessions import export_sessions
+        return export_sessions()
+    
+    @app.route('/reports_and_analytics/export_users')
+    def export_users_route():
+        from pages.export_users import export_users
+        return export_users()
+    
     @app.route('/register', methods=["GET", "POST"])
     def register():
         from pages.register_page import page

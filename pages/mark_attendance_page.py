@@ -1,6 +1,6 @@
 from flask import session, redirect, url_for, request, jsonify
 from app import db
-from datetime import datetime
+from datetime import datetime, date
 from models import Users, Bookings, TrainingSessions
 
 def mark_attendance():
@@ -50,6 +50,9 @@ def mark_attendance():
             was_marked = old_status in valid_statuses
 
             booking.attendance.AttendanceStatus = status
+
+            if booking.attendance.AttendanceStatus == 'Attended':
+                booking.CompletedAt = date.now()
 
             if not was_marked:
                 booking.session.Marked += 1

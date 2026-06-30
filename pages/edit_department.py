@@ -63,6 +63,12 @@ def edit_department(department_id):
         department.DepartmentName = name
         department.ManagerId = manager_id
 
+        if department.users:
+
+            for user in department.users:
+                if user.UserId != manager_id:
+                    user.ManagerId = manager_id
+
         db.session.commit()
 
         return jsonify({

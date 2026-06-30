@@ -3,6 +3,7 @@ from flask import request, render_template, session, redirect, url_for, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import Users
 from app import db
+from datetime import datetime, timedelta
 
 def page():
 
@@ -33,9 +34,26 @@ def page():
         #         "role": 'supplier'
         #     }), 201
 
+        login_attempts = session.get('login_attempts', {})
+        email_data = login_attempts.get(email, {'attempts': 0, 'lockout_until': None})
+
+        if email_data['lockout_until']:
+            lockout_until = datetime.fromisoformat(email_data['lockout_until'])
+            if datetime.now() < lockout_until:
+                remaining = int((lockout_until - datetime.now()).total_seconds())
+                return jsonify({
+                    "status": "error",
+                    "message": f"Too many failed attempts for this accunt. Try again in {remaining} seconds."
+                }), 429
+            else:
+                email_data = {'attempts': 0, 'lockout_until': None}
+
         user = Users.query.filter_by(Email=email).first()
 
         if user and check_password_hash(user.Password, password):
+
+            login_attempts.pop(email, None)
+            session['login_attemtps'] = login_attempts
 
             session['user_id'] = user.UserId
 
@@ -88,10 +106,27 @@ def page():
                 #     "message": f"Welcome back {user.firstname}.",
                 #     "role": 'customer'
                 # }), 201
+        
+        email_data['attempts'] += 1
+
+        if email_data['attempts'] >= 5:
+            email_data['lockout_until'] = (datetime.now() + timedelta(minutes=5)).isoformat()
+            email_data['attmepts'] = 0
+            login_attempts[email] = email_data
+            session['login_attempts'] = login_attempts
+            return jsonify({
+                "status": "error",
+                "message": "Too many failed attempts. This account is locked for 5 minutes."
+            }), 429
+        
+        remaining_attempts = 5 - email_data['attempts']
+        login_attempts[email] = email_data
+        session['login_attempts'] = login_attempts
 
         return jsonify({
             "status": "error",
-            "message": "Invalid email or password."
+            "message": f"Invalid email or password. {remaining_attempts} attempt{'s' if remaining_attempts != 1 else ''} remaining."
         }), 400
+        
 
     return render_template("login.html")

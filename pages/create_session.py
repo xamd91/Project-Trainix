@@ -74,10 +74,16 @@ def create_session():
                 "message": "Location must not exceed 200 characters."
             }), 400
         
-        if capacity > 1:
+        if capacity < 1:
             return jsonify({
                 "status": "error",
                 "message": "Capacity cannot be lower than 1."
+            }), 400
+        
+        if capacity > 100:
+            return jsonify({
+                "status": "error",
+                "message": "Capacity cannot exceed 100."
             }), 400
         
         valid_delivery_types = ["Face-to-Face", "Online"]

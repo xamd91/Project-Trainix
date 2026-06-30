@@ -1,145 +1,412 @@
 from flask import render_template, session, redirect, url_for, request
 from models import Users, TrainingSessions, Bookings, Departments, TrainingCourses, Attendance
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, extract, case, distinct
 from app import db
 from collections import defaultdict
 
+MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+FUNNEL_COLORS = {
+    'Completed': '#10b981',
+    'Approved': '#00B0C2',
+    'Pending Approval': '#F99D20',
+    'Cancelled': '#f97316',
+    'Rejected': '#ef4444',
+}
+
 def page():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
 
-    # if session['role'] != "admin":
-    #      return redirect(url_for('login'))
-    user_id = session.get('user_id') 
+    # ── STAT CARDS ────────────────────────────────────────────────────────
+    total_sessions = (
+        db.session.query(func.count(TrainingSessions.SessionId))
+        .filter(TrainingSessions.Status == "Completed")
+        .scalar()
+    ) or 0
+    
+    total_bookings = db.session.query(func.count(Bookings.BookingId)).scalar() or 0
 
-    admin = Users.query.filter_by(UserId=user_id).first()
-    users = Users.query.all()
-    tab = request.args.get('tab', 'overview')
+    # Attendance rate — Attended vs (Attended + Absent), completed sessions only
+    attendance_counts = (
+        db.session.query(Attendance.AttendanceStatus, func.count(Attendance.AttendanceId))
+        .join(Bookings, Attendance.BookingId == Bookings.BookingId)
+        .join(TrainingSessions, Bookings.SessionId == TrainingSessions.SessionId)
+        .filter(TrainingSessions.Status == 'Completed')
+        .group_by(Attendance.AttendanceStatus)
+        .all()
+    )
+    att_counts = {status: count for status, count in attendance_counts}
+    attended = att_counts.get('Attended', 0)
+    absent = att_counts.get('Absent', 0)
+    marked_total = attended + absent
 
-    bookings = Bookings.query.all()
+    overall_attendance_rate = round((attended / marked_total) * 100, 1) if marked_total else 0
+    overall_no_show_rate = round((absent / marked_total) * 100, 1) if marked_total else 0
 
-    normal_sessions = TrainingSessions.query.order_by(TrainingSessions.Date.asc()).all()
-        
-    total_booked = 0
-    total_attended = 0
+    participants = attended
 
-    for sess in normal_sessions:
-        sess.attended_count = 0
-        sess.booked_count = 0
-        for booking in sess.bookings:
-            if booking.Status in ['Approved', 'Completed']:
-                total_booked += 1
-                sess.booked_count += 1
-                if booking.attendance and booking.attendance.AttendanceStatus == "Attended":
-                    total_attended += 1
-                    sess.attended_count += 1
-        sess.attendance_rate = (
-            round((sess.attended_count / sess.booked_count) * 100, 1)
-            if sess.booked_count > 0
-            else 0
+    # Booking completion rate — Completed / all decided (non-pending) bookings
+    status_counts = (
+        db.session.query(Bookings.Status, func.count(Bookings.BookingId))
+        .group_by(Bookings.Status)
+        .all()
+    )
+
+    b_counts = {status: count for status, count in status_counts}
+    
+    completed = (
+        db.session.query(func.count(Bookings.BookingId))
+        .filter(
+            Bookings.CompletedAt.isnot(None),
+            Bookings.Status == 'Approved'
         )
+        .scalar()
+    ) or 0
+
+    pending = b_counts.get('Pending Approval', 0)
+    approved = b_counts.get('Approved', 0)
+    rejected = b_counts.get('Rejected', 0)
+    cancelled = b_counts.get('Cancelled', 0)
     
-    if total_booked > 0:
-        attendance_rate = round((total_attended / total_booked) * 100, 1)
+    decided_total = sum(v for k, v in b_counts.items() if k != 'Pending Approval')
+    completion_rate = round((completed / decided_total) * 100, 1) if decided_total else 0
+
+    # Avg seat fill rate — Booked / Capacity across sessions with capacity > 0
+    capacity_rows = (
+        db.session.query(TrainingSessions.Booked, TrainingSessions.Capacity)
+        .filter(TrainingSessions.Capacity > 0)
+        .all()
+    )
+    if capacity_rows:
+        avg_fill_rate = round(
+            sum((booked or 0) / cap for booked, cap in capacity_rows) / len(capacity_rows) * 100, 1
+        )
     else:
-        attendance_rate = 0
+        avg_fill_rate = 0
 
-    total_booked_overview = 0
-    total_attended_overview = 0
+    # ── CHART: SESSIONS BY MONTH ─────────────────────────────────────────
+    month_rows = (
+        db.session.query(
+            extract('month', TrainingSessions.Date).label('month'),
+            func.count(TrainingSessions.SessionId)
+        )
+        .group_by('month')
+        .order_by('month')
+        .all()
+    )
+    month_counts = {int(m): c for m, c in month_rows}
+    sessions_by_month = {
+        'labels': [MONTH_LABELS[i - 1] for i in sorted(month_counts)],
+        'data': [month_counts[i] for i in sorted(month_counts)],
+    }
 
-    completed_sessions = [s for s in normal_sessions if s.Status == "Completed"]
+    # ── CHART: SESSIONS BY DEPARTMENT ─────────────────────────────────────
+    dept_session_rows = (
+        db.session.query(Departments.DepartmentName, func.count(TrainingSessions.SessionId))
+        .join(TrainingCourses, TrainingCourses.DepartmentId == Departments.DepartmentId)
+        .join(TrainingSessions, TrainingSessions.CourseId == TrainingCourses.CourseId)
+        .group_by(Departments.DepartmentName)
+        .all()
+    )
+    sessions_by_dept = {
+        'labels': [r[0] for r in dept_session_rows],
+        'data': [r[1] for r in dept_session_rows],
+    }
 
-    for sess in completed_sessions:
-        for booking in sess.bookings:
-            if booking.Status in ['Approved', 'Completed']:
-                total_booked_overview += 1
+    # ── CHART: ATTENDANCE TREND (line, % per month) ───────────────────────
+    trend_rows = (
+        db.session.query(
+            extract('month', TrainingSessions.Date).label('month'),
+            Attendance.AttendanceStatus,
+            func.count(Attendance.AttendanceId)
+        )
+        .join(Bookings, Attendance.BookingId == Bookings.BookingId)
+        .join(TrainingSessions, Bookings.SessionId == TrainingSessions.SessionId)
+        .group_by('month', Attendance.AttendanceStatus)
+        .order_by('month')
+        .all()
+    )
+    trend_monthly = defaultdict(lambda: {'Attended': 0, 'Absent': 0})
+    for month, status, count in trend_rows:
+        if status in ('Attended', 'Absent'):
+            trend_monthly[int(month)][status] = count
 
-                if booking.attendance and booking.attendance.AttendanceStatus == "Attended":
-                    total_attended_overview += 1
+    trend_months_sorted = sorted(trend_monthly.keys())
+    attendance_trend = {
+        'labels': [MONTH_LABELS[m - 1] for m in trend_months_sorted],
+        'data': [
+            round((trend_monthly[m]['Attended'] /
+                   (trend_monthly[m]['Attended'] + trend_monthly[m]['Absent'])) * 100, 1)
+            if (trend_monthly[m]['Attended'] + trend_monthly[m]['Absent']) else 0
+            for m in trend_months_sorted
+        ],
+    }
 
-    if total_booked_overview > 0:
-        overall_attendance_rate = round((total_attended_overview / total_booked_overview) * 100, 1)
-    else:
-        overall_attendance_rate = 0
+    # ── CHART: DELIVERY TYPE SPLIT ─────────────────────────────────────────
+    delivery_rows = (
+        db.session.query(TrainingSessions.DeliveryType, func.count(TrainingSessions.SessionId))
+        .group_by(TrainingSessions.DeliveryType)
+        .all()
+    )
+    delivery_counts = {dtype: count for dtype, count in delivery_rows}
+    delivery_split = {
+        'labels': ['Face-to-Face', 'Online'],
+        'data': [delivery_counts.get('Face-to-Face', 0), delivery_counts.get('Online', 0)],
+    }
 
-    participants = (db.session.query(Attendance.UserId)
-                    .filter(Attendance.AttendanceStatus == "Attended")
-                    .distinct()
-                    .count()
-                    )
+    # ── CHART: ATTENDANCE STACK BY MONTH ───────────────────────────────────
+    stack_rows = (
+        db.session.query(
+            extract('month', TrainingSessions.Date).label('month'),
+            Attendance.AttendanceStatus,
+            func.count(Attendance.AttendanceId)
+        )
+        .join(Bookings, Attendance.BookingId == Bookings.BookingId)
+        .join(TrainingSessions, Bookings.SessionId == TrainingSessions.SessionId)
+        .group_by('month', Attendance.AttendanceStatus)
+        .order_by('month')
+        .all()
+    )
+    stack_monthly = defaultdict(lambda: {'Attended': 0, 'Absent': 0, 'N/A': 0})
+    for month, status, count in stack_rows:
+        stack_monthly[int(month)][status] = count
+
+    stack_months_sorted = sorted(stack_monthly.keys())
+    attendance_stack = {
+        'labels': [MONTH_LABELS[m - 1] for m in stack_months_sorted],
+        'attended': [stack_monthly[m]['Attended'] for m in stack_months_sorted],
+        'absent': [stack_monthly[m]['Absent'] for m in stack_months_sorted],
+        'na': [stack_monthly[m]['N/A'] for m in stack_months_sorted],
+    }
+
+
+    pie_rows = (
+        db.session.query(Attendance.AttendanceStatus, func.count(Attendance.AttendanceId))
+        .join(Attendance.booking)
+        .join(Bookings.session)
+        .filter(TrainingSessions.Status == 'Completed')
+        .group_by(Attendance.AttendanceStatus)
+        .all()
+    )
     
-    attendees_per_session = []
+    pie_counts = {status: count for status, count in pie_rows}
+    
+    attendance_pie = {
+        'attended': pie_counts.get('Attended', 0),
+        'absent': pie_counts.get('Absent', 0),
+    }
 
-    no_shows = []
-    no_show_rate = 0
-    total_no_show = 0
-    total_booked_all = 0
+    funnel_data = {
+        'Completed': completed,
+        'Approved': approved,
+        'Pending Approval': pending,
+        'Cancelled': cancelled,
+        'Rejected': rejected,
+    }
 
-    topic_counts = defaultdict(int)
-    learner_history = defaultdict(int)
+    booking_funnel = [
+        {'label': label, 'count': funnel_data.get(label, 0), 'color': color}
+        for label, color in FUNNEL_COLORS.items()
+    ]
 
-    upcoming_bookings = []
+    approved_rows = (
+        db.session.query(
+            extract('month', Bookings.ApprovedAt),
+            func.count(Bookings.BookingId)
+        )
+        .filter(Bookings.ApprovedAt.isnot(None))
+        .group_by(extract('month', Bookings.ApprovedAt))
+        .all()
+    )
 
-    for sess in normal_sessions:
-        if sess.Status != "Completed":
-            continue
-        session_attendees = 0
-        for booking in sess.bookings:
-            if booking.Status in ['Approved', 'Completed']:
-                total_booked_all += 1
-                if sess.Status != "Completed":
-                    upcoming_bookings.append(booking)
-                if booking.attendance:
-                    if booking.attendance.AttendanceStatus == "Attended":
-                        session_attendees += 1
-                        learner_history[booking.UserId] += 1
-                    elif booking.attendance.AttendanceStatus == "Absent":
-                        total_no_show += 1
-                        no_shows.append({
-                            "FirstName": booking.user.FirstName,
-                            "LastName": booking.user.LastName,
-                            "JobTitle": booking.user.JobTitle,
-                            "SessionTitle": sess.Title
-                        })
-            if sess:
-                topic_counts[sess.Title] += 1
-            else:
-                topic_counts["Unknown Course"] += 1
-            
-        attendees_per_session.append({
-            "title": sess.Title,
-            "count": session_attendees
+    cancelled_rows = (
+        db.session.query(
+            extract('month', Bookings.CancelledAt),
+            func.count(Bookings.BookingId)
+        )
+        .filter(Bookings.CancelledAt.isnot(None))
+        .group_by(extract('month', Bookings.CancelledAt))
+        .all()
+    )
+
+    completed_rows = (
+        db.session.query(
+            extract('month', Bookings.CompletedAt),
+            func.count(Bookings.BookingId)
+        )
+        .filter(Bookings.CompletedAt.isnot(None))
+        .group_by(extract('month', Bookings.CompletedAt))
+        .all()
+    )
+
+    rejected_rows = (
+        db.session.query(
+            extract('month', Bookings.RejectedAt),
+            func.count(Bookings.BookingId)
+        )
+        .filter(Bookings.RejectedAt.isnot(None))
+        .group_by(extract('month', Bookings.RejectedAt))
+        .all()
+    )
+
+    booking_stack_monthly = defaultdict(
+        lambda: {'Approved': 0, 'Cancelled': 0, 'Completed': 0, 'Rejected': 0}
+    )
+
+    for month, count in approved_rows:
+        booking_stack_monthly[int(month)]['Approved'] = count
+
+    for month, count in cancelled_rows:
+        booking_stack_monthly[int(month)]['Cancelled'] = count
+
+    for month, count in completed_rows:
+        booking_stack_monthly[int(month)]['Completed'] = count
+
+    for month, count in rejected_rows:
+        booking_stack_monthly[int(month)]['Rejected'] = count
+
+    booking_months_sorted = sorted(booking_stack_monthly.keys())
+    
+    booking_status_stack = {
+        'labels': [MONTH_LABELS[m - 1] for m in booking_months_sorted],
+        'approved': [booking_stack_monthly[m]['Approved'] for m in booking_months_sorted],
+        'cancelled': [booking_stack_monthly[m]['Cancelled'] for m in booking_months_sorted],
+        'completed': [booking_stack_monthly[m]['Completed'] for m in booking_months_sorted],
+        'rejected': [booking_stack_monthly[m]['Rejected'] for m in booking_months_sorted],
+    }
+
+    dept_attendance_rows = (
+        db.session.query(
+            Departments.DepartmentName,
+            Attendance.AttendanceStatus,
+            func.count(Attendance.AttendanceId)
+        )
+        .join(Users, Users.DepartmentId == Departments.DepartmentId)
+        .join(Bookings, Bookings.UserId == Users.UserId)
+        .join(Attendance, Attendance.BookingId == Bookings.BookingId)
+        .filter(Attendance.AttendanceStatus.in_(['Attended', 'Absent']))
+        .group_by(Departments.DepartmentName, Attendance.AttendanceStatus)
+        .all()
+    )
+
+    dept_map = defaultdict(lambda: {"Attended": 0, "Absent": 0})
+
+    for dept, status, count in dept_attendance_rows:
+        dept_map[dept][status] = count
+
+    dept_rate_rows = []
+
+    for dept, vals in dept_map.items():
+        attended = vals["Attended"]
+        absent = vals["Absent"]
+        total = attended + absent
+
+        rate = round((attended / total) * 100, 1) if total else 0
+
+        dept_rate_rows.append({
+            "dept": dept,
+            "rate": rate
         })
-    
-    no_show_rate = round((total_no_show / total_booked_all) * 100, 1) if total_booked_all else 0
 
-    most_popular_topics = sorted(topic_counts.items(), key=lambda x:x[1], reverse=True)[:5]
+    dept_rate_rows.sort(key=lambda x: x["rate"], reverse=True)
 
-    learner_participation = sorted(learner_history.items(), key=lambda x: x[1], reverse=True)[:5]
+    dept_attendance_rate = {
+        "labels": [d["dept"] for d in dept_rate_rows],
+        "data": [d["rate"] for d in dept_rate_rows],
+    }
 
+    top_trainers = (
+        db.session.query(
+            Users,
+            func.count(TrainingSessions.SessionId).label("session_count")
+        )
+        .join(Users.training_sessions)
+        .filter(TrainingSessions.Status == 'Completed')
+        .group_by(Users.UserId)
+        .order_by(func.count(TrainingSessions.SessionId).desc())
+        .limit(3)
+        .all()
+    )
 
+    top_sessions = (
+        db.session.query(
+            TrainingSessions,
+            func.count(Bookings.BookingId).label("booking_count")
+        )
+        .join(TrainingSessions.bookings)
+        .group_by(TrainingSessions.SessionId)
+        .order_by(func.count(Bookings.BookingId).desc())
+        .limit(3)
+        .all()
+    )
+
+    top_courses = (
+        db.session.query(
+            TrainingCourses,
+            func.count(Bookings.BookingId).label("booking_count"),
+            func.count(distinct(TrainingSessions.SessionId)).label("session_count")
+        )
+        .join(TrainingCourses.sessions)
+        .outerjoin(TrainingSessions.bookings)
+        .group_by(TrainingCourses.CourseId)
+        .order_by(func.count(Bookings.BookingId).desc())
+        .limit(3)
+        .all()
+    )
+
+    top_learners = (
+        db.session.query(
+            Users,
+            func.count(Attendance.AttendanceId).label("attended_count")
+        )
+        .join(Users.attendance_records)
+        .filter(
+            # Users.Role == 'Learner',
+            Attendance.AttendanceStatus == 'Attended'
+        )
+        .group_by(Users.UserId)
+        .order_by(func.count(Attendance.AttendanceId).desc())
+        .limit(3)
+        .all()
+    )
+
+    # ── ASSEMBLE chart_data FOR THE TEMPLATE / JS ──────────────────────────
     chart_data = {
-        "labels": ["Jan", "Feb", "Mar", "Apr", "May"],
-        "values": [12, 19, 8, 15, 22]
-    }    
+        'sessions_by_month': sessions_by_month,
+        'sessions_by_dept': sessions_by_dept,
+        'attendance_trend': attendance_trend,
+        'delivery_split': delivery_split,
+        'attendance_stack': attendance_stack,
+        'attendance_pie': attendance_pie,
+        'booking_funnel': booking_funnel,
+        'booking_status_stack': booking_status_stack,
+        'dept_attendance_rate': dept_attendance_rate
+        # 'rankings': {
+        #     'top_trainers': top_trainers,
+        #     'bottom_trainers': bottom_trainers,
+        #     'top_sessions': top_sessions,
+        #     'bottom_sessions': bottom_sessions,
+        #     'top_courses': top_courses,
+        #     'bottom_courses': bottom_courses,
+        #     'top_learners': top_learners,
+        #     'bottom_learners': bottom_learners,
+        # },
+    }   
 
-
+    print(chart_data['attendance_trend'])
 
     return render_template(
         'reports_and_analytics.html',
-        admin=admin,
-        users=users,
-        tab=tab,
-        sessions=normal_sessions,
-        bookings=bookings,
-        attendance_rate=attendance_rate,
+        total_sessions=total_sessions,
+        total_bookings=total_bookings,
         overall_attendance_rate=overall_attendance_rate,
-        upcoming_bookings=upcoming_bookings,
+        overall_no_show_rate=overall_no_show_rate,
         participants=participants,
-        attendees_per_session=attendees_per_session,
-        most_popular_topics=most_popular_topics,
-        no_show_rate=no_show_rate,
-        no_shows=no_shows,
-        learner_participation=learner_participation,
-        chart_data=chart_data
-        )
+        completion_rate=completion_rate,
+        avg_fill_rate=avg_fill_rate,
+        top_trainers=top_trainers,
+        top_sessions=top_sessions,
+        top_courses=top_courses,
+        top_learners=top_learners,
+        chart_data=chart_data,
+    )

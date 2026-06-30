@@ -55,3 +55,11 @@ if (loginForm) {
     });
 
 }
+
+const clearBtn = document.getElemntById('clear-form');
+
+if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+        loginForm.reset()
+    });
+}

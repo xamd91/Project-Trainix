@@ -63,7 +63,14 @@
                     <p class="filter-section-title">Department</p>
                     <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="all" id="department-all" checked><label for="department-all">All</label></div>
                     {% for department in departments %}
-                        <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="{{ department.DepartmentName }}" id="department-{{ department.DepartmentName }}"><label for="department-{{ department.DepartmentName }}">{{ department.DepartmentName }}</label></div>
+                        {% if user %}
+                            {% if user.Role == "Admin" or department.DepartmentName == "General" or department.DepartmentId == user.DepartmentId %}
+                                <div class="filter-item"><input type="radio" name="department" class="department-filter" data-department="{{ department.DepartmentName }}" id="department-{{ department.DepartmentName }}"><label for="department-{{ department.DepartmentName }}">{{ department.DepartmentName }}</label></div>
+                            {% endif %}
+                        {% else %}
+                            {% if department.DepartmentName == "General" %}
+                            {% endif %}
+                        {% endif %}
                     {% endfor %}
                     
                     
