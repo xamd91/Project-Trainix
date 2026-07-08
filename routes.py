@@ -60,6 +60,21 @@ def register_routes(app, db):
         from pages.delete_department import delete_department
         return delete_department(department_id)
 
+    @app.route('/admin_dashboard/create_course', methods=['GET','POST'])
+    def create_course_route():
+        from pages.create_course import create_course
+        return create_course()
+    
+    @app.route('/admin_dashboard/edit_course/<int:course_id>', methods=['GET','POST'])
+    def edit_course_route(course_id):
+        from pages.edit_course import edit_course
+        return edit_course(course_id)
+
+    @app.route('/admin_dashboard/delete_course/<int:course_id>', methods=['GET','POST'])
+    def delete_course_route(course_id):
+        from pages.delete_course import delete_course
+        return delete_course(course_id)
+
 
     @app.route('/attendance_management', methods=['GET','POST'])
     def attendance_management():
@@ -71,12 +86,22 @@ def register_routes(app, db):
         from pages.mark_attendance_page import mark_attendance
         return mark_attendance()
     
-    @app.route('/attendance_management/complete_session/<int:session_id>')
+    @app.route('/attendance_management/complete_session/<int:session_id>', methods=["POST"])
     def complete_session_route(session_id):
         from pages.complete_session import complete_session
         return complete_session(session_id) 
     
-    @app.route('/account/cancel_booking/<int:booking_id>')
+    @app.route('/attendance_management/cancel_session/<int:session_id>')
+    def cancel_session_route(session_id):
+        from pages.cancel_session import cancel_session
+        return cancel_session(session_id)
+    
+    @app.route('/attendance_management/book_session_attendee/<int:session_id>', methods=["POST"])
+    def book_session_attendee_route(session_id):
+        from pages.book_session_attendee import book_session_attendee
+        return book_session_attendee(session_id)
+    
+    @app.route('/account/cancel_booking/<int:booking_id>', methods=["POST"])
     def cancel_booking_route(booking_id):
         from pages.cancel_booking_page import cancel_booking
         return cancel_booking(booking_id)
@@ -143,6 +168,25 @@ def register_routes(app, db):
     @app.route('/information_and_support')
     def information_and_support():
         return render_template('information_and_support.html')  
+
+    @app.route("/email-test")
+    def email_test():
+        import os
+        import resend
+
+        resend.api_key = os.getenv("RESEND_API_KEY")
+
+        response = resend.Emails.send({
+            "from": "Trainix <noreply@anitrack.xyz>",
+            "to": "lotanna158@gmail.com",
+            "subject": "Trainix Email Test",
+            "html": "<h1>It works 🚀</h1><p>Resend is connected to Flask.</p>"
+        })
+
+        return jsonify({
+            "status": "success",
+            "response": str(response)
+        })
 
     @app.route("/db-test")
     def db_test():

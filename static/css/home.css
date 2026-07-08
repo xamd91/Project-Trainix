@@ -281,24 +281,174 @@
 
 .feature-card:nth-child(3) .feature-card-link { color: var(--navy-blue); }
 
-/* responsiveness */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2rem;
+@media (max-width: 1200px) {
+
+    .hero-title{
+        font-size:4.2rem;
     }
 
-    
-
-    .hero::after { 
-        height: 48px; 
-    } 
-
-    .features {
-        padding: 70px 24px 80px;
+    .hero-content{
+        max-width:650px;
     }
 
-    .features-grid {
-        grid-template-columns: 1fr;
-        max-width: 480px;
+    .features{
+        padding:80px 40px 90px;
     }
+
+}
+
+@media (max-width: 992px){
+
+    .hero{
+        min-height:550px;
+    }
+
+    .hero-title{
+        font-size:3.5rem;
+    }
+
+    .hero-subtitle{
+        font-size:1.05rem;
+    }
+
+    .features-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media (max-width:768px){
+
+    .hero{
+        height:auto;
+        min-height:520px;
+        padding:90px 20px 80px;
+        margin-top:20px;
+    }
+
+    .hero-content{
+        padding:10px;
+    }
+
+    .hero-eyebrow{
+        font-size:.75rem;
+        letter-spacing:2px;
+    }
+
+    .hero-title{
+        font-size:2.8rem;
+        margin-bottom:25px;
+    }
+
+    .split-text{
+        font-size:2.3rem;
+        padding:.4rem;
+    }
+
+    .hero-subtitle{
+        font-size:1rem;
+        margin-bottom:30px;
+    }
+
+    .hero-buttons{
+        flex-direction:column;
+        align-items:center;
+        gap:15px;
+    }
+
+    .hero-cta{
+        width:100%;
+        max-width:300px;
+        text-align:center;
+    }
+
+    .hero::after{
+        height:55px;
+    }
+
+    .features{
+        padding:70px 24px;
+    }
+
+    .features-title{
+        font-size:1.7rem;
+    }
+
+    .features-grid{
+        grid-template-columns:1fr;
+        gap:20px;
+        max-width:500px;
+    }
+
+    .feature-card{
+        padding:32px 24px;
+    }
+
+}
+
+@media (max-width:576px){
+
+    .hero{
+        padding:70px 18px 70px;
+    }
+
+    .hero-title{
+        font-size:2.2rem;
+        line-height:1.2;
+    }
+
+    .split-text{
+        display:inline-block;
+        font-size:1.9rem;
+        padding:.2rem;
+    }
+
+    .hero-subtitle{
+        font-size:.95rem;
+        line-height:1.6;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after{
+        width:18px;
+    }
+
+    .hero-cta{
+        font-size:.9rem;
+        padding:.85rem 1.5rem;
+    }
+
+    .features{
+        padding:60px 16px;
+    }
+
+    .features-header{
+        margin-bottom:40px;
+    }
+
+    .features-title{
+        font-size:1.5rem;
+    }
+
+    .features-subtitle{
+        font-size:.9rem;
+    }
+
+    .feature-card{
+        padding:28px 20px;
+    }
+
+    .feature-card-icon svg{
+        width:52px;
+        height:52px;
+    }
+
+    .feature-card-heading{
+        font-size:.95rem;
+    }
+
+    .feature-card-text{
+        font-size:.88rem;
+    }
+
 }

@@ -19,7 +19,7 @@
 <body>
     <header class="site-header no-select">
         <div class="container">
-            <a href="/" class="logo">Trainix<!--<span class="home-logo">Home</span><span class="split-text"></span>--></a>
+            <a href="/" class="logo">Trainix<!-- span class="home-logo">Home</span><span class="split-text"></span>--></a>
             <nav class="nav-links">        
                 <a href="/" class="mobile-only">Home</a>
                 <a href="/training_catalogue">Training Catalogue</a>
@@ -27,7 +27,13 @@
 
                 {% if session.user_id %}
                     <div class="nav-divider"></div>
-                        <a href="/account">Account</a>
+                        <a href="/account">
+                            Account
+                            {% if unread_notifications_count and unread_notifications_count > 0 %}
+                            <span class="nav-badge">{{ unread_notifications_count }}</span>
+                            {% endif %}
+                        </a>
+
                     {% if session.role == "manager" %}
                         <a href="/manager_dashboard">Manager Dashboard</a>
                     {% elif session.role == "trainer" %}
@@ -39,6 +45,14 @@
 
                     {% if session.trainer_perms %}
                         <a href="/attendance_management">Attendance Management</a>
+                    {% endif %}
+
+                    {% if session.manager_perms %}
+                        <a href="/manager_dashboard">Manager Dashboard</a>
+                    {% endif %}
+
+                    {% if session.admin_perms %}
+                        <a href="/admin_dashboard">Admin Dashboard</a>
                     {% endif %}
 
                     <a href="/logout">Log Out</a>
@@ -94,7 +108,7 @@
         </div>
     </footer>
 
-    <script src="static/js/base.js"></script>
+    <script src="../static/js/base.js"></script>
 
 </body>
 

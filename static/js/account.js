@@ -75,3 +75,71 @@ if (editProfileForm) {
         }
     });
 }
+
+const cancelBookingModal = document.getElementById('cancel-booking-modal');
+const closeCancelBookingModal = document.getElementById('close-cancel-booking-modal');
+const cancelCancelBookingModal = document.getElementById('cancel-cancel-booking-modal');
+const cancelBookingForm = document.getElementById('cancel-booking-form');
+
+function openCancelBooking(btn) {
+    const id = btn.dataset.id;
+    const title = btn.dataset.title;
+
+    cancelBookingForm.action = `/account/cancel_booking/${id}`;
+
+    document.getElementById('cancel-booking-title').textContent = title;
+
+    cancelBookingModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCancelBooking() {
+    cancelBookingModal.classList.remove('open');
+    document.body.style.overflow = '';
+    cancelBookingForm.reset();
+}
+
+document.querySelectorAll('.btn-action.danger').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openCancelBooking(this);
+    });
+});
+
+closeCancelBookingModal.addEventListener('click', closeCancelBooking);
+cancelCancelBookingModal.addEventListener('click', closeCancelBooking);
+cancelBookingModal.addEventListener('click', e => {
+    if (e.target === cancelBookingModal) closeCancelBooking();
+});
+
+
+if (cancelBookingForm) {
+    cancelBookingForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            }
+            else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                };
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}

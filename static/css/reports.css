@@ -176,8 +176,8 @@
   --s-accent: var(--navy-blue);
 }
 
-.stat-card.fillrate {
-  --s-accent: #8b5cf6;
+.stat-card.upcoming {
+  --s-accent: #10b981;
 }
 
 .stat-card.participants .stat-icon {
@@ -204,8 +204,8 @@
   background: rgba(0,24,66,0.08);
 }
 
-.stat-card.fillrate .stat-icon {
-  background: rgba(139,92,246,0.12);
+.stat-card.upcoming .stat-icon {
+  background: rgba(16,185,129,0.12);
 }
 
 .stat-number { 

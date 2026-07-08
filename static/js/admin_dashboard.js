@@ -97,6 +97,14 @@ const closeDepartmentModal = setupModal(
     'add-department-form'
 );
 
+const closeCourseModal = setupModal(
+    'add-course-modal',
+    'open-course-modal',
+    'close-course-modal',
+    'cancel-course-modal',
+    'add-course-form'
+);
+
 const closeEditUserModal = setupModal(
     'edit-user-modal',
     null,
@@ -121,12 +129,36 @@ const closeEditDepartmentModal = setupModal(
     'edit-department-form'
 );
 
+const closeEditCourseModal = setupModal(
+    'edit-course-modal',
+    null,
+    'close-edit-course-modal',
+    'cancel-edit-course-modal',
+    'edit-course-form'
+);
+
 const closeDeleteModal = setupModal(
     'delete-user-modal',
     null,
     null,
     'cancel-delete-modal',
     'delete-user-form'
+)
+
+const closeDeleteCourseModal = setupModal(
+    'delete-course-modal',
+    null,
+    null,
+    'cancel-delete-course-modal',
+    'delete-course-form'
+)
+
+const closeDeleteDepartmentModal = setupModal(
+    'delete-department-modal',
+    null,
+    null,
+    'cancel-delete-department-modal',
+    'delete-department-form'
 )
 
 const editUserForm = document.getElementById('edit-user-form');
@@ -140,6 +172,8 @@ function openEditUser(btn) {
     const department = btn.dataset.department;
     const job = btn.dataset.job;
     const trainerPerms = btn.dataset.perms;
+    const managerPerms = btn.dataset.mperms;
+    const adminPerms = btn.dataset.aperms;
 
     editUserForm.action = `/admin_dashboard/edit_user/${id}`;
 
@@ -150,6 +184,11 @@ function openEditUser(btn) {
     document.getElementById('edit-department').value = department;
     document.getElementById('edit-job-title').value = job;
     document.getElementById('edit-trainer-perms').value = trainerPerms;
+    document.getElementById('edit-manager-perms').value = managerPerms;
+    document.getElementById('edit-admin-perms').value = adminPerms;
+
+    console.log(trainerPerms);
+    console.log(managerPerms);
 
     document.getElementById('edit-user-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -239,6 +278,7 @@ function openEditSession(btn) {
     const trainer = btn.dataset.trainer;
     const date = btn.dataset.date;
     const time = btn.dataset.time;
+    const endTime = btn.dataset.endTime;
     const location = btn.dataset.location;
     const capacity = btn.dataset.capacity;
     const delivery = btn.dataset.delivery;
@@ -252,6 +292,7 @@ function openEditSession(btn) {
     document.getElementById('edit-trainer').value = trainer;
     document.getElementById('edit-date').value = date;
     document.getElementById('edit-time').value = time;
+    document.getElementById('edit-end-time').value = endTime;
     document.getElementById('edit-location').value = location;
     document.getElementById('edit-capacity').value = capacity;
     document.getElementById('edit-delivery').value = delivery;
@@ -428,6 +469,99 @@ if (editDepartmentForm) {
     });
 }
 
+const editCourseForm = document.getElementById('edit-course-form');
+
+function openEditCourse(btn) {
+    const id = btn.dataset.id;
+    const coursename = btn.dataset.coursename;
+    const description = btn.dataset.description;
+    const department = btn.dataset.department;
+
+    editCourseForm.action = `/admin_dashboard/edit_course/${id}`;
+
+    document.getElementById('edit-course-name').value = coursename;
+    document.getElementById('edit-course-description').value = description;
+    document.getElementById('edit-course-department').value = department;
+
+
+    document.getElementById('edit-course-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+document.querySelectorAll('.btn-action.edit.course').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openEditCourse(this);
+    });
+});
+
+const addCourseForm = document.getElementById('add-course-form');
+
+if (addCourseForm) {
+    addCourseForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
+if (editCourseForm) {
+    editCourseForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
 
 const deleteUserModal = document.getElementById('delete-user-modal');
 const deleteCancelBtn = document.getElementById('delete-cancel-btn');
@@ -452,4 +586,177 @@ document.querySelectorAll('.btn-action.delete.user').forEach(btn => {
         e.stopPropagation();
         openDeleteUser(this);
     });
+});
+
+if (deleteUserForm) {
+    deleteUserForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+                closeDeleteModal();
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+                closeDeleteModal();
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                closeDeleteModal();
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
+const deleteCourseModal = document.getElementById('delete-course-modal');
+const deleteCourseForm = document.getElementById('delete-course-form');
+const deleteCourseName = document.getElementById('delete-course-name');
+
+function openDeleteCourse(btn) {
+    const id = btn.dataset.id;
+    const coursename = btn.dataset.coursename;
+
+    deleteCourseName.textContent = coursename;
+
+    deleteCourseForm.action = `/admin_dashboard/delete_course/${id}`;
+
+    deleteCourseModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+document.querySelectorAll('.btn-action.delete.course').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openDeleteCourse(this);
+    });
+});
+
+if (deleteCourseForm) {
+    deleteCourseForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+                closeDeleteCourseModal();
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+                closeDeleteCourseModal();
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                closeDeleteCourseModal();
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+
+const deleteDepartmentModal = document.getElementById('delete-department-modal');
+const deleteDepartmentForm = document.getElementById('delete-department-form');
+const deleteDepartmentName = document.getElementById('delete-department-name');
+
+function openDeleteDepartment(btn) {
+    const id = btn.dataset.id;
+    const name = btn.dataset.name;
+
+    deleteDepartmentName.textContent = name;
+
+    deleteDepartmentForm.action = `/admin_dashboard/delete_department/${id}`;
+
+    deleteDepartmentModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+document.querySelectorAll('.btn-action.delete.department').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openDeleteDepartment(this);
+    });
+});
+
+if (deleteDepartmentForm) {
+    deleteDepartmentForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch (this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'error') {
+                showErrorModal(data.message);
+                closeDeleteDepartmentModal();
+            } else if (data.status === 'warning') {
+                showWarningModal(data.message);
+                closeDeleteDepartmentModal();
+            } else if (data.status === 'success') {
+                showSuccessModal(data.message);
+                closeDeleteDepartmentModal();
+                document.getElementById('success-modal-close').onclick = () => {
+                    document.body.classList.remove('modal-open');
+                    successModal.classList.remove('active');
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+}
+
+function bindSearch(inputId, tbodyId) {
+    const input = document.getElementById(inputId);
+    const tbody = document.getElementById(tbodyId);
+    if (!input || !tbody) return;
+ 
+    input.addEventListener('input', () => {
+        const q = input.value.toLowerCase().trim();
+        tbody.querySelectorAll('tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    bindSearch('users-search',    'users-body');
+    bindSearch('sessions-search', 'sessions-body');
+    bindSearch('courses-search', 'courses-body');
+    bindSearch('departments-search', 'departments-body');
 });

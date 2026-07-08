@@ -1,7 +1,7 @@
 import re
 from flask import request, session, redirect, url_for, jsonify
 from werkzeug.security import check_password_hash
-from models import Users
+from models import Users, Departments
 from app import db
 
 def update_profile():
@@ -16,6 +16,7 @@ def update_profile():
         lastname = (request.form.get('lastname') or '').strip()
         email = (request.form.get('email') or '').strip()
         phone = (request.form.get('phone') or '').strip()
+        department_id = int(request.form.get('department'))
 
         if not all([firstname, lastname, email, phone]):
             return jsonify({
@@ -23,7 +24,7 @@ def update_profile():
                 "message": "All fields are required."
             }), 400
         
-        if firstname == user.FirstName and lastname == user.LastName and email == user.Email and phone == user.Phone:
+        if firstname == user.FirstName and lastname == user.LastName and email == user.Email and phone == user.Phone and department_id == user.DepartmentId:
             return jsonify({
                 "status": "warning",
                 "message": "No changes detected."
@@ -79,10 +80,23 @@ def update_profile():
                     "message": "Phone number already registered."
                 }), 400
             
+        if not Departments.query.filter_by(DepartmentId=department_id).first():
+            return jsonify({
+                "status": "error",
+                "message": "Department does not exist."
+            }), 400
+            
+        department = Departments.query.filter_by(DepartmentId=department_id).first()
+        dep_manager = department.manager
+
         user.FirstName = firstname
         user.LastName = lastname
         user.Email = email
         user.Phone = phone
+        user.DepartmentId = department_id
+
+        if dep_manager:
+            user.ManagerId = dep_manager.UserId
 
         db.session.commit()
 

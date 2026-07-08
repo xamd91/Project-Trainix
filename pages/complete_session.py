@@ -5,8 +5,6 @@ from models import Users, Bookings, TrainingSessions
 
 def complete_session(session_id):
 
-    session = TrainingSessions.query.filter_by(SessionId=session_id).first()
-
     training_session = TrainingSessions.query.filter_by(
         SessionId=session_id
     ).first()
@@ -27,8 +25,13 @@ def complete_session(session_id):
             "message": "Attendance must be marked for all attendees before completing the session."
         }), 400
 
-    session.Status = "Completed"
+    training_session.Status = "Completed"
 
     db.session.commit()
+
+    return jsonify({
+        "status": "success",
+        "message": f"{training_session.Title} has been marked as completed."
+    }), 400
 
     return redirect(url_for("attendance_management"))

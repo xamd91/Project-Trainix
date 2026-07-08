@@ -14,8 +14,7 @@ def page():
         TrainingSessions.query
         .filter(
             or_(
-                TrainingSessions.Status != "Completed",
-                TrainingSessions.Status.is_(None)
+                TrainingSessions.Status == "Not completed"
             ),
         )
         .order_by(TrainingSessions.Date.asc()).all()
@@ -29,11 +28,22 @@ def page():
         if (
             user is None
             or user.Role == "Admin"
-            or s.course.department.DepartmentName == "General"
-            or s.course.DepartmentId == user.DepartmentId
+            or (s.course and s.course.department and s.course.department.DepartmentName == "General")
+            or (s.course and s.course.DepartmentId == user.DepartmentId)
         )
         and datetime.combine(s.Date, s.Time) > datetime.now()
     ]
+
+    #  session_list = [
+    #     s for s in all_sessions
+    #     if (
+    #         user is None
+    #         or user.Role == "Admin"
+    #         or s.course.department.DepartmentName == "General"
+    #         or s.course.DepartmentId == user.DepartmentId
+    #     )
+    #     and datetime.combine(s.Date, s.Time) > datetime.now()
+    # ]
 
     session_count = len(session_list)
 

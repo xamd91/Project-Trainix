@@ -24,7 +24,6 @@ def export_users():
             Departments,
             Users.DepartmentId == Departments.DepartmentId
         )
-        .filter(Users.Role == "Learner")
         .order_by(Users.LastName, Users.FirstName)
         .all()
     )

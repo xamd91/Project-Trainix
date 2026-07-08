@@ -19,6 +19,8 @@ def edit_user(user_id):
         role = request.form.get('role', '').strip()
         department_id = int(request.form.get('department'))
         trainer_perms = request.form.get('trainer-perms') or None
+        manager_perms = request.form.get('manager-perms') or None
+        admin_perms = request.form.get('admin-perms') or None
         job_title = request.form.get('job')
 
         if not all([firstname, lastname, email, role, department_id, job_title]):
@@ -29,7 +31,8 @@ def edit_user(user_id):
         
         no_change = (firstname == user.FirstName and lastname == user.LastName
                      and email == user.Email and role == user.Role and department_id == user.DepartmentId
-                     and trainer_perms == user.TrainerPerms and job_title == user.JobTitle)
+                     and trainer_perms == user.TrainerPerms and manager_perms == user.ManagerPerms
+                     and admin_perms == user.AdminPerms and job_title == user.JobTitle)
 
         if no_change:
             return jsonify({
@@ -78,6 +81,12 @@ def edit_user(user_id):
         
         if role == "Trainer":
             trainer_perms = "Yes"
+        
+        elif role == "Admin":
+            admin_perms = "Yes"
+
+        elif role == "Manager":
+            manager_perms = "Yes"
 
         if not Departments.query.filter_by(DepartmentId=department_id).first():
             return jsonify({
@@ -98,15 +107,33 @@ def edit_user(user_id):
         user.LastName = lastname.capitalize()
         user.Email = email
 
-        if user.Role == "Manager":
+        was_manager = user.Role == 'Manager' or user.ManagerPerms == 'Yes'
+
+        if was_manager:
+
+            managed_dept = Departments.query.filter_by(ManagerId=user.UserId).all()
 
             team_members = user.subordinates
 
-            if team_members:
-                return jsonify({
-                    "status": "warning",
-                    "message": f"This user is currently the manager of {user.department.DepartmentName}. Please change this department's manager before proceeding."
-                }),400
+            if managed_dept:
+                if role != 'Manager' and manager_perms != 'Yes':
+                    department_names = ", ".join(dept.DepartmentName for dept in managed_dept)
+
+                    return jsonify({
+                        "status": "warning",
+                        "message": (
+                            f"This user is currently the manager of the following departments: "
+                            f"{department_names}. Please change the department manager(s) before proceeding."
+                        )
+                    }), 400
+
+            elif team_members:
+                if role != 'Manager' and manager_perms != 'Yes':
+                    return jsonify({
+                        "status": "warning",
+                        "message": f"This user is currently the manager of at least 1 team member. Please change their manager before proceeding."
+                    }),400
+                
 
         was_trainer = user.Role == 'Trainer' or user.TrainerPerms == 'Yes'
 
@@ -125,10 +152,12 @@ def edit_user(user_id):
         user.Role = role
         user.DepartmentId = department_id
         user.TrainerPerms = trainer_perms
+        user.ManagerPerms = manager_perms
+        user.AdminPerms = admin_perms
         user.JobTitle = job_title
         
 
-        if dep_manager:
+        if user.UserId != dep_manager.UserId:
             user.ManagerId = dep_manager.UserId
         
         db.session.commit()

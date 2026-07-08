@@ -2,6 +2,7 @@ from flask import render_template, session, redirect, url_for, request
 from models import Users, TrainingSessions, Bookings, Departments, TrainingCourses, Attendance
 from sqlalchemy import func, or_, extract, case, distinct
 from app import db
+from datetime import date
 from collections import defaultdict
 
 MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -17,6 +18,14 @@ FUNNEL_COLORS = {
 
 def page():
 
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+    
+    if session['role'] != "admin" and not session['admin_perms']:
+        return redirect(url_for('login'))
+
     # ── STAT CARDS ────────────────────────────────────────────────────────
     total_sessions = (
         db.session.query(func.count(TrainingSessions.SessionId))
@@ -25,6 +34,25 @@ def page():
     ) or 0
     
     total_bookings = db.session.query(func.count(Bookings.BookingId)).scalar() or 0
+
+    today = date.today()
+ 
+    upcoming_bookings = (
+        db.session.query(func.count(Bookings.BookingId))
+        .join(
+            TrainingSessions,
+            Bookings.SessionId == TrainingSessions.SessionId
+        )
+        .filter(
+            TrainingSessions.Date > today,
+            or_(
+                Bookings.Status == 'Approved',
+                Bookings.Status == 'Pending Approval'
+            ),
+            Bookings.CompletedAt.is_(None)
+        )
+        .scalar()
+    ) or 0
 
     # Attendance rate — Attended vs (Attended + Absent), completed sessions only
     attendance_counts = (
@@ -35,6 +63,7 @@ def page():
         .group_by(Attendance.AttendanceStatus)
         .all()
     )
+
     att_counts = {status: count for status, count in attendance_counts}
     attended = att_counts.get('Attended', 0)
     absent = att_counts.get('Absent', 0)
@@ -70,19 +99,6 @@ def page():
     
     decided_total = sum(v for k, v in b_counts.items() if k != 'Pending Approval')
     completion_rate = round((completed / decided_total) * 100, 1) if decided_total else 0
-
-    # Avg seat fill rate — Booked / Capacity across sessions with capacity > 0
-    capacity_rows = (
-        db.session.query(TrainingSessions.Booked, TrainingSessions.Capacity)
-        .filter(TrainingSessions.Capacity > 0)
-        .all()
-    )
-    if capacity_rows:
-        avg_fill_rate = round(
-            sum((booked or 0) / cap for booked, cap in capacity_rows) / len(capacity_rows) * 100, 1
-        )
-    else:
-        avg_fill_rate = 0
 
     # ── CHART: SESSIONS BY MONTH ─────────────────────────────────────────
     month_rows = (
@@ -391,9 +407,9 @@ def page():
         #     'top_learners': top_learners,
         #     'bottom_learners': bottom_learners,
         # },
-    }   
+    } 
 
-    print(chart_data['attendance_trend'])
+    print(chart_data['sessions_by_dept'])
 
     return render_template(
         'reports_and_analytics.html',
@@ -403,10 +419,10 @@ def page():
         overall_no_show_rate=overall_no_show_rate,
         participants=participants,
         completion_rate=completion_rate,
-        avg_fill_rate=avg_fill_rate,
         top_trainers=top_trainers,
         top_sessions=top_sessions,
         top_courses=top_courses,
         top_learners=top_learners,
         chart_data=chart_data,
+        upcoming_bookings=upcoming_bookings
     )

@@ -28,7 +28,12 @@
         <nav class="account-menu">
             <a href="{{ url_for('account', tab='bookings') }}" class="account-menu-switch {% if tab == 'bookings' %}active{% endif %}">My Bookings</a>
             <a href="{{ url_for('account', tab='history') }}" class="account-menu-switch {% if tab == 'history' %}active{% endif %}">Training History</a>
-            <a href="{{ url_for('account', tab='notifications') }}" class="account-menu-switch {% if tab == 'notifications' %}active{% endif %}">Notifications</a>
+            <a href="{{ url_for('account', tab='notifications') }}" class="account-menu-switch {% if tab == 'notifications' %}active{% endif %}">
+                Notifications
+                {% if unread_notifications_count and unread_notifications_count > 0 %}
+                    <span class="tab-badge">{{ unread_notifications_count }}</span>
+                {% endif %}
+                </a>
             <a href="{{ url_for('account', tab='settings') }}" class="account-menu-switch {% if tab == 'settings' %}active{% endif %}">Settings</a>
         </nav>
     </div>
@@ -62,7 +67,7 @@
 
                             <p class="booking-meta">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                {{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }}
+                                {{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }} - {{ booking.session.EndTime.strftime('%I:%M %p') }}
                             </p>
                             <p class="booking-meta">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -71,11 +76,14 @@
 
                             {% if booking.Status == 'Approved' %}
                                 <div class="booking-actions">
-                                    <!-- <form method="POST" action="">
-                                        <button type="submit" class="btn-action danger caveat-btn">Cancel booking</button>
-                                    </form> -->
-                                    <a href="/account/cancel_booking/{{ booking.BookingId }}" class="btn-action danger caveat-btn">Cancel booking</a>
-                                    <a href="#" class="btn-action caveat-btn">
+                                    <button class="btn-action danger caveat-btn"
+                                        id="open-cancel-booking-modal"
+                                        data-id="{{ booking.BookingId }}"
+                                        data-title="{{ booking.session.Title }}"
+                                    >
+                                        Cancel booking
+                                    </button>
+                                    <a href="{{ booking.session.outlook_calendar_url }}" target="_blank" class="btn-action caveat-btn">
                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                                         Add to calendar
                                     </a>
@@ -112,17 +120,21 @@
                 
                 <div class="booking-list">
                     {% for booking in inactive_bookings %}
-                        <article class="booking-card {{ booking.Status | lower | replace(' ', '-') }}">
+                        <article class="booking-card {% if booking.session.Status == 'Cancelled' %} cancelled {% else %} {{ booking.Status | lower | replace(' ', '-') }} {% endif %}">
                             <div class="booking-card-header">
                                 <h3 class="booking-card-title">{{ booking.session.Title }}</h3>
-                                <span class="booking-status {{ booking.Status | lower | replace(' ', '-') }}">
+                                <span class="booking-status {% if booking.session.Status == 'Cancelled' %} cancelled {% else %} {{ booking.Status | lower | replace(' ', '-') }} {% endif %}">
+                                {% if booking.session.Status == 'Cancelled' %}
+                                    Cancelled by Trainer
+                                {% else %}
                                     {{ booking.Status }}
+                                {% endif %}
                                 </span>
                             </div>
 
                             <p class="booking-meta">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                {{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }}
+                                {{ booking.session.Date.strftime('%d %B %Y') }} &bull; {{ booking.session.Time.strftime('%I:%M %p') }} - {{ booking.session.EndTime.strftime('%I:%M %p') }}
                             </p>
                             <p class="booking-meta">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -214,7 +226,22 @@
                 </div>
             
                 {% if notifications %}
-
+                    <div class="notification-list">
+                        {% for notification in notifications %}
+                            <article class="notification-card {% if not notification.IsRead %}unread{% endif %}">
+                                <div class="notification-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                </div>
+                                <div class="notification-body">
+                                    <p class="notification-message">{{ notification.Message}}</p>
+                                    <span class="notification-time">{{ notification.CreatedAt | format_datetime }}</span>
+                                </div>
+                                {% if not notification.IsRead %}
+                                    <span class="notification-dot" aria-hidden="true"></span>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
                 {% else %}
                     <div class="empty-state">
                         <svg class="empty-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -256,13 +283,35 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="phone">Phone number</label>
-                                    <input class="form-input" type="text" id="phone" name="phone" value="{{ user.Phone }}" placeholder="Phone number" required>
+                                    <input class="form-input" type="text" id="phone" name="phone" value="{{ user.Phone if user.Phone else '' }}" placeholder="Phone number" required>
                                 </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="department">Department</label>
+                                    <select class="form-select" id="department" name="department">
+                                        {% if user.department %}
+                                            <option value="{{ user.department.DepartmentId }}">{{ user.department.DepartmentName }}</option>
+                                        {% else %}
+                                            <option value="">Select department...</option>
+                                        {% endif %}
+                                        {% for department in departments %}
+                                            <option value="{{ department.DepartmentId }}">{{ department.DepartmentName }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <!-- <div class="form-group">
+                                    <label class="form-label" for="manager">Manager</label>
+                                    <select class="form-select" id="manager" name="manager">
+                                        <option value="">Select manager...</option>
+                                        {% for manager in managers %}
+                                            <option value="{{ manager.UserId }}">{{ manager.FirstName }} {{ manager.LastName }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div> -->
                             </div>
 
                             <p class="account-edit-note">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                To request a change of manager or department, please contact the system admins.
+                                Admins will be notified of any changes to your department or manager to verify accuracy.
                             </p>
 
                             <div class="form-actions">
@@ -358,6 +407,39 @@
             </div>
             <p id="success-modal-message"></p>
             <button class="success-modal-close caveat-btn" id="success-modal-close">Close</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cancel-booking-modal">
+        <div class="modal-panel">
+
+            <button class="modal-close" id="close-cancel-booking-modal" aria-label="Close">&times;</button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Cancel Booking</h2>
+                <p class="modal-subtitle" id="cancel-modal-subtitle">Are you sure you want to cancel your booking for <span id="cancel-booking-title"></span>?</p>
+            </div>
+
+            <form class="add-form" id="cancel-booking-form" method="POST" action="">
+                <div class="add-form-group">
+                    <label class="add-label" for="cancel-reason" >Reason for cancellation</label>
+                    <textarea class="add-input add-textarea" id="cancel-reason" name="reason" placeholder="Please provide a reason for cancelling your booking..." required></textarea>
+                </div>
+
+                <p class="cancel-booking-note">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    Your manager will be notified of this cancellation along with the reason provided.
+                </p>
+
+                <div class="add-form-actions">
+                    <button type="button" class="btn-cancel caveat-btn" id="cancel-cancel-booking-modal">Close</button>
+                    <button type="submit" class="btn-save caveat-btn">Confirm cancellation</button>
+                </div>
+            </form>
         </div>
     </div>
 

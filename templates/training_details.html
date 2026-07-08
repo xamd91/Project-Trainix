@@ -11,7 +11,7 @@
             <p class="hero-breadcrumb">
                 <a href="/">Home</a> / 
                 <a href="/training_catalogue">Training Catalogue</a> / 
-                {{ training_session.Title }}
+                Session Details
             </p>
             <h1>{{ training_session.Title }}</h1>
             <p class="hero-subtitle">{{ training_session.course.department.DepartmentName }}</p>
@@ -39,7 +39,7 @@
                     <div>
                         <p class="details-item-label">Date &amp; Time</p>
                         <p class="details-item-value">{{ training_session.Date.strftime ('%A, %d %B, %Y') }}</p>
-                        <p class="details-item-sub">{{ training_session.Time.strftime('%I:%M %p') }} &ndash; ???</p>
+                        <p class="details-item-sub">{{ training_session.Time.strftime('%I:%M %p') }} &ndash; {{ training_session.EndTime.strftime('%I:%M %p') }}</p>
                     </div>
                 </div>
 
@@ -141,7 +141,7 @@
             <div class="delivery-badge-row">
                 {% if training_session.DeliveryType == 'Online' %}
                     <span class="card-delivery-badge online">Online</span>
-                    <p class="details-body-text">This session is delivered entirely online via Zoom. A joining link will be emailed to you upon successful registration. Sessions are interactive with live Q&amp;A throughout.</p>
+                    <p class="details-body-text">This session is delivered entirely online via Teams. A joining link will be emailed to you upon successful registration. Sessions are interactive with live Q&amp;A throughout.</p>
                 {% else %}
                     <span class="card-delivery-badge f2f">Face-to-Face</span>
                     <p class="details-body-text">This session is delivered in person at <span>{{ training_session.Location }}</span>. Full venue details and instructions will be emailed to you upon successful registration. Sessions are interactive, with opportunities for live Q&amp;A throughout.</p>

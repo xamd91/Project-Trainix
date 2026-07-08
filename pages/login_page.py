@@ -81,6 +81,9 @@ def page():
                 if user.TrainerPerms == 'Yes':
                     session['trainer_perms'] = True
 
+                if user.AdminPerms == 'Yes':
+                    session['admin_perms'] = True
+
                 return jsonify({
                     "status": "success",
                     "message": f"Welcome back {user.FirstName}.",
@@ -92,6 +95,9 @@ def page():
 
                 if user.TrainerPerms == 'Yes':
                     session['trainer_perms'] = True
+                
+                if user.ManagerPerms == "Yes":
+                    session['manager_perms'] = True
 
                 return jsonify({
                     "status": "success",

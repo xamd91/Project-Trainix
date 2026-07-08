@@ -1,3 +1,4 @@
+from notifications.booking_notifications import booking_requested
 from flask import session, redirect, url_for, request, jsonify
 from app import db
 from datetime import datetime
@@ -43,17 +44,12 @@ def book_session(session_id):
         )
 
         db.session.add(booking)
-
-        # training_session.Booked += 1
-
         db.session.commit()
 
-        created_booking = Bookings.query.filter_by(UserId=user_id, SessionId=session_id).first()
+        booking_requested(user, training_session)
 
-        if created_booking:
-
-            return jsonify({
-                 "status": "success",
-                 "message": f"Booking request for {training_session.Title} has been placed successfully!"
-            }), 201
+        return jsonify({
+                "status": "success",
+                "message": f"Booking request for {training_session.Title} has been placed successfully!"
+        }), 201
 

@@ -17,17 +17,22 @@ def create_session():
         session_time = request.form.get('time')
         if session_time:
             session_time = datetime.strptime(session_time, '%H:%M')
+        session_endtime = request.form.get('end_time')
+        if session_endtime:
+            session_endtime = datetime.strptime(session_endtime, '%H:%M')
         location = request.form.get('location', '').strip()
         capacity = int(request.form.get('capacity'))
         delivery_type = request.form.get('delivery', '').strip()
         description = request.form.get('description', '').strip()
         prerequisites = request.form.get('prerequisites') or None
 
-        if not all ([title, course_id, trainer_id, session_date, session_time, location, capacity, delivery_type, description]):
+        if not all ([title, course_id, trainer_id, session_date, session_time, session_endtime, location, capacity, delivery_type, description]):
+            print(title, course_id, trainer_id, session_date, session_time, session_endtime, location, capacity, delivery_type, description)
             return jsonify({
                 "status": "error",
                 "message": "Please fill in all mandatory fields."
             }), 400
+            
         
         if len(title) > 200 or len(title) < 3:
             return jsonify({
@@ -112,6 +117,7 @@ def create_session():
             Title=title.title(),
             Date=session_date,
             Time=session_time,
+            EndTime=session_endtime,
             Location=location,
             Capacity=capacity,
             DeliveryType=delivery_type,

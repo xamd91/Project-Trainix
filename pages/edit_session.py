@@ -1,3 +1,4 @@
+from notifications.session_notifications import session_updated
 from flask import request, render_template, session, redirect, url_for, jsonify
 from models import Users, Departments, TrainingSessions, TrainingCourses
 from datetime import datetime, date
@@ -22,22 +23,27 @@ def edit_session(session_id):
         session_time = request.form.get('time')
         if session_time:
             session_time = datetime.strptime(session_time, '%H:%M')
+        session_endtime = request.form.get('end_time')
+        if session_endtime:
+            session_endtime = datetime.strptime(session_endtime, '%H:%M')
         location = request.form.get('location', '').strip()
         capacity = int(request.form.get('capacity'))
         delivery_type = request.form.get('delivery', '').strip()
         description = request.form.get('description', '').strip()
         prerequisites = request.form.get('prerequisites') or None
 
-        if not all ([title, course_id, trainer_id, session_date, session_time, location, capacity, delivery_type, description]):
+        if not all ([title, course_id, trainer_id, session_date, session_time,session_endtime, location, capacity, delivery_type, description]):
             return jsonify({
                 "status": "error",
                 "message": "Please fill in all mandatory fields."
             }), 400
         
-        no_change = (title == training_session.Title and course_id == training_session.CourseId and trainer_id == training_session.TrainerId
-                     and session_date == training_session.Date and session_time == training_session.Time
-                     and location == training_session.Location and capacity == training_session.Capacity
-                     and delivery_type == training_session.DeliveryType and description == training_session.Description and prerequisites == training_session.prerequisites)
+        no_change = (title == training_session.Title and course_id == training_session.CourseId 
+                     and trainer_id == training_session.TrainerId and session_date == training_session.Date 
+                     and session_time == training_session.Time and session_endtime == training_session.EndTime 
+                     and location == training_session.Location and capacity == training_session.Capacity 
+                     and delivery_type == training_session.DeliveryType and description == training_session.Description 
+                     and prerequisites == training_session.prerequisites)
 
         if no_change:
             return jsonify({
@@ -122,11 +128,56 @@ def edit_session(session_id):
                 "message": "Prerequisites are too long."
             }), 400
         
+        
+        changes = {}
+
+        if training_session.Title != title:
+            changes["Title"] = {
+                "old": training_session.Title,
+                "new": title
+            }
+
+        if training_session.TrainerId != trainer_id:
+            trainer = training_session.TrainerId
+            old_trainer = Users.query.get(trainer)
+            new_trainer = Users.query.get(trainer_id)
+            changes["Trainer"] = {
+                "old": f"{old_trainer.FirstName} {old_trainer.LastName}",
+                "new": f"{new_trainer.FirstName} {new_trainer.LastName}"
+            }
+
+        if training_session.Date != session_date:
+            changes["Date"] = {
+                "old": training_session.Date.strftime('%d %B %Y'),
+                "new": session_date.strftime('%d %B %Y')
+            }
+
+        if training_session.Time.strftime('%I:%M %p') != session_time.strftime('%I:%M %p'):
+            changes["Time"] = {
+                "old": training_session.Time.strftime('%I:%M %p'),
+                "new": session_time.strftime('%I:%M %p')
+            }
+
+        if training_session.EndTime.strftime('%I:%M %p') != session_endtime.strftime('%I:%M %p'):
+            changes["EndTime"] = {
+                "old": training_session.EndTime.strftime('%I:%M %p'),
+                "new": session_endtime.strftime('%I:%M %p')
+            }
+
+        if training_session.Location != location:
+            changes["Location"] = {
+                "old": training_session.Location,
+                "new": location
+            }
+
+        print(changes)
+        
         training_session.CourseId = course_id
         training_session.TrainerId = trainer_id
         training_session.Title = title.title()
         training_session.Date = session_date
         training_session.Time = session_time
+        training_session.EndTime = session_endtime
         training_session.Location = location
         training_session.Capacity = capacity
         training_session.DeliveryType = delivery_type
@@ -134,6 +185,9 @@ def edit_session(session_id):
         training_session.Prerequisites = prerequisites
 
         db.session.commit()
+
+        if changes:
+            session_updated(training_session, changes)
 
         return jsonify({
             "status": "success",

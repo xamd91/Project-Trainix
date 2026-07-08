@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Attendance Update</title>
+        <style>
+            * { margin:0; padding:0; box-sizing:border-box; }
+            body { background:#f8f7f4; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+            .wrapper { max-width:580px; margin:40px auto; padding:0 16px 40px; }
+
+            .email-header { background:#001842; padding:28px 36px; text-align:left; position:relative; overflow:hidden; }
+            .email-header::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:32px; background:#f8f7f4; clip-path:polygon(0 100%,100% 100%,100% 40%,0 100%); }
+
+            .logo-text { font-size:1.3rem; font-weight:700; color:#fff; letter-spacing:-0.02em; display:inline-block; }
+            .logo-text span { color:#F99D20; font-style:italic; }
+            .header-tag { display:block; margin-top:8px; font-size:0.62rem; letter-spacing:2.5px; color:#F99D20; font-weight:400; }
+
+            .email-card { background:#fff; border:1px solid #e5e7eb; padding:36px; }
+
+            .greeting { font-size:1.05rem; font-weight:600; color:#001842; margin-bottom:10px; }
+            .intro { font-size:0.88rem; color:#4b5563; line-height:1.65; margin-bottom:18px; }
+
+            .session-block { border-left:3px solid #00B0C2; background:#f8f7f4; padding:12px 16px; margin:18px 0 24px; }
+            .session-label { font-size:0.62rem; letter-spacing:2px; text-transform:uppercase; color:#00B0C2; font-weight:600; margin-bottom:4px; }
+            .session-title { font-size:1rem; font-weight:600; color:#001842; }
+
+            .status-card { margin:18px 0 24px; border:1px solid #e5e7eb; background:#f8f7f4; }
+            .status-bar { height:3px; width:100%; }
+            .status-card.attended .status-bar { background:#16a34a; }
+            .status-card.absent .status-bar { background:#dc2626; }
+
+            .status-body { padding:14px 16px; }
+            .status-label { font-size:0.62rem; letter-spacing:2px; text-transform:uppercase; font-weight:700; margin-bottom:6px; }
+            .status-card.attended .status-label { color:#16a34a; }
+            .status-card.absent .status-label { color:#dc2626; }
+
+            .status-text { font-size:0.9rem; font-weight:400; color:#001842; line-height:1.5; }
+
+            .note { font-size:0.83rem; color:#4b5563; line-height:1.65; margin-bottom:10px; }
+
+            .signoff { margin-top:28px; font-size:0.83rem; color:#4b5563; line-height:1.7; }
+            .signoff strong { color:#001842; }
+
+            .email-footer { padding:20px 36px; text-align:center; }
+            .footer-text { font-size:0.7rem; color:#9ca3af; line-height:1.6; }
+
+            @media only screen and (max-width:620px) {
+            .wrapper { padding:0 8px 32px; }
+            .email-header { padding:22px 24px; }
+            .email-card { padding:24px; }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="wrapper">
+
+        <div class="email-header">
+            <span class="logo-text">Train<span>ix</span></span>
+            <span class="header-tag">By CALI Academies</span>
+        </div>
+
+        <div class="email-card">
+            <p class="greeting">Hi {{ user.FirstName }},</p>
+            <p class="intro">Your attendance record has been updated.</p>
+
+            <div class="session-block">
+                <div class="session-label">Session</div>
+                <div class="session-title">{{ session.Title }}</div>
+            </div>
+
+            {% if status == "attended" %}
+                <div class="status-card attended">
+                    <div class="status-bar"></div>
+                    <div class="status-body">
+                    <div class="status-label">Attendance Confirmed</div>
+                    <div class="status-text">You have been marked as <strong>attended</strong> for this session.</div>
+                    </div>
+                </div>
+
+                <p class="note">Thank you for taking part in this training session. You can now view this session in your training history within Trainix.</p>
+
+            {% elif status == "absent" %}
+                <div class="status-card absent">
+                    <div class="status-bar"></div>
+                    <div class="status-body">
+                    <div class="status-label">Marked Absent</div>
+                    <div class="status-text">You have been recorded as <strong>not attended</strong> for this session.</div>
+                    </div>
+                </div>
+
+                <p class="note">If you believe this is incorrect, please contact your trainer.</p>
+            {% endif %}
+
+            <div class="signoff">
+                Kind regards,<br>
+                <strong>The Trainix Team</strong>
+            </div>
+
+            </div>
+
+            <div class="email-footer">
+                <p class="footer-text">
+                &copy; 2026 Trainix. All rights reserved.
+                </p>
+            </div>
+
+        </div>
+    </body>
+</html>

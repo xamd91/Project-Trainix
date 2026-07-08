@@ -517,3 +517,25 @@ body.modal-open {
         transform: scale(1);
     }
 } */
+
+/* notification badge on the account nav link */
+.site-header .nav-account-link {
+  position: relative;
+}
+
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  margin-left: 4px;
+  border-radius: 50%;
+  background: var(--amber-glow);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
+  vertical-align: middle;
+}

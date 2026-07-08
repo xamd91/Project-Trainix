@@ -1,15 +1,16 @@
 from flask import render_template, session, redirect, url_for, request
 from models import Users, TrainingSessions, Bookings, Departments, TrainingCourses, Attendance
 from sqlalchemy import or_, func
-from datetime import date
+from datetime import date, datetime
 from app import db
 
 def page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    # if session['role'] != "admin":
-    #      return redirect(url_for('login'))
+    if session['role'] != "admin" and not session['admin_perms']:
+        return redirect(url_for('login'))
+    
     user_id = session.get('user_id') 
     session_id = request.args.get('SessionId')
 
@@ -19,9 +20,17 @@ def page():
 
     upcoming_sessions = (
         TrainingSessions.query.filter(TrainingSessions.Date >= db.func.current_date())
+        .filter(
+            TrainingSessions.Status == 'Not completed'
+        )
         .order_by(TrainingSessions.Date.asc())
         .limit(5)
     )
+
+    upcoming_sessions = [
+        sess for sess in upcoming_sessions
+        if datetime.combine( sess.Date, sess.EndTime) > datetime.now()
+    ]
 
     active_sessions = len(
         TrainingSessions.query.filter(TrainingSessions.Date >= db.func.current_date())
@@ -40,7 +49,17 @@ def page():
         .all()
     )
 
-    managers = Users.query.filter_by(Role='Manager').all()
+    managers = (
+        Users.query
+        .filter(
+            or_(
+                Users.Role == 'Manager',
+                Users.ManagerPerms == 'Yes'
+            )
+        )
+        .all()
+    )
+
     departments = Departments.query.order_by(Departments.DepartmentName.asc()).all()
     training_sessions = TrainingSessions.query.order_by(TrainingSessions.Date.desc()).all()
     courses = TrainingCourses.query.all()

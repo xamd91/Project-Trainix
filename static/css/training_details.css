@@ -266,12 +266,6 @@ color: var(--amber-glow);
 border: 1px solid rgba(249, 157, 32, 0.3);
 }
 
-.card-delivery-badge.hybrid {
-background: rgba(0, 24, 66, 0.08);
-color: var(--navy-blue);
-border: 1px solid rgba(0, 24, 66, 0.2);
-}
-
 /* book button */
 .book-btn-wrap {
     display: flex;
@@ -512,15 +506,152 @@ border: 1px solid rgba(0, 24, 66, 0.2);
     transform: translateY(-1px);
     box-shadow: 0 4px 14px rgba(0, 176, 194, 0.25);
 }
- 
+
+@media (max-width:1200px){
+
+    .details-wrapper{
+        max-width:760px;
+    }
+
+    .page-hero h1{
+        font-size:2.8rem;
+    }
+
+}
+
+@media (max-width:992px){
+
+    .page-hero{
+        height:65vh;
+    }
+
+    .page-hero h1{
+        font-size:2.5rem;
+    }
+
+    .details-wrapper{
+        padding:2.5rem 2rem 4rem;
+    }
+
+    .details-title{
+        font-size:2rem;
+    }
+
+    .details-card{
+        padding:1.6rem;
+    }
+
+}
+
 /* responsive */
-@media (max-width: 640px) {
-    .page-hero h1 { font-size: 2rem; }
-    .details-grid { grid-template-columns: 1fr; }
-    .details-wrapper { padding: 2rem 1.25rem 4rem; }
-    .booking-form-row { grid-template-columns: 1fr; }
-    .booking-form-actions { flex-direction: column; }
-    .booking-cancel-btn,
-    .booking-submit-btn { width: 100%; }
-    .modal-panel { padding: 1.8rem 1.4rem; }
+@media (max-width:768px){
+
+    body{
+        overflow-x:hidden;
+    }
+
+    
+
+    .page-hero-content{
+        padding:0;
+    }
+
+    .page-hero h1{
+        font-size:2rem;
+        letter-spacing:2px;
+    }
+
+    .hero-subtitle{
+        font-size:.95rem;
+        line-height:1.6;
+    }
+
+    .hero-breadcrumb{
+        letter-spacing:2px;
+    }
+
+
+    /* details layout */
+
+    .details-wrapper{
+        padding:2.5rem 20px 80px;
+        gap:2rem;
+    }
+
+
+    .details-title{
+        font-size:1.8rem;
+    }
+
+
+    .details-description{
+        font-size:.9rem;
+    }
+
+
+    .details-grid{
+        grid-template-columns:1fr;
+        gap:1.25rem;
+    }
+
+
+    .details-card{
+        padding:1.5rem;
+    }
+
+
+    .details-card-title{
+        font-size:1rem;
+    }
+
+
+    .details-item-value{
+        font-size:.85rem;
+    }
+
+
+    .details-body-text{
+        font-size:.88rem;
+    }
+
+
+    /* button */
+
+    .book-btn-wrap{
+        justify-content:center;
+    }
+
+    .book-trigger-btn{
+        width:100%;
+        max-width:350px;
+    }
+
+
+    /* modal */
+
+    .modal-panel{
+        padding:2rem 1.5rem;
+    }
+
+
+    .modal-title{
+        font-size:1.5rem;
+    }
+
+
+    .booking-form-row{
+        grid-template-columns:1fr;
+    }
+
+
+    .booking-form-actions{
+        flex-direction:column-reverse;
+    }
+
+
+    .booking-submit-btn,
+    .booking-cancel-btn{
+        width:100%;
+    }
+
 }

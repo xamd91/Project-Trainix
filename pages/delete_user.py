@@ -7,23 +7,38 @@ def delete_user(user_id):
 
     user = Users.query.get(user_id)
 
-    if user.Role == 'Manager':
+    was_manager = user.Role == 'Manager' or user.ManagerPerms == 'Yes'
 
-        department = user.department
+    if was_manager:
 
-        if department:
+        managed_dept = Departments.query.filter_by(ManagerId=user.UserId).all()
+
+        team_members = user.subordinates
+
+        if managed_dept:
+            department_names = ", ".join(dept.DepartmentName for dept in managed_dept)
 
             return jsonify({
                 "status": "warning",
-                "message": f"This user is currently the manager of {user.department.DepartmentName}. Please change this department's manager before proceeding."
+                "message": (
+                    f"This user is currently the manager of the following departments: "
+                    f"{department_names}. Please change the department manager(s) before proceeding."
+                )
+            }), 400
+
+        elif team_members:
+            return jsonify({
+                "status": "warning",
+                "message": f"This user is currently the manager of at least 1 team member. Please change their manager before proceeding."
             }),400
         
-    elif user.Role == 'Trainer' or user.TrainerPerms == 'Yes':
-        
-        trianing_sessions = user.training_sessions
+    was_trainer = user.Role == 'Trainer' or user.TrainerPerms == 'Yes'
 
-        if trianing_sessions:
+    if was_trainer:
 
+        training_sessions = user.training_sessions
+
+        if training_sessions:
             return jsonify({
                 "status": "warning",
                 "message": f"This user is currently assigned as the trainer for at least 1 session. Please change the assigned session's trainer before proceeding."

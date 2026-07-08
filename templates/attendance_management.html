@@ -88,7 +88,7 @@
                                 <div class="session-meta-row">
                                     <span class="session-meta-item">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                        {{ session.Time.strftime('%I:%M %p') }}
+                                        {{ session.Time.strftime('%I:%M %p') }} - {{ session.EndTime.strftime('%I:%M %p') }}
                                     </span>
                                     <span class="session-meta-item">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -116,22 +116,41 @@
                     </div>
 
                     <div class="attendee-panel" id="panel-{{ session.SessionId }}">
+                            
+                        <div class="panel-tools">
+                            <span class="panel-label">Attendees</span>
+                            <div class="panel-btns">
+                                <button
+                                    class="panel-btn cancel-session-btn caveat-btn"
+                                    onclick="window.location.href='/attendance_management/cancel_session/{{ session.SessionId }}'">
+                                    Cancel session
+                                </button>
+                                <form method="POST" action="/attendance_management/complete_session/{{ session.SessionId }}" id="complete-session-form-{{ session.SessionId }}">
+                                    <button
+                                        type="submit"
+                                        class="panel-btn complete-session-btn caveat-btn"
+                                        
+                                    >
+                                        Complete session
+                                    </button>
+                                </form>  
+                                <button
+                                    class="panel-btn book-attendee-btn caveat-btn"
+                                    
+                                    id="open-book-attendee-modal"
+                                    data-id="{{ session.SessionId }}"
+                                    data-title="{{ session.Title }}"
+                                >
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                                    Book attendee
+                                </button>  
+                            </div>
+                        </div>
+                        
+
                         <form method="POST" action="{{ url_for('mark_attendance_route') }}" id="attendance-form-{{ session.SessionId }}">
 
                             <input type="hidden" name="session_id" value="{{ session.SessionId }}">
-
-                            <div class="panel-tools">
-                                <span class="panel-label">Attendees</span>
-                                <div class="panel-btns">
-                                    <button type="button" class="panel-btn mark-all-btn caveat-btn" {% if not session.has_started %} disabled {% endif %}>Mark all attended</button>
-                                    <button
-                                        class="panel-btn complete-session-btn caveat-btn"
-                                        {% if not session.has_started %}disabled{% endif %}
-                                        onclick="window.location.href='/attendance_management/complete_session/{{ session.SessionId }}'">
-                                        Complete session
-                                    </button>    
-                                </div>
-                            </div>
 
                             <div class="attendee-list" id="list-{{ session.SessionId }}">
                                 {% if session.approved_bookings %}
@@ -174,7 +193,7 @@
                                                     Notes
                                                 </button>
                                                 <button type="button" 
-                                                    class="attendance-btn attended {% if booking.attendance.AttendanceStatus == 'Attended' %}active{% endif %} caveat-btn" {% if not session.has_started %}disabled {% endif %} 
+                                                    class="attendance-btn attended {% if booking.attendance.AttendanceStatus == 'Attended' %}active{% endif %} caveat-btn" {% if not session.has_started %}disabled {% endif %}
                                                     onclick="markAttendance(this, 'attended', '{{ session.SessionId }}', '{{ booking.user.UserId }}')">
                                                     Attended
                                                 </button>
@@ -250,7 +269,7 @@
                                 <div class="past-meta">
                                     <span class="past-meta-item">
                                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                        {{ session.Time.strftime('%I:%M %p') }}
+                                        {{ session.Time.strftime('%I:%M %p') }} - {{ session.EndTime.strftime('%I:%M %p') }}
                                     </span>
                                     <span class="past-meta-item">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -259,23 +278,30 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="past-summary">
-                            <div class="summary-stat">
-                                <span class="summary-number attended-count">{{ session.attended_count }}</span>
-                                <span class="summary-label">Attended</span>
+                        {% if session.Status == 'Cancelled' %}
+                            <div class="past-summary">
+                                <div class="session-badges">
+                                    <span class="badge cancelled">Cancelled</span>
+                                </div>
                             </div>
+                        {% else %}
+                            <div class="past-summary">
+                                <div class="summary-stat">
+                                    <span class="summary-number attended-count">{{ session.attended_count }}</span>
+                                    <span class="summary-label">Attended</span>
+                                </div>
 
-                            <div class="summary-stat">
-                                <span class="summary-number absent-count">{{ session.absent_count }}</span>
-                                <span class="summary-label">DNA</span>
-                            </div>
+                                <div class="summary-stat">
+                                    <span class="summary-number absent-count">{{ session.absent_count }}</span>
+                                    <span class="summary-label">DNA</span>
+                                </div>
 
-                            <div class="summary-stat">
-                                <span class="summary-number">{{ session.rate }}%</span>
-                                <span class="summary-label">Rate</span>
+                                <div class="summary-stat">
+                                    <span class="summary-number">{{ session.rate }}%</span>
+                                    <span class="summary-label">Rate</span>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
 
                         <div class="chevron-wrap">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -307,7 +333,10 @@
                                     <span class="past-attendee-status {{ booking.attendance.AttendanceStatus | lower }}">{{ "DNA" if booking.attendance.AttendanceStatus == "Absent" else booking.attendance.AttendanceStatus}}</span>
                                 </div>
 
-                                
+                            {% else %}
+                                <div class="empty-state">
+                                    <p class="empty-sub">No bookings were made for this session.</p>
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -326,6 +355,51 @@
 
     </section>
 
+</div>
+
+<div class="modal-overlay" id="book-attendee-modal">
+    <div class="modal-panel">
+
+        <button class="modal-close" id="close-book-attendee-modal" aria-label="Close">&times;</button>
+
+        <div class="modal-header">
+            <h2 class="modal-title">Book Attendee</h2>
+            <p class="modal-subtitle">Book a user onto <span id="modal-session"></span></p>
+        </div>
+
+        <form class="add-form" action="" method="POST" id="book-attendee-form">
+
+            <div class="add-form-row">
+                <div class="add-form-group form-group-wide">
+                    <label class="add-label" for="attendee-user">Attendee</label>
+                    <select class="add-select" id="attendee-user" name="user" required>
+                        <option value="">Select a user...</option>
+                        {% for user in users %}
+                            <option value="{{ user.UserId }}">
+                                {{ user.FirstName }} {{ user.LastName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <p class="add-user-note">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                A new booking will be created and automatically approved for this user. They will receive a confirmation email.
+            </p>
+
+            <div class="add-form-actions">
+                <button type="button" class="add-cancel-btn caveat-btn" id="cancel-book-attendee-modal">Cancel</button>
+                <button type="submit" class="add-submit-btn caveat-btn">Book Attendee</button>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
 <div id="comment-modal" class="comment-modal-overlay" hidden>

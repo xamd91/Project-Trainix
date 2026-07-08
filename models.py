@@ -10,36 +10,39 @@ class Users(db.Model):
     Phone = db.Column(db.String(11), nullable=True, unique=True)
     Email = db.Column(db.String(100), nullable=False, unique=True)
     Password = db.Column(db.String(255), nullable=False)
-    JobTitle = db.Column(db.String(100), nullable=False)
+    JobTitle = db.Column(db.String(100), nullable=True)
     DepartmentId = db.Column(db.Integer, db.ForeignKey('departments.DepartmentId'), nullable=True)
     ManagerId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=True)
     Role = db.Column(Enum("Learner", "Manager", "Trainer", "Admin", name="user_role"), nullable=True)
     TrainerPerms = db.Column(Enum("Yes", "No", name="trainer_perms"), nullable=True)
+    ManagerPerms = db.Column(Enum("Yes", "No", name="manager_perms"), nullable=True)
+    AdminPerms = db.Column(Enum("Yes", "No", name="admin_perms"), nullable=True)
     department = db.relationship('Departments', foreign_keys=[DepartmentId], back_populates='users')
     manager = db.relationship('Users', remote_side=[UserId], backref='subordinates')
-    bookings = db.relationship('Bookings', back_populates='user')
-    attendance_records = db.relationship('Attendance', back_populates='user')
+    bookings = db.relationship('Bookings', back_populates='user', cascade="all, delete-orphan", passive_deletes=True)
+    attendance_records = db.relationship('Attendance', back_populates='user', cascade="all, delete-orphan", passive_deletes=True)
     training_sessions = db.relationship('TrainingSessions', foreign_keys='TrainingSessions.TrainerId', back_populates='trainer')
 
 class TrainingSessions(db.Model):
     __tablename__ = "training_sessions"
     SessionId = db.Column(db.Integer, primary_key=True, nullable=False)
-    CourseId = db.Column(db.Integer, db.ForeignKey('training_courses.CourseId'), nullable=False)
+    CourseId = db.Column(db.Integer, db.ForeignKey('training_courses.CourseId', ondelete="CASCADE"), nullable=False)
     TrainerId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=False)
     Title = db.Column(db.String(200), nullable=False)
     Date = db.Column(db.Date, nullable=False)
     Time = db.Column(db.Time, nullable=False)
+    EndTime = db.Column(db.Time, nullable=False)
     Location = db.Column(db.String(200), nullable=False)
     Description = db.Column(db.Text, nullable=True)
     Prerequisites = db.Column(db.Text, nullable=True)
     Capacity = db.Column(db.Integer, nullable=False)
     DeliveryType = db.Column(Enum("Face-to-Face", "Online", name="delivery_type"), nullable=False)
     Booked = db.Column(db.Integer, nullable=True, default=0)
-    Status = db.Column(Enum("Completed", "Not completed", name="session_status"), nullable=True)
+    Status = db.Column(Enum("Completed", "Not completed", "Cancelled", name="session_status"), nullable=False)
     Marked = db.Column(db.Integer, nullable=True, default=0)
     trainer = db.relationship("Users", foreign_keys=[TrainerId], back_populates='training_sessions')
     course = db.relationship('TrainingCourses', back_populates='sessions')
-    bookings = db.relationship('Bookings', back_populates='session')
+    bookings = db.relationship('Bookings', back_populates='session', cascade="all, delete-orphan", passive_deletes=True)
     
 class TrainingCourses(db.Model):
     __tablename__ = "training_courses"
@@ -47,14 +50,14 @@ class TrainingCourses(db.Model):
     CourseName = db.Column(db.String(200), nullable=False)
     Description = db.Column(db.Text, nullable=True)
     DepartmentId = db.Column(db.Integer, db.ForeignKey('departments.DepartmentId'), nullable=True)
-    sessions = db.relationship('TrainingSessions', back_populates='course')
+    sessions = db.relationship('TrainingSessions', back_populates='course', cascade="all, delete-orphan", passive_deletes=True)
     department = db.relationship('Departments', back_populates='courses')
 
 class Bookings(db.Model):
     __tablename__ = "bookings"
     BookingId = db.Column(db.Integer, primary_key=True, nullable=False)
-    UserId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=False)
-    SessionId = db.Column(db.Integer, db.ForeignKey('training_sessions.SessionId'), nullable=False)
+    UserId = db.Column(db.Integer, db.ForeignKey('users.UserId', ondelete="CASCADE"), nullable=False)
+    SessionId = db.Column(db.Integer, db.ForeignKey('training_sessions.SessionId', ondelete="CASCADE"), nullable=False)
     BookingDate = db.Column(db.DateTime, nullable=False)
     Status = db.Column(Enum("Pending Approval", "Approved", "Rejected", "Cancelled", "Completed", name="status"), nullable=False)
     ManagerApproval = db.Column(Enum("Yes", "No", name="manager_approval"), nullable=False)
@@ -63,16 +66,17 @@ class Bookings(db.Model):
     ApprovedAt = db.Column(db.Date, nullable=True)
     CompletedAt = db.Column(db.Date, nullable=True)
     CancelledAt = db.Column(db.Date, nullable=True)
+    CancelReason = db.Column(db.Text, nullable=True)
     RejectedAt = db.Column(db.Date, nullable=True)
     session = db.relationship('TrainingSessions', foreign_keys=[SessionId], back_populates='bookings')
     user = db.relationship('Users', foreign_keys=[UserId], back_populates='bookings')
-    attendance = db.relationship('Attendance', back_populates='booking', uselist=False)
+    attendance = db.relationship('Attendance', back_populates='booking', uselist=False, cascade="all, delete-orphan", passive_deletes=True)
 
 class Attendance(db.Model):
     __tablename__ = "attendance"
     AttendanceId = db.Column(db.Integer, primary_key=True, nullable=False)
-    BookingId = db.Column(db.Integer, db.ForeignKey('bookings.BookingId'), nullable=False, unique=True)
-    UserId = db.Column(db.Integer,db.ForeignKey('users.UserId'), nullable=True )
+    BookingId = db.Column(db.Integer, db.ForeignKey('bookings.BookingId', ondelete="CASCADE"), nullable=False, unique=True)
+    UserId = db.Column(db.Integer,db.ForeignKey('users.UserId', ondelete="CASCADE"), nullable=True )
     AttendanceStatus = db.Column(Enum("Attended", "Absent", "N/A", name="attendance_mark"), nullable=False, default="N/A")
     Comments = db.Column(db.Text, nullable=True)
     user = db.relationship('Users', foreign_keys=[UserId], back_populates='attendance_records')
@@ -82,7 +86,19 @@ class Departments(db.Model):
     __tablename__ = "departments"
     DepartmentId = db.Column(db.Integer, primary_key=True, nullable=False)
     DepartmentName = db.Column(db.String(100), nullable=False)
-    ManagerId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=True)
+    ManagerId = db.Column(db.Integer, db.ForeignKey('users.UserId', ondelete="SET NULL"), nullable=True)
     users = db.relationship('Users', foreign_keys='Users.DepartmentId', back_populates='department')
     manager = db.relationship('Users', foreign_keys=[ManagerId])
     courses = db.relationship('TrainingCourses', back_populates='department')
+
+class Notifications(db.Model):
+    __tablename__ = "notifications"
+    NotificationId = db.Column(db.Integer, primary_key=True, nullable=False)
+    UserId = db.Column(db.Integer, db.ForeignKey('users.UserId'), nullable=False)
+    Message = db.Column(db.Text, nullable=False) 
+    NotificationType = db.Column(Enum("Booking", "Approval", "Cancellation", "System", name="notification_type"), nullable=False, default="Booking")  # lets us style/group notifications later
+    IsRead = db.Column(db.Boolean, nullable=False, default=False)  
+    CreatedAt = db.Column(db.DateTime(timezone=True), nullable=False)  
+    RelatedBookingId = db.Column(db.Integer, db.ForeignKey('bookings.BookingId'), nullable=True)  
+    user = db.relationship('Users', foreign_keys=[UserId], backref='notifications')
+    booking = db.relationship('Bookings', foreign_keys=[RelatedBookingId])

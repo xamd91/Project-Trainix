@@ -1,3 +1,4 @@
+from notifications.user_notifications import attendance_marked
 from flask import session, redirect, url_for, request, jsonify
 from app import db
 from datetime import datetime, date
@@ -11,7 +12,18 @@ def mark_attendance():
 
         training_session = TrainingSessions.query.filter_by(SessionId=session_id).first()
 
-        bookings = Bookings.query.filter_by(SessionId=session_id).all()
+        bookings = (
+            Bookings.query
+            .join(Bookings.session)
+            .filter(
+                TrainingSessions.SessionId == session_id,
+                Bookings.Status == 'Approved',
+                Bookings.CompletedAt.is_(None)
+            )
+            .all()
+        )
+
+        # Bookings.query.filter_by(SessionId=session_id).all()
 
         booking_lookup = {
             booking.UserId: booking
@@ -45,14 +57,16 @@ def mark_attendance():
                     "message": "Please mark attendance for all attendees before submitting."
                 }), 400
             
+            print(booking.attendance)
+            
             old_status = booking.attendance.AttendanceStatus
 
             was_marked = old_status in valid_statuses
 
             booking.attendance.AttendanceStatus = status
 
-            if booking.attendance.AttendanceStatus == 'Attended':
-                booking.CompletedAt = date.now()
+            if status == "Attended":
+                booking.CompletedAt = date.today()
 
             if not was_marked:
                 booking.session.Marked += 1
@@ -60,7 +74,12 @@ def mark_attendance():
             if comment is not None:
                 booking.attendance.Comments = comment
 
-        # training_session.Status = "Completed"
+            if old_status != status:
+                attendance_marked(
+                    user=booking.user,
+                    session=booking.session,
+                    status=status,
+                )
 
         db.session.commit()
 
@@ -69,7 +88,5 @@ def mark_attendance():
             "status": "success",
             "message": "Attendance records saved successfully!",
         }), 201
-
-        
 
         return redirect(url_for("attendance_management"))

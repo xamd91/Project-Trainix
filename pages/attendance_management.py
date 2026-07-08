@@ -8,8 +8,10 @@ def page():
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    # if session['role'] != "trainer":
-    #      return redirect(url_for('login'))
+    if session['role'] != "trainer" and not session['trainer_perms']:
+         return redirect(url_for('login'))
+    
+
     user_id = session.get('user_id') 
 
     trainer = Users.query.filter_by(UserId=user_id).first()
@@ -18,7 +20,7 @@ def page():
         TrainingSessions.query
         .filter(
             or_(
-                TrainingSessions.Status != "Completed",
+                TrainingSessions.Status == "Not completed",
                 TrainingSessions.Status.is_(None)
             ),
             TrainingSessions.TrainerId == user_id
@@ -34,6 +36,9 @@ def page():
             if booking.Status == "Approved"
         ]
 
+        session_datetime = datetime.combine(training_session.Date, training_session.Time)
+        training_session.has_started = datetime.now() >= session_datetime
+
     total_upcoming_attendees = sum(
         len(training_session.approved_bookings)
         for training_session in upcoming_sessions
@@ -42,12 +47,16 @@ def page():
     past_sessions = (
         TrainingSessions.query
         .filter(
-            TrainingSessions.Status == "Completed",
+            or_(
+            
+                TrainingSessions.Status == "Completed",
+                TrainingSessions.Status == "Cancelled"
+            ),
             TrainingSessions.TrainerId == user_id
         )
         .order_by(TrainingSessions.Date.desc()).all()
-    )
-
+    )   
+        
     for training_session in past_sessions:
         training_session.approved_bookings = [
             booking
@@ -95,10 +104,17 @@ def page():
 
     today = date.today()
 
-    sessions_today = TrainingSessions.query.filter_by(Date=today).all()
-
-    session_datetime = datetime.combine(training_session.Date, training_session.Time)
-    training_session.has_started = datetime.now() >= session_datetime
+    sessions_today = (
+        TrainingSessions.query
+        .filter(
+            TrainingSessions.TrainerId == user_id,
+            TrainingSessions.Date == today,
+            TrainingSessions.Status == 'Not completed'
+        )
+        .all()
+    )
+    
+    users = Users.query.all()
 
     return render_template(
         'attendance_management.html', 
@@ -108,5 +124,6 @@ def page():
         session_count=session_count,
         sessions_today=sessions_today,
         total_upcoming_attendees=total_upcoming_attendees,
-        average_attendance_rate=average_attendance_rate
+        average_attendance_rate=average_attendance_rate,
+        users=users
         )

@@ -1,10 +1,22 @@
+import os
 import resend
+from flask import render_template
 
-resend.api_key = "re_ktZBhBXS_3eGfqhFGzmCduH6a9HoTLaEZ"
+resend.api_key = os.getenv('RESEND_API_KEY')
 
-r = resend.Emails.send({
-  "from": "onboarding@resend.dev",
-  "to": "andersonnnnnn71@gmail.com",
-  "subject": "Hello World",
-  "html": "<p>Congrats on sending your <strong>first email</strong>!</p>"
-})
+def send_email(to, subject, template, context=None):
+
+    if context is None:
+        context = {}
+
+    html = render_template(
+        f"notifications/{template}.html",
+        **context
+    )
+
+    return resend.Emails.send({
+        "from": "Trainix <noreply@anitrack.xyz>",
+        "to": to,
+        "subject": subject,
+        "html": html
+    })

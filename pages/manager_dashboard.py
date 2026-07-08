@@ -1,3 +1,4 @@
+from notifications.booking_notifications import booking_approved, booking_rejected
 from flask import render_template, session, redirect, url_for, request
 from models import Users, TrainingSessions, Bookings, Attendance
 from sqlalchemy import or_
@@ -5,13 +6,13 @@ from datetime import datetime, date
 from app import db
 
 def page():
+
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    
 
     user_id = session.get('user_id')
     
-    if session['role'] != "manager":
+    if session['role'] != "manager" and not session['manager_perms']:
         return redirect(url_for('login'))
     
     manager = Users.query.get(user_id)
@@ -62,13 +63,17 @@ def page():
         booking = Bookings.query.get(booking_id)
 
         if booking:
+
+            user = booking.user
+            training_session = booking.session
+
             if action == 'approve':
                 booking.Status = 'Approved'
                 booking.ManagerApproval = "Yes"
                 booking.DecidedOn = datetime.utcnow()
                 booking.ApprovedAt = date.today()
                 booking.session.Booked += 1
-        
+
                 if not booking.attendance:
 
                     attendance = Attendance(
@@ -87,6 +92,11 @@ def page():
                 booking.RejectedAt = date.today()
 
             db.session.commit()
+
+            if action == 'approve':
+                booking_approved(user, training_session, type="requested")
+            elif action == 'reject':
+                booking_rejected(user, training_session)
 
             return redirect(url_for('manager_dashboard'))
         
