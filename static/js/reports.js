@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ── PARSE BACKEND DATA ────────────────────────────────────────────────
     const dataEl = document.getElementById('chart-data');
     let chartData = {};
     try {
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Failed to parse chart-data:', e);
     }
 
-    // ── COLOUR PALETTE ────────────────────────────────────────────────────
     const navy    = '#001842';
     const amber   = '#F99D20';
     const pacific = '#00B0C2';
@@ -19,15 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const muted   = '#9ca3af';
     const orange  = '#f97316';
 
-    // ── CHART DEFAULTS ────────────────────────────────────────────────────
     Chart.defaults.font.family      = 'inherit';
     Chart.defaults.color            = '#6b7280';
     Chart.defaults.font.size        = 11;
     Chart.defaults.devicePixelRatio = 4;
-
-    // ── DATA WITH FALLBACKS ───────────────────────────────────────────────
-    // Each key maps to a chartData property from the backend.
-    // If the backend omits a key (e.g. no data yet), the fallback is used.
 
     const sessionsByMonth = chartData.sessions_by_month || {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -97,8 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         data: [85, 78, 91]
     };
 
-    // rankings: backend sends top_trainers, bottom_trainers, top_sessions, etc.
-    // Structure per item: { name, sub, metric_num, metric_lbl }
+
     const rankings = chartData.rankings || {
         top_trainers:    [
             { name: 'Sarah Mitchell', sub: '12 sessions delivered', metric_num: '96%', metric_lbl: 'attendance rate' },
@@ -142,8 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     };
 
-    // ── CHART: SESSIONS BY MONTH ─────────────────────────────────────────
-    new Chart(document.getElementById('chartSessions'), {
+   new Chart(document.getElementById('chartSessions'), {
         type: 'bar',
         data: {
             labels: sessionsByMonth.labels,
@@ -165,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── CHART: SESSIONS BY DEPARTMENT (doughnut) ─────────────────────────
     new Chart(document.getElementById('chartPie'), {
         type: 'doughnut',
         data: {
@@ -185,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── CHART: ATTENDANCE TREND (line) ───────────────────────────────────
     new Chart(document.getElementById('chartAttendance'), {
         type: 'line',
         data: {
@@ -212,8 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── CHART: DELIVERY SPLIT (horizontal bar) ───────────────────────────
-    // Matches DeliveryType enum: 'Face-to-Face' | 'Online'
     new Chart(document.getElementById('chartDelivery'), {
         type: 'bar',
         data: {
@@ -237,8 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── CHART: ATTENDANCE STACK (stacked bar by month) ───────────────────
-    // Source: Attendance.AttendanceStatus grouped by month
     new Chart(document.getElementById('chartAttendStack'), {
         type: 'bar',
         data: {
@@ -260,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── CHART: ATTENDANCE OVERALL (doughnut) ────────────────────────────
     new Chart(document.getElementById('chartAttendPie'), {
         type: 'doughnut',
         data: {
@@ -280,8 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── CHART: BOOKING STATUS STACK ──────────────────────────────────────
-    // Source: Bookings.Status grouped by month
     new Chart(document.getElementById('chartBookingStatus'), {
         type: 'bar',
         data: {
@@ -304,8 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ── FUNNEL: BOOKING STATUS ───────────────────────────────────────────
-    // Source: Bookings.Status counts + total
     const funnelTotal = bookingFunnel.reduce((sum, d) => sum + d.count, 0);
     const funnelEl    = document.getElementById('funnelList');
     bookingFunnel.forEach(d => {
@@ -320,54 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     });
 
-    // ── UTIL LIST: FILL RATE PER SESSION ────────────────────────────────
-    // Source: TrainingSessions.Booked / Capacity
-    // const utilEl = document.getElementById('utilList');
-    // fillRateSessions.forEach(s => {
-    //     const pct = s.cap > 0 ? Math.round((s.booked / s.cap) * 100) : 0;
-    //     const cls = pct >= 85 ? 'high' : pct >= 60 ? 'warn' : 'low';
-    //     utilEl.innerHTML += `
-    //         <div class="util-row">
-    //             <div class="util-name">
-    //                 <div class="util-session-title">${s.title}</div>
-    //                 <div class="util-session-sub">${s.dept} &middot; ${s.booked} / ${s.cap} seats</div>
-    //             </div>
-    //             <div class="util-bar-wrap">
-    //                 <div class="util-track"><div class="util-fill ${cls}" style="width:${pct}%"></div></div>
-    //             </div>
-    //             <div class="util-pct">${pct}%</div>
-    //         </div>`;
-    // });
-
-    // ── CHART: FILL RATE TREND (line) ────────────────────────────────────
-    // new Chart(document.getElementById('chartFillRate'), {
-    //     type: 'line',
-    //     data: {
-    //         labels: fillRateTrend.labels,
-    //         datasets: [{
-    //             data: fillRateTrend.data,
-    //             borderColor: purple,
-    //             backgroundColor: 'rgba(139,92,246,0.08)',
-    //             fill: true,
-    //             tension: 0.35,
-    //             pointRadius: 3,
-    //             pointBackgroundColor: purple,
-    //             borderWidth: 2
-    //         }]
-    //     },
-    //     options: {
-    //         responsive: true,
-    //         maintainAspectRatio: false,
-    //         plugins: { legend: { display: false } },
-    //         scales: {
-    //             y: { min: 50, max: 100, grid: { color: '#f1f5f9' }, ticks: { callback: v => v + '%' } },
-    //             x: { grid: { display: false } }
-    //         }
-    //     }
-    // });
-
-    // ── CHART: DEPT ATTENDED (polar area) ────────────────────────────────
-    // Source: Attendance JOIN Users GROUP BY DepartmentId WHERE AttendanceStatus='Attended'
     new Chart(document.getElementById('chartPolar'), {
         type: 'polarArea',
         data: {
@@ -400,67 +332,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
-    // ── RANKINGS: render top/bottom panels from data ─────────────────────
-    // const rankCols = [
-    //     { id: 'trainers', label: 'Trainers',  topKey: 'top_trainers',  botKey: 'bottom_trainers'  },
-    //     { id: 'sessions', label: 'Sessions',  topKey: 'top_sessions',  botKey: 'bottom_sessions'  },
-    //     { id: 'courses',  label: 'Courses',   topKey: 'top_courses',   botKey: 'bottom_courses'   },
-    //     { id: 'learners', label: 'Learners',  topKey: 'top_learners',  botKey: 'bottom_learners'  }
-    // ];
-
-    // const topRankColors = [amber, pacific, navy];
-
-    // function buildRows(items, isTop) {
-    //     return items.map((item, i) => {
-    //         const rankStyle = isTop
-    //             ? `background:${topRankColors[i] || navy}`
-    //             : `background:#fca5a5;color:#7f1d1d`;
-    //         const rankLabel = isTop ? (i + 1) : '↓';
-    //         return `
-    //             <div class="top-row">
-    //                 <div class="top-rank" style="${rankStyle}">${rankLabel}</div>
-    //                 <div class="top-info">
-    //                     <div class="top-name">${item.name}</div>
-    //                     <div class="top-sub">${item.sub}</div>
-    //                 </div>
-    //                 <div class="top-metric">
-    //                     <div class="top-metric-num">${item.metric_num}</div>
-    //                     <div class="top-metric-lbl">${item.metric_lbl}</div>
-    //                 </div>
-    //             </div>`;
-    //     }).join('');
-    // }
-
-    // const perfGrid = document.getElementById('perfGrid');
-    // rankCols.forEach(col => {
-    //     perfGrid.innerHTML += `
-    //         <div class="top-card">
-    //             <div class="top-card-header">
-    //                 <span class="top-card-title">${col.label}</span>
-    //                 <span class="top-card-badge top" id="badge-${col.id}">Top</span>
-    //             </div>
-    //             <div class="top-panel active is-top" id="${col.id}-top">
-    //                 ${buildRows(rankings[col.topKey] || [], true)}
-    //             </div>
-    //             <div class="top-panel is-bottom" id="${col.id}-bottom">
-    //                 ${buildRows(rankings[col.botKey] || [], false)}
-    //             </div>
-    //         </div>`;
-    // });
-
-    // ── TOP / BOTTOM TOGGLE ──────────────────────────────────────────────
-    // window.setPerfView = function (view, btn) {
-    //     document.querySelectorAll('.perf-toggle-btn').forEach(b => b.classList.remove('active'));
-    //     btn.classList.add('active');
-
-    //     rankCols.forEach(col => {
-    //         document.getElementById(`${col.id}-top`).classList.toggle('active',    view === 'top');
-    //         document.getElementById(`${col.id}-bottom`).classList.toggle('active', view === 'bottom');
-    //         const badge = document.getElementById(`badge-${col.id}`);
-    //         badge.textContent  = view === 'top' ? 'Top' : 'Bottom';
-    //         badge.className    = 'top-card-badge ' + (view === 'top' ? 'top' : 'bottom');
-    //     });
-    // };
 
 });

@@ -1,6 +1,6 @@
 .page-hero {
-  background: linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.50)),
-              url(../images/.jpg) center/cover;
+  background: linear-gradient(rgba(0,0,0,0.70), rgba(0,0,0,0.50)),
+              url(../images/info_bg.jpg) center/cover;
   height: 75vh;
   display: flex;
   align-items: center;
@@ -277,10 +277,73 @@
     transform: translateY(1px);
 }
 
+.user-guides {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.guide-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition:
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.preview {
+    height: 160px;
+    background: var(--navy-blue);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: blur(3px);
+    transform: scale(1.03);
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.guide-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 16px 16px;
+    border-top: 1px solid #ddd;
+}
+
+.guide-label-text {
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-family: 'Caveat', cursive;
+    color: var(--navy-blue);
+    letter-spacing: 0.2px;
+}
+
+.guide-label-icon {
+    flex-shrink: 0;
+    color: #9ca3af;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.guide-card:hover .guide-label-icon {
+    color: var(--c-accent, var(--pacific-blue));
+    transform: translateY(2px);
+}
+
 /* ── responsive ── */
 @media (max-width: 900px) {
     .faqs-grid {
         grid-template-columns: 1fr;
+    }
+
+    .user-guides {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -293,4 +356,9 @@
     .form-group { grid-template-columns: 1fr; }
 
     .submit-button { width: 100%; }
+
+    .user-guides {
+        grid-template-columns: 1fr;
+        max-width: 350px;
+    }
 }

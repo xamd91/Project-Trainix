@@ -1,6 +1,7 @@
 .account-header {
     margin-top: 80px;
-    background: linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.50));
+    background: linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.50)),
+              url(../images/account_bg.jpg) center/cover;
     height: 50vh;
     display: flex;
     align-items: center;

@@ -14,12 +14,6 @@
         </div>
     </section>
 
-    <section>
-        <div class="UserGuides">
-        
-        </div>
-    </section>
-
     <!-- FAQs -->
     <section class="faqs-section">
         <div class="faqs-content">
@@ -141,6 +135,50 @@
         </div>
     </section>
 
+    <section>
+        <div class="faqs-header">
+            <span class="section-label">Resources</span>
+            <h2 class="faqs-title">User Guides</h2>
+            <p class="faqs-subtitle">Find step-by-step guides and helpful resources for every Trainix user role.</p>
+        </div>
+
+        <div class="user-guides">
+
+            <div class="guide-card" onclick="downloadGuide('/static/docs/Learner_User_Guide.pdf', 'Learner_User_Guide.pdf')">
+                <div class="preview" style="background-image:url('/static/docs/learner_preview.png')"></div>
+                <div class="guide-label">
+                    <span class="guide-label-text">Learner User Guide</span>
+                    <svg class="guide-label-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+            </div>
+
+            <div class="guide-card" onclick="downloadGuide('/static/docs/Trainer_User_Guide.pdf', 'Trainer_User_Guide.pdf')">
+                <div class="preview" style="background-image:url('/static/docs/trainer_preview.png')"></div>
+                <div class="guide-label">
+                    <span class="guide-label-text">Trainer User Guide</span>
+                    <svg class="guide-label-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+            </div>
+
+            <div class="guide-card" onclick="downloadGuide('/static/docs/Manager_User_Guide.pdf', 'Manager_User_Guide.pdf')">
+                <div class="preview" style="background-image:url('/static/docs/manager_preview.png')"></div>
+                <div class="guide-label">
+                    <span class="guide-label-text">Manager User Guide</span>
+                    <svg class="guide-label-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+            </div>
+
+            <div class="guide-card" onclick="downloadGuide('/static/docs/Admin_User_Guide.pdf', 'Admin_User_Guide.pdf')">
+                <div class="preview" style="background-image:url('/static/docs/admin_preview.png')"></div>
+                <div class="guide-label">
+                    <span class="guide-label-text">Admin User Guide</span>
+                    <svg class="guide-label-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     <!-- contact -->
     <section class="contact" id="contact">
         <div class="contact-content">
@@ -162,4 +200,8 @@
         </div>
     </section>
 
+{% endblock %}
+
+{% block extra_js %} 
+<script src="../static/js/information_and_support.js"></script> 
 {% endblock %}

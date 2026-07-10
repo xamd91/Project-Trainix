@@ -1,6 +1,6 @@
 .page-hero {
-  background: linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.50)),
-              url(../images/.jpg) center/cover;
+  background: linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.30)),
+              url(../images/manager_bg.jpg) center/cover;
   height: 75vh;
   display: flex;
   align-items: center;
